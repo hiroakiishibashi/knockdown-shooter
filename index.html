@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>3Dノックダウンシューター</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+<style>
+  :root{--panel:rgba(13,32,52,.78);--line:rgba(255,255,255,.22);--text:#f4f1ea;--muted:#bcd2e6;--accent:#ffb020;--accent2:#ff4d2e;--green:#2ee06f}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#7ec3ee;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans",system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}
+  #app{position:fixed;inset:0}
+  canvas{display:block}
+  .hud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:flex-start;padding:8px;padding-top:max(8px,env(safe-area-inset-top))}
+  .topui{display:flex;flex-direction:column;gap:5px}
+  .topbar{display:flex;gap:5px;align-items:stretch}
+  .stats{display:flex;gap:5px;flex:1}
+  .stat{flex:1;padding:2px 4px;text-align:center}
+  .stat b{display:block;font-size:15px;line-height:1.05;color:#fff;text-shadow:0 1px 5px rgba(6,26,48,.65),0 0 2px rgba(6,26,48,.5)}
+  .stat span{font-size:9.5px;color:#eaf4ff;letter-spacing:.05em;text-shadow:0 1px 4px rgba(6,26,48,.65)}
+  .stat.highlight b{color:var(--accent)}
+  .stat.danger b{color:var(--accent2)}
+  .midbar{display:flex;flex-direction:row;align-items:stretch;gap:5px}
+  .controls{display:flex;flex-direction:row;flex-wrap:wrap;gap:5px;pointer-events:auto;flex:none;align-content:flex-start}
+  .controls .btn{padding:6px 10px;font-size:11.5px;text-align:center}
+  .keyhint{display:none}
+  .btn{appearance:none;border:1px solid var(--line);background:rgba(13,32,52,.55);color:#fff;padding:7px 11px;border-radius:999px;font-weight:700;font-size:12px;cursor:pointer;backdrop-filter:blur(8px)}
+  .btn.primary{background:var(--accent);color:#1a1200;border-color:transparent}
+  .btn:active{transform:scale(.98)}
+  .hint{flex:1 1 auto;min-width:0;color:#fff;padding:2px 2px;font-size:11.5px;display:flex;gap:6px;align-items:center;line-height:1.4;text-shadow:0 1px 5px rgba(6,26,48,.7),0 0 2px rgba(6,26,48,.55)}
+  .hint .dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 0 3px rgba(46,224,111,.18);flex:none}
+  #ballGauge{position:absolute;left:0;top:0;width:20px;pointer-events:none;opacity:0;transition:opacity .18s;z-index:4;will-change:transform}
+  #ballGauge.show{opacity:1}
+  .bg-track{position:relative;width:16px;height:104px;margin:0 auto;background:rgba(10,26,46,.30);border:1px solid rgba(255,255,255,.55);border-radius:999px;overflow:hidden;box-shadow:0 1px 7px rgba(6,26,48,.45)}
+  #ballGauge.dragging .bg-track{border-color:var(--accent);box-shadow:0 0 0 1px rgba(255,176,32,.55),0 1px 7px rgba(6,26,48,.45)}
+  #bgFill{position:absolute;left:0;bottom:0;width:100%;height:0%;background:linear-gradient(0deg,#2ee06f,#ffb020 55%,#ff4d2e)}
+  .bg-ticks{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 11px,rgba(10,20,35,.35) 11px 12px)}
+  #banner{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(.9);text-align:center;pointer-events:none;opacity:0;transition:.25s;z-index:5}
+  #banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  #banner .big{font-size:clamp(30px,6.5vw,58px);font-weight:900;letter-spacing:.04em;line-height:.95;text-shadow:0 6px 30px rgba(0,0,0,.6);color:#fff}
+  #banner .big em{font-style:normal;color:var(--accent)}
+  #banner .sub{margin-top:6px;font-weight:700;color:#fff;display:inline-block;font-size:13px;text-shadow:0 2px 10px rgba(0,0,0,.65),0 0 3px rgba(6,26,48,.6)}
+  #centerCta{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(80vw,350px);text-align:center;padding:10px 16px;display:none;z-index:7}
+  #centerCta.show{display:block;pointer-events:auto;animation:ctaIn .25s ease}
+  @keyframes ctaIn{from{opacity:0;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+  @media (prefers-reduced-motion: reduce){#centerCta.show{animation:none}}
+  #ctaTitle{font-size:clamp(21px,4.6vw,30px);font-weight:900;color:#fff;letter-spacing:.02em;line-height:1.15;text-shadow:0 3px 18px rgba(0,0,0,.55),0 1px 4px rgba(6,26,48,.6)}
+  #ctaSub{margin-top:7px;font-size:12.5px;color:#eaf4ff;font-weight:700;line-height:1.5;text-shadow:0 1px 6px rgba(6,26,48,.7)}
+  #ctaBtn{margin-top:15px;font-size:18px;padding:14px 32px;box-shadow:0 8px 26px rgba(255,176,32,.35);animation:ctaPulse 1.6s ease-in-out infinite}
+  @keyframes ctaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+  @media (prefers-reduced-motion: reduce){#ctaBtn{animation:none}}
+  #anglePad{position:absolute;inset:0;pointer-events:none;z-index:8;transition:opacity .2s}
+  #anglePad.off{opacity:.35}
+  .angleBtn{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center}
+  .angleBtn:active{background:var(--accent);color:#1a1200}
+  #angleLeft{left:14px}
+  #angleRight{right:14px}
+  #popups{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .pop{position:absolute;font-weight:900;font-size:17px;color:var(--accent);text-shadow:0 2px 10px rgba(0,0,0,.7);transform:translate(-50%,-50%);animation:popfly .9s ease-out forwards}
+  .pop.can{color:#7ef0b0}
+  #confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:6}
+  .confetti-piece{position:absolute;top:-4vh;opacity:0;animation-name:confetti-fall;animation-timing-function:linear;animation-fill-mode:forwards}
+  @keyframes confetti-fall{0%{opacity:1;transform:translate(0,0) rotate(0deg)}85%{opacity:1}100%{opacity:.55;transform:translate(var(--dx,0px),108vh) rotate(var(--rot,720deg))}}
+  @media (prefers-reduced-motion: reduce){#confetti{display:none}}
+  @keyframes popfly{0%{opacity:0;margin-top:6px}15%{opacity:1}100%{opacity:0;margin-top:-46px}}
+  @media(max-width:640px){.stat b{font-size:13px}.stat span{font-size:9px}.hud{padding:6px;padding-top:max(6px,env(safe-area-inset-top))}.hint{font-size:11px;padding:5px 8px}.midbar{flex-direction:column;align-items:stretch}.controls .btn{flex:1}.topui{gap:4px}.stats{gap:4px}.midbar{gap:4px}}
+  @media(min-width:900px){.keyhint{display:block}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="popups"></div>
+<div id="confetti"></div>
+
+<div class="hud">
+  <div class="topui">
+    <div class="topbar">
+      <div class="stats">
+        <div class="stat highlight"><b id="score">0</b><span>スコア</span></div>
+        <div class="stat"><b id="stageLabel">1 / 6</b><span>ステージ</span></div>
+        <div class="stat"><b id="targetsLeft">0</b><span>残りターゲット</span></div>
+        <div class="stat" id="ballsStat"><b id="ballsLeft">3</b><span>残りボール</span></div>
+      </div>
+    </div>
+
+    <div class="midbar">
+      <div class="hint"><span class="dot"></span><span id="hintText">画面を<strong>下にドラッグ</strong>して引っ張り、離すと発射！ ◀▶ボタンで発射位置がブロックの周りを回るよ。台の上の積み上げを全部落として水に沈めよう</span></div>
+      <div class="controls">
+        <button class="btn" id="resetBallBtn">ボールを戻す</button>
+        <button class="btn" id="retryBtn">ステージをやり直す</button>
+        <button class="btn" id="cameraBtn">カメラ切替</button>
+        <span class="keyhint" style="font-size:10.5px;color:#fff;align-self:center;white-space:nowrap;text-shadow:0 1px 4px rgba(6,26,48,.7)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ballGauge">
+  <div class="bg-track"><i id="bgFill"></i><div class="bg-ticks"></div></div>
+</div>
+
+<div id="banner"><div class="big" id="bannerBig">STAGE 1</div><br><div class="sub" id="bannerSub">ターゲットを全部落とそう</div></div>
+
+<div id="centerCta">
+  <div id="ctaTitle">ステージクリア！</div>
+  <div id="ctaSub"></div>
+  <button class="btn primary" id="ctaBtn">次のステージへ →</button>
+</div>
+
+<div id="anglePad">
+  <button class="angleBtn" id="angleLeft" aria-label="発射位置を左へ回す" title="発射位置を左へ回す">◀</button>
+  <button class="angleBtn" id="angleRight" aria-label="発射位置を右へ回す" title="発射位置を右へ回す">▶</button>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
