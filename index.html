@@ -8,6 +8,7 @@
 <title>3Dノックダウンシューター</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+<script src="hi-game-lang.js"></script>
 <style>
   :root{--panel:rgba(13,32,52,.78);--line:rgba(255,255,255,.22);--text:#f4f1ea;--muted:#bcd2e6;--accent:#ffb020;--accent2:#ff4d2e;--green:#2ee06f}
   *{box-sizing:border-box}
@@ -96,17 +97,17 @@
   <div class="topui">
     <div class="topbar">
       <div class="stats">
-        <div class="stat highlight"><b id="score">0</b><span>スコア</span></div>
-        <div class="stat"><b id="stageLabel">1 / 6</b><span>ステージ</span></div>
-        <div class="stat"><b id="targetsLeft">0</b><span>残りターゲット</span></div>
-        <div class="stat" id="ballsStat"><b id="ballsLeft">3</b><span>残りボール</span></div>
+        <div class="stat highlight"><b id="score">0</b><span id="lblScore">スコア</span></div>
+        <div class="stat"><b id="stageLabel">1 / 6</b><span id="lblStage">ステージ</span></div>
+        <div class="stat"><b id="targetsLeft">0</b><span id="lblTargets">残りターゲット</span></div>
+        <div class="stat" id="ballsStat"><b id="ballsLeft">3</b><span id="lblBalls">残りボール</span></div>
       </div>
     </div>
 
     <div class="midbar">
       <div class="hint"><span class="dot"></span><span id="hintText">画面を<strong>下にドラッグ</strong>して引っ張り、離すと発射！ ◀▶ボタンで発射位置がブロックの周りを回るよ。台の上の積み上げを全部落として水に沈めよう</span></div>
       <div class="controls">
-        <span class="keyhint" style="font-size:10.5px;color:#fff;align-self:center;white-space:nowrap;text-shadow:0 1px 4px rgba(6,26,48,.7)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
+        <span class="keyhint" id="keyhint" style="font-size:10.5px;color:#fff;align-self:center;white-space:nowrap;text-shadow:0 1px 4px rgba(6,26,48,.7)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
       </div>
     </div>
   </div>
@@ -124,18 +125,18 @@
   <div class="bg-track"><i id="bgFill"></i><div class="bg-ticks"></div></div>
 </div>
 
-<div id="banner"><div class="big" id="bannerBig">STAGE 1</div><br><div class="sub" id="bannerSub">ターゲットを全部落とそう</div></div>
+<div id="banner"><div class="big" id="bannerBig">STAGE 1</div><br><div class="sub" id="bannerSub"></div></div>
 
 <div id="centerCta">
-  <div id="ctaTitle">ステージクリア！</div>
+  <div id="ctaTitle"></div>
   <div id="ctaSub"></div>
-  <button class="btn primary" id="ctaBtn">次のステージへ →</button>
+  <button class="btn primary" id="ctaBtn"></button>
 </div>
 
 <div id="titleScreen">
   <div class="titleInner">
-    <div class="titleLogo"><span class="t3">3D</span>ノックダウン<br>シューター</div>
-    <div class="titleHow">画面を下にドラッグして引っ張り、離すと発射！<br>台の上の積み上げを全部落として、水に沈めよう</div>
+    <div class="titleLogo" id="titleLogo"><span class="t3">3D</span>ノックダウン<br>シューター</div>
+    <div class="titleHow" id="titleHow">画面を下にドラッグして引っ張り、離すと発射！<br>台の上の積み上げを全部落として、水に沈めよう</div>
     <button class="btn primary" id="startBtn">ゲームスタート</button>
   </div>
 </div>

@@ -1,4 +1,217 @@
 
+// ---------- Language (portal SDK: hi-game-lang.js) ----------
+// All in-game text lives in the I18N dictionary (same 6 languages as the
+// portal). LANG is decided by the official SDK loaded in <head>; if the SDK
+// is missing the game still boots in English. Lookups use ?? so an empty
+// translation never falls back to showing the key name.
+const I18N={
+en:{
+  score:'SCORE', stage:'STAGE', targetsLeft:'TARGETS LEFT', ballsLeft:'BALLS LEFT',
+  menuOpen:'Open menu', menuResetBall:'Reset ball', menuRetry:'Restart stage', menuCamera:'Switch camera',
+  aimLeft:'Move launch position left', aimRight:'Move launch position right',
+  titleLogo:'<span class="t3">3D</span>KNOCKDOWN<br>SHOOTER',
+  titleHow:'Drag down on the screen to pull back, then release to launch!<br>Knock every stack off the raft and sink them all',
+  startBtn:'START GAME',
+  keyhint:'◀▶ buttons / ←→ keys rotate the launch spot (around the blocks, up to ±90°) / Space = camera',
+  hintDefault:'Drag <strong>down</strong> on the screen to pull back and release to launch! The ◀▶ buttons swing your launch spot around the blocks. Knock every stack off the raft and sink them all!',
+  bannerSub:'"{name}" — knock down all {targets} targets with {balls} balls!',
+  bombNote:' Black bomb blocks explode on impact and blast everything around them!',
+  hintIntro:'Study the stack first… when the camera pulls back, drag to aim!',
+  hintAim:'Stage {n} "{name}" — knock all {targets} targets off the raft and sink them with {balls} balls! Use ◀▶ to swing your launch spot around the blocks',
+  hintBallSunk:'The ball splashed into the sea and sank…!',
+  hintLaunched:'Ball away! Watch whether the targets topple off the raft…',
+  hintNextBall:'{balls} balls left — {targets} to go. See how the stack collapsed and adjust your aim!',
+  allClearSub:'You beat every stage! Final score: {score}',
+  allClearTitle:'🏆 All stages clear!', allClearSubCta:'Final score: {score} — brilliant shooting!', allClearBtn:'🏆 Play again',
+  hintAllClear:'All stages clear! Brilliant! 🎉',
+  clearSub:'Everything down! Leftover-ball bonus +{bonus}',
+  clearTitle:'🎉 Stage clear!', clearSubCta:'Leftover-ball bonus +{bonus} ・ Score: {score}', clearBtn:'Next stage →',
+  hintClear:'Stage clear! Tap "Next stage" in the center of the screen',
+  failSub:'{left} left standing. Try the stage again',
+  failTitle:'💦 {left} left standing…', failSubCta:'Out of balls. Your score resets to the start of this stage', failBtn:'Retry stage',
+  hintFail:'Out of balls… Tap "Retry stage" to try again! (score resets to the stage start)',
+  stageNames:['Stacking Basics','Twin Rafts','Three Rafts','Big Twins','Stepped Fortress','Final Showdown']
+},
+ja:{
+  score:'スコア', stage:'ステージ', targetsLeft:'残りターゲット', ballsLeft:'残りボール',
+  menuOpen:'メニューを開く', menuResetBall:'ボールを戻す', menuRetry:'ステージをやり直す', menuCamera:'カメラ切替',
+  aimLeft:'発射位置を左へ回す', aimRight:'発射位置を右へ回す',
+  titleLogo:'<span class="t3">3D</span>ノックダウン<br>シューター',
+  titleHow:'画面を下にドラッグして引っ張り、離すと発射！<br>台の上の積み上げを全部落として、水に沈めよう',
+  startBtn:'ゲームスタート',
+  keyhint:'◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ',
+  hintDefault:'画面を<strong>下にドラッグ</strong>して引っ張り、離すと発射！ ◀▶ボタンで発射位置がブロックの周りを回るよ。台の上の積み上げを全部落として水に沈めよう',
+  bannerSub:'「{name}」 ターゲット {targets}個 ・ ボール {balls}個で全部落とそう！',
+  bombNote:' 黒いボムブロックは当てると爆発して周りを吹き飛ばす！',
+  hintIntro:'まずは積み上げをよーく見て… カメラが引いたらドラッグで狙おう！',
+  hintAim:'ステージ{n}「{name}」— ボール{balls}個でターゲット{targets}個を全部台から落として水に沈めよう！ ◀▶ボタンで発射位置をブロックの周りに回せるよ',
+  hintBallSunk:'ボールが海に落ちて沈んだ…！',
+  hintLaunched:'ボールが飛んだ！ ターゲットが台から落ちるか見守ろう…',
+  hintNextBall:'残りボール {balls}個 — あと {targets} 個。崩れた積み方を見て狙いを変えよう！',
+  allClearSub:'全ステージ制覇！ 最終スコア {score}点',
+  allClearTitle:'🏆 全ステージクリア！', allClearSubCta:'最終スコア {score}点 — お見事でした！', allClearBtn:'🏆 最初から遊ぶ',
+  hintAllClear:'全ステージクリア！お見事でした🎉',
+  clearSub:'全部落とした！ 残りボールボーナス +{bonus}点',
+  clearTitle:'🎉 ステージクリア！', clearSubCta:'残りボールボーナス +{bonus}点 ・ 現在 {score}点', clearBtn:'次のステージへ →',
+  hintClear:'ステージクリア！ 画面中央の「次のステージへ」ボタンで進もう',
+  failSub:'あと {left} 個残った。ステージをやり直そう',
+  failTitle:'💦 あと {left} 個残った…', failSubCta:'ボールが無くなりました。スコアはステージ開始時に戻ります', failBtn:'ステージをやり直す',
+  hintFail:'ボールが無くなった…「ステージをやり直す」でもう一度挑戦！（スコアはステージ開始時に戻ります）',
+  stageNames:['積み上げ入門','ツインラフト','3つの台','ビッグツイン','段差の要塞','最終決戦']
+},
+ko:{
+  score:'점수', stage:'스테이지', targetsLeft:'남은 타겟', ballsLeft:'남은 볼',
+  menuOpen:'메뉴 열기', menuResetBall:'볼 되돌리기', menuRetry:'스테이지 다시 하기', menuCamera:'카메라 전환',
+  aimLeft:'발사 위치를 왼쪽으로 돌리기', aimRight:'발사 위치를 오른쪽으로 돌리기',
+  titleLogo:'<span class="t3">3D</span>넉다운<br>슈터',
+  titleHow:'화면을 아래로 드래그해 당겼다가 놓으면 발사!<br>뗏목 위의 쌓인 블록을 전부 떨어뜨려 물에 빠뜨리자',
+  startBtn:'게임 시작',
+  keyhint:'◀▶ 버튼・←→ 키로 발사 위치 회전 (블록 주변 ±90°・바로 옆까지) / 스페이스 = 카메라',
+  hintDefault:'화면을 <strong>아래로 드래그</strong>해 당겼다가 놓으면 발사! ◀▶ 버튼으로 발사 위치가 블록 주위를 돌아요. 뗏목 위의 블록을 전부 떨어뜨려 물에 빠뜨리자',
+  bannerSub:'"{name}" 타겟 {targets}개 · 볼 {balls}개로 전부 떨어뜨리자!',
+  bombNote:' 검은 봄 블록은 맞히면 폭발해 주변을 날려버려요!',
+  hintIntro:'먼저 쌓인 모양을 잘 살펴보고… 카메라가 멀어지면 드래그로 조준하자!',
+  hintAim:'스테이지 {n} "{name}" — 볼 {balls}개로 타겟 {targets}개를 전부 뗏목에서 떨어뜨려 물에 빠뜨리자! ◀▶ 버튼으로 발사 위치를 블록 주위로 돌릴 수 있어요',
+  hintBallSunk:'볼이 바다에 빠져 가라앉았다…!',
+  hintLaunched:'볼이 날아갔다! 타겟이 뗏목에서 떨어지는지 지켜보자…',
+  hintNextBall:'남은 볼 {balls}개 — 앞으로 {targets}개. 무너진 모양을 보고 조준을 바꿔보자!',
+  allClearSub:'전 스테이지 클리어! 최종 점수 {score}점',
+  allClearTitle:'🏆 전 스테이지 클리어!', allClearSubCta:'최종 점수 {score}점 — 대단해요!', allClearBtn:'🏆 처음부터 플레이',
+  hintAllClear:'전 스테이지 클리어! 대단해요🎉',
+  clearSub:'전부 떨어뜨렸다! 남은 볼 보너스 +{bonus}점',
+  clearTitle:'🎉 스테이지 클리어!', clearSubCta:'남은 볼 보너스 +{bonus}점 ・ 현재 {score}점', clearBtn:'다음 스테이지로 →',
+  hintClear:'스테이지 클리어! 화면 중앙의 "다음 스테이지로" 버튼으로 진행하자',
+  failSub:'아직 {left}개 남았다. 스테이지를 다시 해보자',
+  failTitle:'💦 아직 {left}개 남았다…', failSubCta:'볼이 다 떨어졌습니다. 점수는 스테이지 시작 시점으로 돌아갑니다', failBtn:'스테이지 다시 하기',
+  hintFail:'볼이 다 떨어졌다… "스테이지 다시 하기"로 다시 도전! (점수는 스테이지 시작 시점으로 돌아갑니다)',
+  stageNames:['쌓기 입문','트윈 래프트','뗏목 3개','빅 트윈','단차 요새','최종 결전']
+},
+es:{
+  score:'PUNTOS', stage:'NIVEL', targetsLeft:'OBJETIVOS', ballsLeft:'BOLAS',
+  menuOpen:'Abrir menú', menuResetBall:'Reiniciar bola', menuRetry:'Reiniciar nivel', menuCamera:'Cambiar cámara',
+  aimLeft:'Girar la posición de tiro a la izquierda', aimRight:'Girar la posición de tiro a la derecha',
+  titleLogo:'<span class="t3">3D</span>KNOCKDOWN<br>SHOOTER',
+  titleHow:'Arrastra hacia abajo para tensar y suelta para lanzar.<br>Derriba todo lo apilado en la balsa y húndelo en el agua',
+  startBtn:'JUGAR',
+  keyhint:'Botones ◀▶ / teclas ←→ giran la posición de tiro (alrededor de los bloques, hasta ±90°) / Espacio = cámara',
+  hintDefault:'Arrastra <strong>hacia abajo</strong> para tensar y suelta para lanzar. Los botones ◀▶ mueven tu posición de tiro alrededor de los bloques. ¡Derriba todo lo de la balsa y húndelo!',
+  bannerSub:'«{name}»: ¡derriba los {targets} objetivos con {balls} bolas!',
+  bombNote:' ¡Los bloques bomba negros explotan al impactar y vuelan todo a su alrededor!',
+  hintIntro:'Observa bien la pila… cuando la cámara se aleje, arrastra para apuntar.',
+  hintAim:'Nivel {n} «{name}»: derriba los {targets} objetivos de la balsa con {balls} bolas y húndelos. Con ◀▶ giras tu posición de tiro alrededor de los bloques',
+  hintBallSunk:'¡La bola cayó al mar y se hundió…!',
+  hintLaunched:'¡La bola salió disparada! A ver si los objetivos caen de la balsa…',
+  hintNextBall:'Quedan {balls} bolas y {targets} objetivos. Mira cómo quedó la pila y ajusta el tiro.',
+  allClearSub:'¡Todos los niveles superados! Puntuación final: {score}',
+  allClearTitle:'🏆 ¡Juego completado!', allClearSubCta:'Puntuación final: {score} — ¡enhorabuena!', allClearBtn:'🏆 Jugar de nuevo',
+  hintAllClear:'¡Todos los niveles superados! ¡Enhorabuena! 🎉',
+  clearSub:'¡Todo derribado! Bonus por bolas restantes: +{bonus}',
+  clearTitle:'🎉 ¡Nivel superado!', clearSubCta:'Bonus por bolas restantes: +{bonus} ・ Puntuación: {score}', clearBtn:'Siguiente nivel →',
+  hintClear:'¡Nivel superado! Pulsa «Siguiente nivel» en el centro de la pantalla',
+  failSub:'Quedaron {left} en pie. Intenta el nivel de nuevo',
+  failTitle:'💦 Quedaron {left} en pie…', failSubCta:'Te quedaste sin bolas. La puntuación vuelve al inicio del nivel', failBtn:'Reintentar nivel',
+  hintFail:'Sin bolas… Pulsa «Reintentar nivel» para intentarlo otra vez (la puntuación vuelve al inicio del nivel)',
+  stageNames:['Primeras pilas','Balsas gemelas','Tres balsas','Gemelas gigantes','Fortaleza escalonada','Batalla final']
+},
+pt:{
+  score:'PONTOS', stage:'FASE', targetsLeft:'ALVOS RESTANTES', ballsLeft:'BOLAS RESTANTES',
+  menuOpen:'Abrir menu', menuResetBall:'Recolocar a bola', menuRetry:'Reiniciar fase', menuCamera:'Trocar câmera',
+  aimLeft:'Girar a posição de tiro para a esquerda', aimRight:'Girar a posição de tiro para a direita',
+  titleLogo:'<span class="t3">3D</span>KNOCKDOWN<br>SHOOTER',
+  titleHow:'Arraste para baixo para puxar e solte para lançar!<br>Derrube tudo o que está empilhado na jangada e afunde no mar',
+  startBtn:'JOGAR',
+  keyhint:'Botões ◀▶ / setas ←→ giram a posição de tiro (ao redor dos blocos, até ±90°) / Espaço = câmera',
+  hintDefault:'Arraste <strong>para baixo</strong> para puxar e solte para lançar! Os botões ◀▶ giram sua posição de tiro ao redor dos blocos. Derrube tudo da jangada e afunde!',
+  bannerSub:'"{name}" — derrube os {targets} alvos com {balls} bolas!',
+  bombNote:' Os blocos-bomba pretos explodem ao serem atingidos e lançam tudo ao redor!',
+  hintIntro:'Observe bem a pilha… quando a câmera recuar, arraste para mirar!',
+  hintAim:'Fase {n} "{name}" — derrube os {targets} alvos da jangada com {balls} bolas e afunde tudo! Com ◀▶ você gira a posição de tiro ao redor dos blocos',
+  hintBallSunk:'A bola caiu no mar e afundou…!',
+  hintLaunched:'A bola voou! Vamos ver se os alvos caem da jangada…',
+  hintNextBall:'Restam {balls} bolas — faltam {targets} alvos. Veja como a pilha desabou e ajuste a mira!',
+  allClearSub:'Todas as fases vencidas! Pontuação final: {score}',
+  allClearTitle:'🏆 Você zerou o jogo!', allClearSubCta:'Pontuação final: {score} — parabéns!', allClearBtn:'🏆 Jogar de novo',
+  hintAllClear:'Todas as fases vencidas! Parabéns! 🎉',
+  clearSub:'Derrubou tudo! Bônus de bolas restantes: +{bonus}',
+  clearTitle:'🎉 Fase concluída!', clearSubCta:'Bônus de bolas restantes: +{bonus} ・ Pontuação atual: {score}', clearBtn:'Próxima fase →',
+  hintClear:'Fase concluída! Toque em "Próxima fase" no centro da tela',
+  failSub:'Faltaram {left}. Tente a fase de novo',
+  failTitle:'💦 Faltaram {left}…', failSubCta:'As bolas acabaram. A pontuação volta ao início da fase', failBtn:'Tentar de novo',
+  hintFail:'As bolas acabaram… Toque em "Tentar de novo" para mais uma chance! (a pontuação volta ao início da fase)',
+  stageNames:['Empilhando: o básico','Jangadas gêmeas','Três jangadas','Gêmeas gigantes','Fortaleza em degraus','Batalha final']
+},
+zh:{
+  score:'分数', stage:'关卡', targetsLeft:'剩余目标', ballsLeft:'剩余球',
+  menuOpen:'打开菜单', menuResetBall:'重置球', menuRetry:'重新开始关卡', menuCamera:'切换镜头',
+  aimLeft:'向左旋转发射位置', aimRight:'向右旋转发射位置',
+  titleLogo:'<span class="t3">3D</span>击倒<br>射手',
+  titleHow:'向下拖动屏幕拉满，松手发射！<br>把木筏上堆积的东西全部打落，沉入水中',
+  startBtn:'开始游戏',
+  keyhint:'◀▶按钮・←→方向键旋转发射位置（绕方块一周，最大±90°）/ 空格键切换镜头',
+  hintDefault:'向<strong>下拖动</strong>屏幕拉满后松手发射！◀▶按钮让发射位置绕着方块转。把木筏上堆的东西全部打落沉入水中吧',
+  bannerSub:'「{name}」用 {balls} 个球打落全部 {targets} 个目标！',
+  bombNote:' 黑色炸弹方块被击中会爆炸，把周围都炸飞！',
+  hintIntro:'先仔细看看堆积的样子…镜头拉远后拖动瞄准吧！',
+  hintAim:'第{n}关「{name}」— 用{balls}个球把{targets}个目标全部打下木筏沉入水中！用◀▶按钮可以绕方块旋转发射位置',
+  hintBallSunk:'球掉进海里沉下去了…！',
+  hintLaunched:'球飞出去了！看看目标会不会从木筏上掉下来…',
+  hintNextBall:'还剩{balls}个球 — 还差{targets}个。看看倒塌后的样子，调整瞄准吧！',
+  allClearSub:'全部关卡通关！最终分数 {score} 分',
+  allClearTitle:'🏆 全部通关！', allClearSubCta:'最终分数 {score} 分 — 太厉害了！', allClearBtn:'🏆 从头再玩',
+  hintAllClear:'全部通关！太厉害了🎉',
+  clearSub:'全部打落！剩余球奖励 +{bonus} 分',
+  clearTitle:'🎉 过关啦！', clearSubCta:'剩余球奖励 +{bonus} 分 ・ 当前 {score} 分', clearBtn:'下一关 →',
+  hintClear:'过关啦！点屏幕中央的「下一关」按钮继续',
+  failSub:'还剩 {left} 个没打落。重新挑战这一关吧',
+  failTitle:'💦 还剩 {left} 个…', failSubCta:'球用完了。分数将恢复到本关开始时', failBtn:'重新开始关卡',
+  hintFail:'球用完了…点「重新开始关卡」再挑战一次！（分数恢复到本关开始时）',
+  stageNames:['堆积入门','双子木筏','三座平台','巨型双塔','阶梯要塞','最终决战']
+}
+};
+var LANG = (window.HiLang && HiLang.init({
+  id: 'knockdown-shooter',
+  langs: ['en', 'ja', 'ko', 'es', 'pt', 'zh'],
+  live: true,
+  onChange: function (code) { applyLang(code); },
+})) || 'en';
+function t(key, params){
+  const dict = I18N[LANG] ?? I18N.en;
+  let s = dict[key] ?? I18N.en[key] ?? key;
+  if(params){ Object.keys(params).forEach(function(k){ s = String(s).split('{'+k+'}').join(params[k]); }); }
+  return s;
+}
+function stageName(i){ const names = (I18N[LANG] ?? I18N.en).stageNames ?? I18N.en.stageNames; return names[i] ?? I18N.en.stageNames[i] ?? ''; }
+// Language-independent context for the banner and the center CTA panel.
+// showBanner/showCta store the *meaning* (kind/mode + numbers) here instead
+// of baked translated strings, so applyLang can re-render both texts from
+// the dictionary in whatever language is current — even while the banner /
+// panel are hidden. Defaults describe the boot state: stage 1's banner and
+// the (hidden) stage-clear panel.
+var bannerCtx={kind:'stage',stageIndex:0,targets:15,balls:4};
+var ctaCtx={mode:'next',bonus:0,score:0,left:0};
+// Re-render every visible static text + the HUD in the new language. Called
+// by the SDK (live) whenever the portal language changes mid-game — no reload.
+function applyLang(code){
+  LANG = I18N[code] ? code : 'en';
+  const set=function(id,txt,html){ const n=document.getElementById(id); if(n){ if(html) n.innerHTML=txt; else n.textContent=txt; } };
+  set('lblScore', t('score')); set('lblStage', t('stage')); set('lblTargets', t('targetsLeft')); set('lblBalls', t('ballsLeft'));
+  set('resetBallBtn', t('menuResetBall')); set('retryBtn', t('menuRetry')); set('cameraBtn', t('menuCamera'));
+  set('titleLogo', t('titleLogo'), true); set('titleHow', t('titleHow'), true); set('startBtn', t('startBtn'));
+  set('keyhint', t('keyhint'));
+  const mb=document.getElementById('menuBtn'); if(mb) mb.setAttribute('aria-label', t('menuOpen'));
+  const al=document.getElementById('angleLeft'), ar=document.getElementById('angleRight');
+  if(al){ al.setAttribute('aria-label', t('aimLeft')); al.setAttribute('title', t('aimLeft')); }
+  if(ar){ ar.setAttribute('aria-label', t('aimRight')); ar.setAttribute('title', t('aimRight')); }
+  if(typeof state!=='undefined' && state==='title') set('hintText', t('hintDefault'), true);
+  // Banner subtitle and the center CTA panel (title / sub / button) also
+  // follow the language, even while hidden: re-render them from the
+  // dictionary via their stored context (renderBanner/renderCta are defined
+  // with the game UI below; guarded in case this runs before they exist).
+  try{ if(typeof renderBanner==='function') renderBanner(); }catch(e){}
+  try{ if(typeof renderCta==='function') renderCta(); }catch(e){}
+  if(typeof updateHUD==='function') updateHUD();
+}
+
 // ---------- Audio (tiny synth) ----------
 let audioCtx=null;
 function beep(freq,dur,type,vol){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type=type||'sine'; o.frequency.value=freq; g.gain.setValueAtTime(vol||0.12,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur);}catch(e){} }
@@ -359,23 +572,23 @@ function pCanRow(P,row,y,xs){ xs.forEach(function(x){ pCan(P,row,x,y); }); }
 function pBomb(P,row,x,y){ addBomb(P.cx+x, P.z+P.rows[row], y); }
 
 const STAGES=[
- { name:'積み上げ入門', balls:4, build:function(){ const P=makePlatform(0,-5.8,2.4,1.6,1.0); const T=P.top;
+ { balls:4, build:function(){ const P=makePlatform(0,-5.8,2.4,1.6,1.0); const T=P.top;
    pPyr(P,0,3,0); pCan(P,0,0,T+3*BOX); pCan(P,0,0,T+3*BOX+CAN_H);
    pCrates(P,1,T,3); pCrates(P,1,T+BOX,2); pCanRow(P,1,T+2*BOX,[-0.32,0.32]); } },
- { name:'ツインラフト', balls:5, build:function(){ const L=makePlatform(-1.85,-5.8,2.3,1.6,1.0), R=makePlatform(1.85,-5.8,2.3,1.6,1.5);
+ { balls:5, build:function(){ const L=makePlatform(-1.85,-5.8,2.3,1.6,1.0), R=makePlatform(1.85,-5.8,2.3,1.6,1.5);
    pPyr(L,0,3,0); pCan(L,0,0,L.top+3*BOX);
    pCrates(L,1,L.top,2); pCanRow(L,1,L.top+BOX,[-0.32,0.32]);
    pCrates(R,0,R.top,3); pCrates(R,0,R.top+BOX,3); pPlank(R,0,0,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-0.6,0,0.6]);
    pCrates(R,1,R.top,3); pCrates(R,1,R.top+BOX,2); pCan(R,1,0,R.top+2*BOX); } },
- { name:'3つの台', balls:6, build:function(){ const L=makePlatform(-2.7,-5.5,1.7,1.6,0.9), C=makePlatform(0,-6.1,2.4,1.6,1.9), R=makePlatform(2.7,-5.5,1.7,1.6,0.9);
+ { balls:6, build:function(){ const L=makePlatform(-2.7,-5.5,1.7,1.6,0.9), C=makePlatform(0,-6.1,2.4,1.6,1.9), R=makePlatform(2.7,-5.5,1.7,1.6,0.9);
    [L,R].forEach(function(P){ pTower(P,0,0,2); pCan(P,0,0,P.top+2*BOX); pCrates(P,1,P.top,2); pCanRow(P,1,P.top+BOX,[-0.32,0.32]); });
    pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
    pPyr(C,1,3,0); pCan(C,1,0,C.top+3*BOX); } },
- { name:'ビッグツイン', balls:7, build:function(){ const L=makePlatform(-1.78,-5.8,3.0,2.3,1.2), R=makePlatform(1.78,-5.8,3.0,2.3,1.2);
+ { balls:7, build:function(){ const L=makePlatform(-1.78,-5.8,3.0,2.3,1.2), R=makePlatform(1.78,-5.8,3.0,2.3,1.2);
    [L,R].forEach(function(P){ pCrates(P,0,P.top,4); pCrates(P,0,P.top+BOX,4); pCanRow(P,0,P.top+2*BOX,[-0.96,0.96]); pBomb(P,0,0,P.top+2*BOX);
      pPyr(P,1,3,0); pBomb(P,1,0,P.top+3*BOX);
      pCrates(P,2,P.top,3); pCanRow(P,2,P.top+BOX,[-0.64,0,0.64]); }); } },
- { name:'段差の要塞', balls:8, build:function(){ const L=makePlatform(-2.75,-5.5,1.9,1.6,0.8), C=makePlatform(0,-6.1,2.6,2.3,2.3), R=makePlatform(2.75,-5.5,1.9,1.6,1.4);
+ { balls:8, build:function(){ const L=makePlatform(-2.75,-5.5,1.9,1.6,0.8), C=makePlatform(0,-6.1,2.6,2.3,2.3), R=makePlatform(2.75,-5.5,1.9,1.6,1.4);
    pCrates(L,0,L.top,2); pCrates(L,0,L.top+BOX,2); pCrates(L,0,L.top+2*BOX,2); pCanRow(L,0,L.top+3*BOX,[-0.32,0.32]);
    pCrates(L,1,L.top,2); pCrates(L,1,L.top+BOX,2); pBomb(L,1,0,L.top+2*BOX);
    pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
@@ -383,7 +596,7 @@ const STAGES=[
    pCrates(C,2,C.top,3); pCrates(C,2,C.top+BOX,3); pCanRow(C,2,C.top+2*BOX,[-0.64,0.64]); pBomb(C,2,0,C.top+2*BOX);
    pCrates(R,0,R.top,2); pCrates(R,0,R.top+BOX,2); pPlank(R,0,0,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-0.5,0.5]);
    pPyr(R,1,2,0); pBomb(R,1,0,R.top+2*BOX); pCan(R,1,0,R.top+2*BOX+BOX); } },
- { name:'最終決戦', balls:9, build:function(){ const L=makePlatform(-2.8,-5.5,2.2,1.6,1.2), C=makePlatform(0,-6.1,3.0,2.3,1.8), R=makePlatform(2.8,-5.5,2.2,1.6,1.2);
+ { balls:9, build:function(){ const L=makePlatform(-2.8,-5.5,2.2,1.6,1.2), C=makePlatform(0,-6.1,3.0,2.3,1.8), R=makePlatform(2.8,-5.5,2.2,1.6,1.2);
    [L,R].forEach(function(P){ pCrates(P,0,P.top,3); pCrates(P,0,P.top+BOX,3); pPlank(P,0,0,P.top+2*BOX); pCanRow(P,0,P.top+2*BOX+0.12,[-0.6,0.6]); pBomb(P,0,0,P.top+2*BOX+0.12);
      pPyr(P,1,2,0); pCan(P,1,0,P.top+2*BOX); pCan(P,1,0,P.top+2*BOX+CAN_H); });
    pCrates(C,0,C.top,4); pCrates(C,0,C.top+BOX,4); pPlank(C,0,0,C.top+2*BOX); pCanRow(C,0,C.top+2*BOX+0.12,[-0.75,-0.25,0.25,0.75]);
@@ -465,9 +678,29 @@ function targetsRemaining(){ return targets.filter(function(t){ return !t.gone; 
 function updateHUD(){ els.score.textContent=totalScore; els.stageLabel.textContent=(stageIndex+1)+' / '+STAGES.length; els.targetsLeft.textContent=targetsRemaining(); els.ballsLeft.textContent=ballsLeft; els.ballsStat.classList.toggle('danger', ballsLeft<=1 && state!=='clear'); }
 let lastPower=0;
 function setPowerUI(power){ lastPower=power; const pct=Math.round(Math.max(0,Math.min(1,power))*100); els.bgFill.style.height=pct+'%'; }
-function showBanner(big,sub,ms){ els.bannerBig.innerHTML=big; els.bannerSub.textContent=sub; els.banner.classList.add('show'); setTimeout(function(){ els.banner.classList.remove('show'); }, ms||2200); }
+// Banner / CTA texts are always built from the dictionary at render time,
+// from the language-independent bannerCtx / ctaCtx — never stored as baked
+// strings — so every show and every language change uses the current LANG.
+function bannerTexts(){
+  const ctx=bannerCtx||{kind:'stage',stageIndex:0,targets:15,balls:4};
+  if(ctx.kind==='allClear') return {big:'ALL CLEAR! <em>🏆</em>', sub:t('allClearSub',{score:ctx.score||0})};
+  if(ctx.kind==='clear') return {big:'STAGE CLEAR! <em>✦</em>', sub:t('clearSub',{bonus:ctx.bonus||0})};
+  if(ctx.kind==='fail') return {big:'FAILED… <em>💦</em>', sub:t('failSub',{left:ctx.left||0})};
+  const idx=ctx.stageIndex||0;
+  return {big:'STAGE '+(idx+1)+' <em>📦</em>', sub:t('bannerSub',{name:stageName(idx),targets:ctx.targets||0,balls:ctx.balls||0})+(idx>=3?t('bombNote'):'')};
+}
+function renderBanner(){ const txt=bannerTexts(); els.bannerBig.innerHTML=txt.big; els.bannerSub.textContent=txt.sub; }
+let bannerTimer=null;
+function showBanner(ctx,ms){ if(ctx) bannerCtx=ctx; renderBanner(); els.banner.classList.add('show'); if(bannerTimer) clearTimeout(bannerTimer); bannerTimer=setTimeout(function(){ els.banner.classList.remove('show'); }, ms||2200); }
 // big centered panel shown on stage clear / fail / all-clear, with the action button in the middle of the screen
-function showCta(title,sub,btnText,mode){ els.ctaTitle.textContent=title; els.ctaSub.textContent=sub; els.ctaBtn.textContent=btnText; els.ctaBtn.dataset.mode=mode; els.centerCta.classList.add('show'); }
+function ctaTexts(){
+  const ctx=ctaCtx||{mode:'next',bonus:0,score:0,left:0};
+  if(ctx.mode==='restart') return {title:t('allClearTitle'), sub:t('allClearSubCta',{score:ctx.score||0}), btn:t('allClearBtn')};
+  if(ctx.mode==='retry') return {title:t('failTitle',{left:ctx.left||0}), sub:t('failSubCta'), btn:t('failBtn')};
+  return {title:t('clearTitle'), sub:t('clearSubCta',{bonus:ctx.bonus||0,score:ctx.score||0}), btn:t('clearBtn')};
+}
+function renderCta(){ const txt=ctaTexts(); els.ctaTitle.textContent=txt.title; els.ctaSub.textContent=txt.sub; els.ctaBtn.textContent=txt.btn; els.ctaBtn.dataset.mode=(ctaCtx&&ctaCtx.mode)||'next'; }
+function showCta(ctx){ if(ctx) ctaCtx=ctx; renderCta(); els.centerCta.classList.add('show'); }
 function hideCta(){ els.centerCta.classList.remove('show'); }
 function scorePopup(worldPos,points,kind){
   const v=worldPos.clone().project(camera); if(v.z>1) return;
@@ -497,8 +730,8 @@ function startStage(idx,titleOnly){
   setPowerUI(0,0);
   updateHUD();
   if(!titleOnly){
-    showBanner('STAGE '+(stageIndex+1)+' <em>📦</em>', '「'+STAGES[stageIndex].name+'」 ターゲット '+totalTargets+'個 ・ ボール '+ballsLeft+'個で全部落とそう！'+(stageIndex>=3?' 黒いボムブロックは当てると爆発して周りを吹き飛ばす！':''), 2600);
-    els.hintText.innerHTML='まずは積み上げをよーく見て… カメラが引いたらドラッグで狙おう！';
+    showBanner({kind:'stage',stageIndex:stageIndex,targets:totalTargets,balls:ballsLeft}, 2600);
+    els.hintText.innerHTML=t('hintIntro');
   }
 }
 
@@ -583,7 +816,7 @@ function destroyBall(){
   ballMesh=null; ballBody=null;
   hideTraj();
   if(state==='flying'){ state='settling'; settleTime=0; }
-  els.hintText.innerHTML='ボールが海に落ちて沈んだ…！';
+  els.hintText.innerHTML=t('hintBallSunk');
 }
 function destroyTarget(t){
   t.gone=true; destroyedThisStage++;
@@ -636,32 +869,32 @@ function launch(){
   ballBody.velocity.set(vel.x, vel.y, vel.z);
   ballBody.angularVelocity.set(vel.z*0.2,0,-vel.x*0.3);
   state='flying'; launchTime=performance.now(); ballsLeft--; updateHUD();
-  els.hintText.innerHTML='ボールが飛んだ！ ターゲットが台から落ちるか見守ろう…';
+  els.hintText.innerHTML=t('hintLaunched');
 }
 function evaluateThrow(){
   if(targetsRemaining()===0){
     const bonus=ballsLeft*30;
     totalScore+=bonus; state='clear'; updateHUD();
     if(stageIndex>=STAGES.length-1){
-      showBanner('ALL CLEAR! <em>🏆</em>', '全ステージ制覇！ 最終スコア '+totalScore+'点', 3400);
-      showCta('🏆 全ステージクリア！', '最終スコア '+totalScore+'点 — お見事でした！', '🏆 最初から遊ぶ', 'restart');
-      els.hintText.innerHTML='全ステージクリア！お見事でした🎉';
+      showBanner({kind:'allClear',score:totalScore}, 3400);
+      showCta({mode:'restart',score:totalScore});
+      els.hintText.innerHTML=t('hintAllClear');
     } else {
-      showBanner('STAGE CLEAR! <em>✦</em>', '全部落とした！ 残りボールボーナス +'+bonus+'点', 2800);
-      showCta('🎉 ステージクリア！', '残りボールボーナス +'+bonus+'点 ・ 現在 '+totalScore+'点', '次のステージへ →', 'next');
-      els.hintText.innerHTML='ステージクリア！ 画面中央の「次のステージへ」ボタンで進もう';
+      showBanner({kind:'clear',bonus:bonus}, 2800);
+      showCta({mode:'next',bonus:bonus,score:totalScore});
+      els.hintText.innerHTML=t('hintClear');
     }
     soundClear();
   } else if(ballsLeft<=0){
     state='failed';
-    showBanner('FAILED… <em>💦</em>', 'あと '+targetsRemaining()+' 個残った。ステージをやり直そう', 2600);
+    showBanner({kind:'fail',left:targetsRemaining()}, 2600);
     soundFail();
-    showCta('💦 あと '+targetsRemaining()+' 個残った…', 'ボールが無くなりました。スコアはステージ開始時に戻ります', 'ステージをやり直す', 'retry');
-    els.hintText.innerHTML='ボールが無くなった…「ステージをやり直す」でもう一度挑戦！（スコアはステージ開始時に戻ります）';
+    showCta({mode:'retry',left:targetsRemaining()});
+    els.hintText.innerHTML=t('hintFail');
     updateHUD();
   } else {
     ballIndex++; createBall(); state='aiming';
-    els.hintText.innerHTML='残りボール '+ballsLeft+'個 — あと '+targetsRemaining()+' 個。崩れた積み方を見て狙いを変えよう！';
+    els.hintText.innerHTML=t('hintNextBall',{balls:ballsLeft,targets:targetsRemaining()});
     setPowerUI(0, angleOffset*57.3);
     updateHUD();
   }
@@ -809,7 +1042,7 @@ function animate(){
       camera.lookAt(INTRO_LOOK.clone().lerp(lookTarget(), e));
       if(k>=1){
         state='aiming'; introDone=true;
-        els.hintText.innerHTML='ステージ'+(stageIndex+1)+'「'+STAGES[stageIndex].name+'」— ボール'+ballsLeft+'個でターゲット'+totalTargets+'個を全部台から落として水に沈めよう！ ◀▶ボタンで発射位置をブロックの周りに回せるよ';
+        els.hintText.innerHTML=t('hintAim',{n:stageIndex+1,name:stageName(stageIndex),balls:ballsLeft,targets:totalTargets});
       }
     }
   } else if(camMode===0){
@@ -855,5 +1088,6 @@ function animate(){
   renderer.render(scene,camera);
 }
 startStage(0,true);
+applyLang(LANG);
 animate();
 window.addEventListener('resize',function(){ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
