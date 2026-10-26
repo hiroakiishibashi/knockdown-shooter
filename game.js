@@ -666,6 +666,21 @@ function spawnBurst(pos,color){
 let state='aiming'; // aiming, intro, flying, settling, clear, failed
 let stageIndex=0, totalScore=0, scoreAtStageStart=0, ballsLeft=3, destroyedThisStage=0, totalTargets=0, launchTime=0, settleTime=0;
 let dragStart=null, dragCurrent=null;
+// ---------- Camera return glide ----------
+// When a throw ends, the camera must NOT snap back to the play position in
+// one frame: the chase camera leaves it out over the water looking at the
+// splash, and an instant lookAt/position jump (plus the aiming branch's
+// per-frame pull fighting it) made the view thrash. Instead evaluateThrow
+// starts this glide: from the camera's current position AND its current
+// look target, eased with smoothstep over ~1s to camBasePos()/lookTarget().
+// While camReturn is active the main loop's camera section runs ONLY this
+// glide — chase tracking and the launcher-follow smoothing stay out of the
+// way — and on completion the tracked look state is snapped to the exact
+// final values so no residual sway is left behind.
+let camReturn=null;
+let camLookNow=lookTarget(); // the look target the camera is actually using right now
+const CAM_RETURN_DUR=1.0;
+function startCamReturn(){ camReturn={t:0, fromPos:camera.position.clone(), fromLook:camLookNow.clone()}; }
 const ANGLE_MAX=Math.PI/2; // launcher orbits ±90° around the platforms — all the way to the target's side
 // stage intro: hold a fixed close-up of the stack ~1s, then pull back to the play camera
 let introT=0, introDone=false;
@@ -727,7 +742,7 @@ function startStage(idx,titleOnly){
   if(stagePlatforms.length){ let sx=0,sz=0; stagePlatforms.forEach(function(P){ sx+=P.cx; sz+=P.z; }); stageCenter.set(sx/stagePlatforms.length,0,sz/stagePlatforms.length); ORBIT_R=7.0-stageCenter.z; }
   totalTargets=targets.length; destroyedThisStage=0;
   ballsLeft=STAGES[stageIndex].balls; ballIndex=stageIndex; angleOffset=0;
-  createBall(); placeLauncher(); state=titleOnly?'title':'intro'; introT=0; introDone=false;
+  createBall(); placeLauncher(); camReturn=null; state=titleOnly?'title':'intro'; introT=0; introDone=false;
   let maxTop=1, halfSpan=1.2;
   stagePlatforms.forEach(function(P){ maxTop=Math.max(maxTop,P.top); halfSpan=Math.max(halfSpan, Math.abs(P.cx)+P.w/2); });
   INTRO_POS.set(Math.max(1.6, Math.min(3.2, halfSpan*0.85)), 1.55+maxTop*0.55, -2.7+halfSpan*0.32);
@@ -869,6 +884,7 @@ function launch(){
   hideTraj(); els.bgGauge.classList.remove('dragging');
   if(power<0.08){ const L=launcherPos(); ballMesh.position.copy(L); ballBody.position.set(L.x,L.y,L.z); setPowerUI(0, angleOffset*57.3); return; }
   soundLaunch();
+  camReturn=null; // a fresh throw takes the camera over — cancel any return glide still running
   chaseDir.set(vel.x,0,vel.z);
   if(chaseDir.lengthSq()<0.001) chaseDir.set(0,0,-1);
   chaseDir.normalize();
@@ -879,6 +895,11 @@ function launch(){
   els.hintText.innerHTML=t('hintLaunched');
 }
 function evaluateThrow(){
+  // common end-of-throw path (ball sunk, ball stopped on the raft, out of
+  // bounds…): start the smooth glide home before anything else moves the
+  // camera — the new ball is already set by the branches below while the
+  // camera is still travelling
+  startCamReturn();
   if(targetsRemaining()===0){
     const bonus=ballsLeft*30;
     totalScore+=bonus; state='clear'; updateHUD();
@@ -958,7 +979,7 @@ function bindAngleBtn(id,dir){
 }
 bindAngleBtn('angleLeft',-1);
 bindAngleBtn('angleRight',1);
-function cycleCamera(){ camMode=(camMode+1)%3; setCamBase(); }
+function cycleCamera(){ camReturn=null; camMode=(camMode+1)%3; setCamBase(); }
 document.getElementById('cameraBtn').onclick=cycleCamera;
 document.getElementById('resetBallBtn').onclick=function(){ if(state==='aiming'){ const L=launcherPos(); ballMesh.position.copy(L); ballBody.position.set(L.x,L.y,L.z); hideTraj(); setPowerUI(0, angleOffset*57.3); } else if(state==='flying'){ state='settling'; settleTime=99; } };
 document.getElementById('retryBtn').onclick=function(){ if(state==='aiming'||state==='failed'||state==='clear') retryStage(); };
@@ -1037,21 +1058,36 @@ function animate(){
     // title screen: slow scenic orbit around the stage behind the logo
     const tt=clock.elapsedTime*0.09;
     camera.position.set(stageCenter.x+Math.sin(tt)*10.5, 4.3, stageCenter.z+Math.cos(tt)*10.5);
-    camera.lookAt(stageCenter.x, 1.5, stageCenter.z);
+    camLookNow.set(stageCenter.x, 1.5, stageCenter.z);
+    camera.lookAt(camLookNow);
   } else if(state==='intro'){
     // hold the close-up fixed for ~1s, then ease back to the play camera; input unlocks at 'aiming'
     introT+=dt;
     if(introT<=INTRO_HOLD){
-      camera.position.copy(INTRO_POS); camera.lookAt(INTRO_LOOK);
+      camera.position.copy(INTRO_POS); camera.lookAt(INTRO_LOOK); camLookNow.copy(INTRO_LOOK);
     } else {
       const k=Math.min(1,(introT-INTRO_HOLD)/INTRO_PULL); const e=k*k*(3-2*k);
       camera.position.lerpVectors(INTRO_POS, camBasePos(), e);
-      camera.lookAt(INTRO_LOOK.clone().lerp(lookTarget(), e));
+      camLookNow.lerpVectors(INTRO_LOOK, lookTarget(), e);
+      camera.lookAt(camLookNow);
       if(k>=1){
         state='aiming'; introDone=true;
         els.hintText.innerHTML=t('hintAim',{n:stageIndex+1,name:stageName(stageIndex),balls:ballsLeft,targets:totalTargets});
       }
     }
+  } else if(camReturn){
+    // return glide after a throw: ease position AND look target from where
+    // the chase left them to the play camera over ~1s. Nothing else in this
+    // section runs while the glide is active, so no other camera code can
+    // fight it; at the end the position and the tracked look target are set
+    // to the exact final values, leaving the aiming view perfectly settled
+    camReturn.t+=dt;
+    const k=Math.min(1, camReturn.t/CAM_RETURN_DUR); const e=k*k*(3-2*k);
+    const basePos=camBasePos(), baseLook=lookTarget();
+    camera.position.lerpVectors(camReturn.fromPos, basePos, e);
+    camLookNow.lerpVectors(camReturn.fromLook, baseLook, e);
+    camera.lookAt(camLookNow);
+    if(k>=1){ camReturn=null; camera.position.copy(basePos); camLookNow.copy(baseLook); camera.lookAt(camLookNow); }
   } else if(camMode===0){
     // play camera: rides behind the orbiting launcher while aiming; once the
     // ball is launched it flies after the ball, trailing behind and above it
@@ -1062,10 +1098,18 @@ function animate(){
       const desired=new THREE.Vector3(bp.x-chaseDir.x*5.4, Math.max(1.5,bp.y+2.1), bp.z-chaseDir.z*5.4);
       camera.position.lerp(desired,0.11);
       const lv=ballBody?ballBody.velocity:null;
-      camera.lookAt(bp.x+(lv?lv.x*0.06:0), Math.max(0.4,bp.y-0.1), bp.z+(lv?lv.z*0.06:0));
+      camLookNow.set(bp.x+(lv?lv.x*0.06:0), Math.max(0.4,bp.y-0.1), bp.z+(lv?lv.z*0.06:0));
+      camera.lookAt(camLookNow);
     }
-    else { camera.position.add(orbitDelta); camera.position.lerp(camBasePos(),0.03); camera.lookAt(lookTarget()); }
-  } else if(camMode===2 && state==='flying' && ballMesh){ camera.position.lerp(new THREE.Vector3(ballMesh.position.x,7.5,ballMesh.position.z+7),0.06); camera.lookAt(ballMesh.position); }
+    else if(state==='settling'){
+      // the throw is over but the result is still being watched (splash,
+      // collapsing stack…): hold the camera exactly where the chase left it
+      // and keep looking at that spot — the smooth return home only starts
+      // when evaluateThrow runs, so nothing drags or snaps the view here
+      camera.lookAt(camLookNow);
+    }
+    else { camera.position.add(orbitDelta); camera.position.lerp(camBasePos(),0.03); camLookNow.copy(lookTarget()); camera.lookAt(camLookNow); }
+  } else if(camMode===2 && state==='flying' && ballMesh){ camera.position.lerp(new THREE.Vector3(ballMesh.position.x,7.5,ballMesh.position.z+7),0.06); camLookNow.copy(ballMesh.position); camera.lookAt(camLookNow); }
 
   if(state==='flying'){
     const elapsed=performance.now()-launchTime;
