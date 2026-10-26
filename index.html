@@ -26,6 +26,23 @@
   .midbar{display:flex;flex-direction:row;align-items:stretch;gap:5px}
   .controls{display:flex;flex-direction:row;flex-wrap:wrap;gap:5px;pointer-events:auto;flex:none;align-content:flex-start}
   .controls .btn{padding:6px 10px;font-size:11.5px;text-align:center}
+  .menuWrap{position:relative;flex:none}
+  #menuBtn{font-size:16px;line-height:1.15;padding:5px 14px}
+  .menuPanel{position:absolute;top:calc(100% + 7px);right:0;min-width:196px;background:var(--panel);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(12px);padding:6px;display:none;flex-direction:column;gap:2px;box-shadow:0 12px 32px rgba(0,10,25,.45);z-index:30}
+  .menuPanel.open{display:flex}
+  .menuItem{appearance:none;border:none;background:transparent;color:#fff;text-align:left;padding:11px 13px;font-size:13.5px;font-weight:700;border-radius:9px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .menuItem:hover{background:rgba(255,255,255,.13)}
+  .menuItem:active{background:var(--accent);color:#1a1200}
+  @media(max-width:640px){.menuWrap{flex:1}#menuBtn{width:100%}}
+  #titleScreen{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 42%,rgba(6,26,48,.08) 0%,rgba(6,26,48,.55) 80%);transition:opacity .45s ease,visibility .45s}
+  #titleScreen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .titleInner{padding:20px;max-width:min(92vw,580px)}
+  .titleLogo{font-size:clamp(38px,9vw,74px);font-weight:900;line-height:1.14;letter-spacing:.02em;color:#fff;text-shadow:0 4px 26px rgba(0,20,40,.65),0 2px 6px rgba(6,26,48,.7)}
+  .titleLogo .t3{color:var(--accent)}
+  .titleHow{margin-top:20px;font-size:clamp(13px,3vw,15.5px);font-weight:700;color:#fff;line-height:1.75;text-shadow:0 2px 10px rgba(6,26,48,.85),0 0 3px rgba(6,26,48,.6)}
+  #startBtn{margin-top:28px;font-size:clamp(17px,4vw,20px);padding:15px 42px;box-shadow:0 10px 30px rgba(255,176,32,.4);animation:ctaPulse 1.6s ease-in-out infinite}
+  @media (prefers-reduced-motion: reduce){#startBtn{animation:none}}
+  body.title-on .hud,body.title-on #anglePad{display:none}
   .keyhint{display:none}
   .btn{appearance:none;border:1px solid var(--line);background:rgba(13,32,52,.55);color:#fff;padding:7px 11px;border-radius:999px;font-weight:700;font-size:12px;cursor:pointer;backdrop-filter:blur(8px)}
   .btn.primary{background:var(--accent);color:#1a1200;border-color:transparent}
@@ -70,7 +87,7 @@
   @media(min-width:900px){.keyhint{display:block}}
 </style>
 </head>
-<body>
+<body class="title-on">
 <div id="app"></div>
 <div id="popups"></div>
 <div id="confetti"></div>
@@ -89,9 +106,14 @@
     <div class="midbar">
       <div class="hint"><span class="dot"></span><span id="hintText">画面を<strong>下にドラッグ</strong>して引っ張り、離すと発射！ ◀▶ボタンで発射位置がブロックの周りを回るよ。台の上の積み上げを全部落として水に沈めよう</span></div>
       <div class="controls">
-        <button class="btn" id="resetBallBtn">ボールを戻す</button>
-        <button class="btn" id="retryBtn">ステージをやり直す</button>
-        <button class="btn" id="cameraBtn">カメラ切替</button>
+        <div class="menuWrap">
+          <button class="btn" id="menuBtn" aria-label="メニューを開く" aria-haspopup="true">☰</button>
+          <div class="menuPanel" id="menuPanel" role="menu">
+            <button class="menuItem" id="resetBallBtn">ボールを戻す</button>
+            <button class="menuItem" id="retryBtn">ステージをやり直す</button>
+            <button class="menuItem" id="cameraBtn">カメラ切替</button>
+          </div>
+        </div>
         <span class="keyhint" style="font-size:10.5px;color:#fff;align-self:center;white-space:nowrap;text-shadow:0 1px 4px rgba(6,26,48,.7)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
       </div>
     </div>
@@ -108,6 +130,14 @@
   <div id="ctaTitle">ステージクリア！</div>
   <div id="ctaSub"></div>
   <button class="btn primary" id="ctaBtn">次のステージへ →</button>
+</div>
+
+<div id="titleScreen">
+  <div class="titleInner">
+    <div class="titleLogo"><span class="t3">3D</span>ノックダウン<br>シューター</div>
+    <div class="titleHow">画面を下にドラッグして引っ張り、離すと発射！<br>台の上の積み上げを全部落として、水に沈めよう</div>
+    <button class="btn primary" id="startBtn">ゲームスタート</button>
+  </div>
 </div>
 
 <div id="anglePad">

@@ -1,3 +1,4 @@
+
 // ---------- Audio (tiny synth) ----------
 let audioCtx=null;
 function beep(freq,dur,type,vol){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type=type||'sine'; o.frequency.value=freq; g.gain.setValueAtTime(vol||0.12,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur);}catch(e){} }
@@ -476,7 +477,7 @@ function scorePopup(worldPos,points,kind){
   els.popups.appendChild(el); setTimeout(function(){ el.remove(); },950);
 }
 
-function startStage(idx){
+function startStage(idx,titleOnly){
   stageIndex=idx;
   scoreAtStageStart=totalScore;
   clearTargets(); clearPlatforms(); bursts.forEach(function(b){ scene.remove(b.mesh); }); bursts=[]; explosions.forEach(function(x){ scene.remove(x.mesh); }); explosions=[]; clearSplashFx();
@@ -486,7 +487,7 @@ function startStage(idx){
   if(stagePlatforms.length){ let sx=0,sz=0; stagePlatforms.forEach(function(P){ sx+=P.cx; sz+=P.z; }); stageCenter.set(sx/stagePlatforms.length,0,sz/stagePlatforms.length); ORBIT_R=7.0-stageCenter.z; }
   totalTargets=targets.length; destroyedThisStage=0;
   ballsLeft=STAGES[stageIndex].balls; ballIndex=stageIndex; angleOffset=0;
-  createBall(); placeLauncher(); state='intro'; introT=0; introDone=false;
+  createBall(); placeLauncher(); state=titleOnly?'title':'intro'; introT=0; introDone=false;
   let maxTop=1, halfSpan=1.2;
   stagePlatforms.forEach(function(P){ maxTop=Math.max(maxTop,P.top); halfSpan=Math.max(halfSpan, Math.abs(P.cx)+P.w/2); });
   INTRO_POS.set(Math.max(1.6, Math.min(3.2, halfSpan*0.85)), 1.55+maxTop*0.55, -2.7+halfSpan*0.32);
@@ -495,8 +496,10 @@ function startStage(idx){
   hideCta();
   setPowerUI(0,0);
   updateHUD();
-  showBanner('STAGE '+(stageIndex+1)+' <em>📦</em>', '「'+STAGES[stageIndex].name+'」 ターゲット '+totalTargets+'個 ・ ボール '+ballsLeft+'個で全部落とそう！'+(stageIndex>=3?' 黒いボムブロックは当てると爆発して周りを吹き飛ばす！':''), 2600);
-  els.hintText.innerHTML='まずは積み上げをよーく見て… カメラが引いたらドラッグで狙おう！';
+  if(!titleOnly){
+    showBanner('STAGE '+(stageIndex+1)+' <em>📦</em>', '「'+STAGES[stageIndex].name+'」 ターゲット '+totalTargets+'個 ・ ボール '+ballsLeft+'個で全部落とそう！'+(stageIndex>=3?' 黒いボムブロックは当てると爆発して周りを吹き飛ばす！':''), 2600);
+    els.hintText.innerHTML='まずは積み上げをよーく見て… カメラが引いたらドラッグで狙おう！';
+  }
 }
 
 // ---------- Confetti (all targets down!) ----------
@@ -721,6 +724,24 @@ document.getElementById('resetBallBtn').onclick=function(){ if(state==='aiming')
 document.getElementById('retryBtn').onclick=function(){ if(state==='aiming'||state==='failed'||state==='clear') retryStage(); };
 els.ctaBtn.onclick=function(){ const m=els.ctaBtn.dataset.mode; if(m==='next') startStage(stageIndex+1); else if(m==='retry') retryStage(); else if(m==='restart'){ totalScore=0; startStage(0); } };
 
+// ---------- Title screen & hamburger menu ----------
+// The game boots into the 'title' state: stage 1 is built behind the title
+// overlay and the camera slowly orbits it. 「ゲームスタート」starts stage 1
+// for real (intro close-up + banner).
+const titleScreenEl=document.getElementById('titleScreen');
+document.getElementById('startBtn').onclick=function(){
+  document.body.classList.remove('title-on');
+  titleScreenEl.classList.add('hidden');
+  soundPop();
+  startStage(0);
+};
+// The three former top buttons (ボールを戻す／ステージをやり直す／カメラ切替)
+// keep their ids and handlers above; they now live in the ☰ dropdown.
+const menuBtn=document.getElementById('menuBtn'), menuPanel=document.getElementById('menuPanel');
+menuBtn.addEventListener('click',function(e){ e.stopPropagation(); menuPanel.classList.toggle('open'); });
+document.addEventListener('click',function(e){ if(menuPanel.classList.contains('open') && !menuPanel.contains(e.target)) menuPanel.classList.remove('open'); });
+['resetBallBtn','retryBtn','cameraBtn'].forEach(function(id){ document.getElementById(id).addEventListener('click',function(){ menuPanel.classList.remove('open'); }); });
+
 // ---------- Loop ----------
 const clock=new THREE.Clock();
 function animate(){
@@ -772,7 +793,12 @@ function animate(){
   const orbitDelta=curLauncherPos.clone().sub(prevLauncherPos);
   prevLauncherPos.copy(curLauncherPos);
 
-  if(state==='intro'){
+  if(state==='title'){
+    // title screen: slow scenic orbit around the stage behind the logo
+    const tt=clock.elapsedTime*0.09;
+    camera.position.set(stageCenter.x+Math.sin(tt)*10.5, 4.3, stageCenter.z+Math.cos(tt)*10.5);
+    camera.lookAt(stageCenter.x, 1.5, stageCenter.z);
+  } else if(state==='intro'){
     // hold the close-up fixed for ~1s, then ease back to the play camera; input unlocks at 'aiming'
     introT+=dt;
     if(introT<=INTRO_HOLD){
@@ -825,6 +851,6 @@ function animate(){
   els.anglePad.classList.toggle('off', state!=='aiming'&&state!=='intro');
   renderer.render(scene,camera);
 }
-startStage(0);
+startStage(0,true);
 animate();
 window.addEventListener('resize',function(){ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
