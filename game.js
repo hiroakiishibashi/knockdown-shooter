@@ -671,7 +671,14 @@ const ANGLE_MAX=Math.PI/2; // launcher orbits ±90° around the platforms — al
 let introT=0, introDone=false;
 const INTRO_HOLD=1.0, INTRO_PULL=1.25;
 const INTRO_POS=new THREE.Vector3(1.6,2.1,-2.9), INTRO_LOOK=new THREE.Vector3(0,1.85,-5.8);
-function camBasePos(){ if(camMode===0){ const L=launcherPos(), O=outwardDir(); return new THREE.Vector3(L.x+O.x*5.2, 4.2, L.z+O.z*5.2); } if(camMode===1) return new THREE.Vector3(7.4,3.2,-1); return new THREE.Vector3(0,9.5,3.4); }
+// Portrait framing (aspect < 1): a tall phone screen crops the sides of the
+// landscape framing, which pushed the launcher, ball, power gauge and the
+// ◀▶ buttons off the bottom edge. In portrait the play camera pulls back
+// and up (and applyViewport widens the FOV) so the whole launcher area fits
+// with margin. camBasePos carries the same correction, so the intro
+// pull-back lands on the corrected position too.
+function portraitPull(){ const a=innerWidth/Math.max(1,innerHeight); return a<1 ? (1-a) : 0; }
+function camBasePos(){ const pf=portraitPull(); if(camMode===0){ const L=launcherPos(), O=outwardDir(); const d=5.2*(1+1.2*pf); return new THREE.Vector3(L.x+O.x*d, 4.2+2.8*pf, L.z+O.z*d); } if(camMode===1) return new THREE.Vector3(7.4*(1+0.55*pf),3.2+1.8*pf,-1); return new THREE.Vector3(0,9.5+3.2*pf,3.4); }
 
 const els={score:document.getElementById('score'),stageLabel:document.getElementById('stageLabel'),targetsLeft:document.getElementById('targetsLeft'),ballsLeft:document.getElementById('ballsLeft'),ballsStat:document.getElementById('ballsStat'),bgGauge:document.getElementById('ballGauge'),bgFill:document.getElementById('bgFill'),banner:document.getElementById('banner'),bannerBig:document.getElementById('bannerBig'),bannerSub:document.getElementById('bannerSub'),centerCta:document.getElementById('centerCta'),ctaTitle:document.getElementById('ctaTitle'),ctaSub:document.getElementById('ctaSub'),ctaBtn:document.getElementById('ctaBtn'),anglePad:document.getElementById('anglePad'),hintText:document.getElementById('hintText'),hintBar:document.querySelector('.hint'),popups:document.getElementById('popups')};
 function targetsRemaining(){ return targets.filter(function(t){ return !t.gone; }).length; }
@@ -1089,5 +1096,23 @@ function animate(){
 }
 startStage(0,true);
 applyLang(LANG);
+// Portal screenshot support (game-screenshot-spec.md v2.x): only when the
+// game runs inside the portal's iframe, offer captures through the official
+// SDK. Loaded dynamically at boot (title screen) — a failed import must
+// never stop the game, and nothing here waits on requestAnimationFrame.
+if (window.parent !== window) { import('/sdk/html/hi-game-shot.js').then(({HiShot}) => HiShot.provide(() => HiShot.captureViewport({ redraw: () => renderer.render(scene, camera) }))).catch(() => {}); }
 animate();
-window.addEventListener('resize',function(){ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+// Viewport sizing: follows window resizes, orientation changes and
+// visualViewport changes (mobile browser toolbars showing/hiding in
+// fullscreen), and widens the FOV in portrait so the launcher stays framed.
+function applyViewport(){
+  const w=innerWidth, h=Math.max(1,innerHeight);
+  camera.aspect=w/h;
+  camera.fov=58 + (camera.aspect<1 ? 26*(1-camera.aspect) : 0);
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+}
+window.addEventListener('resize',applyViewport);
+window.addEventListener('orientationchange',function(){ setTimeout(applyViewport,80); });
+if(window.visualViewport){ window.visualViewport.addEventListener('resize',applyViewport); }
+applyViewport();

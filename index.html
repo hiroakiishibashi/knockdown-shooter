@@ -6,6 +6,22 @@
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="data:,">
 <title>3Dノックダウンシューター</title>
+<script>
+/* Portal screenshot spec (game-screenshot-spec.md v2.x): force
+   preserveDrawingBuffer on every WebGL context so the canvas can be
+   captured on mobile too. Must run before three.js creates its context,
+   so this stays the first script in <head>. */
+(function(){
+  if(!window.HTMLCanvasElement) return;
+  var orig=HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext=function(type,attrs){
+    if(type==='webgl'||type==='webgl2'||type==='experimental-webgl'){
+      attrs=Object.assign({},attrs||{},{preserveDrawingBuffer:true});
+    }
+    return orig.call(this,type,attrs);
+  };
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
 <script src="hi-game-lang.js"></script>
@@ -19,9 +35,9 @@
   .topui{display:flex;flex-direction:column;gap:5px}
   .topbar{display:flex;gap:5px;align-items:stretch;padding-right:50px}
   .stats{display:flex;gap:5px;flex:1}
-  .stat{flex:1;padding:2px 4px;text-align:center}
-  .stat b{display:block;font-size:15px;line-height:1.05;color:#fff;text-shadow:0 1px 5px rgba(6,26,48,.65),0 0 2px rgba(6,26,48,.5)}
-  .stat span{font-size:9.5px;color:#eaf4ff;letter-spacing:.05em;text-shadow:0 1px 4px rgba(6,26,48,.65)}
+  .stat{flex:1;min-width:0;padding:2px 4px;text-align:center}
+  .stat b{display:block;font-size:15px;line-height:1.05;color:#123c63;text-shadow:0 0 7px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95),0 0 2px rgba(255,255,255,.9)}
+  .stat span{display:block;font-size:9.5px;color:#1b4f7d;letter-spacing:.05em;white-space:nowrap;text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95)}
   .stat.highlight b{color:var(--accent)}
   .stat.danger b{color:var(--accent2)}
   .midbar{display:flex;flex-direction:row;align-items:stretch;gap:5px}
@@ -39,7 +55,7 @@
   .titleInner{padding:20px;max-width:min(92vw,580px)}
   .titleLogo{font-size:clamp(38px,9vw,74px);font-weight:900;line-height:1.14;letter-spacing:.02em;color:#fff;text-shadow:0 4px 26px rgba(0,20,40,.65),0 2px 6px rgba(6,26,48,.7)}
   .titleLogo .t3{color:var(--accent)}
-  .titleHow{margin-top:20px;font-size:clamp(13px,3vw,15.5px);font-weight:700;color:#fff;line-height:1.75;text-shadow:0 2px 10px rgba(6,26,48,.85),0 0 3px rgba(6,26,48,.6)}
+  .titleHow{margin-top:20px;font-size:clamp(13px,3vw,15.5px);font-weight:700;color:#fff;line-height:1.75;text-shadow:0 2px 12px rgba(3,20,40,.95),0 1px 4px rgba(3,20,40,.95),0 0 4px rgba(3,20,40,.85)}
   #startBtn{margin-top:28px;font-size:clamp(17px,4vw,20px);padding:15px 42px;box-shadow:0 10px 30px rgba(255,176,32,.4);animation:ctaPulse 1.6s ease-in-out infinite}
   @media (prefers-reduced-motion: reduce){#startBtn{animation:none}}
   body.title-on .hud,body.title-on #anglePad{display:none}
@@ -58,9 +74,9 @@
   .bg-ticks{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 11px,rgba(10,20,35,.35) 11px 12px)}
   #banner{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(.9);text-align:center;pointer-events:none;opacity:0;transition:.25s;z-index:5}
   #banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  #banner .big{font-size:clamp(30px,6.5vw,58px);font-weight:900;letter-spacing:.04em;line-height:.95;text-shadow:0 6px 30px rgba(0,0,0,.6);color:#fff}
+  #banner .big{font-size:clamp(30px,6.5vw,58px);font-weight:900;letter-spacing:.04em;line-height:.95;text-shadow:0 5px 22px rgba(3,20,40,.9),0 2px 7px rgba(3,20,40,.95),0 0 3px rgba(3,20,40,.85);color:#fff}
   #banner .big em{font-style:normal;color:var(--accent)}
-  #banner .sub{margin-top:6px;font-weight:700;color:#fff;display:inline-block;font-size:13px;text-shadow:0 2px 10px rgba(0,0,0,.65),0 0 3px rgba(6,26,48,.6)}
+  #banner .sub{margin-top:6px;font-weight:700;color:#fff;display:inline-block;font-size:13px;text-shadow:0 2px 10px rgba(3,20,40,.9),0 1px 4px rgba(3,20,40,.95),0 0 3px rgba(3,20,40,.8)}
   #centerCta{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(80vw,350px);text-align:center;padding:10px 16px;display:none;z-index:7}
   #centerCta.show{display:block;pointer-events:auto;animation:ctaIn .25s ease}
   @keyframes ctaIn{from{opacity:0;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
@@ -72,10 +88,10 @@
   @media (prefers-reduced-motion: reduce){#ctaBtn{animation:none}}
   #anglePad{position:absolute;inset:0;pointer-events:none;z-index:8;transition:opacity .2s}
   #anglePad.off{opacity:.35}
-  .angleBtn{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center}
+  .angleBtn{position:absolute;bottom:max(18px,calc(env(safe-area-inset-bottom) + 10px));width:60px;height:60px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center}
   .angleBtn:active{background:var(--accent);color:#1a1200}
-  #angleLeft{left:14px}
-  #angleRight{right:14px}
+  #angleLeft{left:max(14px,env(safe-area-inset-left))}
+  #angleRight{right:max(14px,env(safe-area-inset-right))}
   #popups{position:absolute;inset:0;pointer-events:none;overflow:hidden}
   .pop{position:absolute;font-weight:900;font-size:17px;color:var(--accent);text-shadow:0 2px 10px rgba(0,0,0,.7);transform:translate(-50%,-50%);animation:popfly .9s ease-out forwards}
   .pop.can{color:#7ef0b0}
@@ -85,6 +101,7 @@
   @media (prefers-reduced-motion: reduce){#confetti{display:none}}
   @keyframes popfly{0%{opacity:0;margin-top:6px}15%{opacity:1}100%{opacity:0;margin-top:-46px}}
   @media(max-width:640px){.stat b{font-size:13px}.stat span{font-size:9px}.hud{padding:6px;padding-top:max(6px,env(safe-area-inset-top))}.hint{font-size:11px;padding:5px 8px}.midbar{flex-direction:column;align-items:stretch}.controls .btn{flex:1}.topui{gap:4px}.stats{gap:4px}.midbar{gap:4px}}
+  @media(max-width:480px){.stat b{font-size:12px}.stat span{font-size:8px;letter-spacing:.02em}}
   @media(min-width:900px){.keyhint{display:block}}
 </style>
 </head>
@@ -107,7 +124,7 @@
     <div class="midbar">
       <div class="hint"><span class="dot"></span><span id="hintText">画面を<strong>下にドラッグ</strong>して引っ張り、離すと発射！ ◀▶ボタンで発射位置がブロックの周りを回るよ。台の上の積み上げを全部落として水に沈めよう</span></div>
       <div class="controls">
-        <span class="keyhint" id="keyhint" style="font-size:10.5px;color:#fff;align-self:center;white-space:nowrap;text-shadow:0 1px 4px rgba(6,26,48,.7)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
+        <span class="keyhint" id="keyhint" style="font-size:10.5px;color:#123c63;align-self:center;white-space:nowrap;text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
       </div>
     </div>
   </div>
