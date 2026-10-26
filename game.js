@@ -30,7 +30,7 @@ en:{
   failSub:'{left} left standing. Try the stage again',
   failTitle:'💦 {left} left standing…', failSubCta:'Out of balls. Your score resets to the start of this stage', failBtn:'Retry stage',
   hintFail:'Out of balls… Tap "Retry stage" to try again! (score resets to the stage start)',
-  stageNames:['Stacking Basics','Twin Rafts','Three Rafts','Big Twins','Stepped Fortress','Triple Fortress','Twin Peaks','Turntable Raft','Twin Castles','Final Showdown']
+  stageNames:['Stacking Basics','Twin Rafts','Three Rafts','Big Twins','Stepped Fortress','Triple Fortress','Twin Peaks','Turntable Raft','Twin Castles','Final Showdown','Quad Rafts','Sliding Raft','Layered Fortress','Twin Canyon','Bobbing Raft','Five-Story Towers','Grand Armada','Turbo Turntable','Staircase Castle','Castle City','Spinning Towers','Double Canyon','Pyramid Rush','Double Movers','Sky Castle','Great Range','Reverse Turntable','Fortress Isles','The Last Fortress','True Final Showdown']
 },
 ja:{
   score:'スコア', stage:'ステージ', targetsLeft:'残りターゲット', ballsLeft:'残りボール',
@@ -57,7 +57,7 @@ ja:{
   failSub:'あと {left} 個残った。ステージをやり直そう',
   failTitle:'💦 あと {left} 個残った…', failSubCta:'ボールが無くなりました。スコアはステージ開始時に戻ります', failBtn:'ステージをやり直す',
   hintFail:'ボールが無くなった…「ステージをやり直す」でもう一度挑戦！（スコアはステージ開始時に戻ります）',
-  stageNames:['積み上げ入門','ツインラフト','3つの台','ビッグツイン','段差の要塞','3つの要塞','ツインピークス','回転ラフト','双子の城','最終決戦']
+  stageNames:['積み上げ入門','ツインラフト','3つの台','ビッグツイン','段差の要塞','3つの要塞','ツインピークス','回転ラフト','双子の城','最終決戦','4つの台','スライドラフト','重ね要塞','ツインキャニオン','ゆらゆらラフト','五重の塔','大艦隊','高速ターンテーブル','階段の城','城壁都市','回転タワー','ダブルキャニオン','ピラミッドラッシュ','ダブルムーバー','天空の城','大連山脈','逆回転ラフト','要塞群島','最後の要塞','真・最終決戦']
 },
 ko:{
   score:'점수', stage:'스테이지', targetsLeft:'남은 타겟', ballsLeft:'남은 볼',
@@ -84,7 +84,7 @@ ko:{
   failSub:'아직 {left}개 남았다. 스테이지를 다시 해보자',
   failTitle:'💦 아직 {left}개 남았다…', failSubCta:'볼이 다 떨어졌습니다. 점수는 스테이지 시작 시점으로 돌아갑니다', failBtn:'스테이지 다시 하기',
   hintFail:'볼이 다 떨어졌다… "스테이지 다시 하기"로 다시 도전! (점수는 스테이지 시작 시점으로 돌아갑니다)',
-  stageNames:['쌓기 입문','트윈 래프트','뗏목 3개','빅 트윈','단차 요새','트리플 요새','트윈 피크스','회전 뗏목','쌍둥이 성','최종 결전']
+  stageNames:['쌓기 입문','트윈 래프트','뗏목 3개','빅 트윈','단차 요새','트리플 요새','트윈 피크스','회전 뗏목','쌍둥이 성','최종 결전','뗏목 4개','슬라이드 뗏목','겹겹 요새','트윈 캐니언','흔들흔들 뗏목','5층 탑','대함대','고속 회전판','계단 성','성벽 도시','회전 타워','더블 캐니언','피라미드 러시','더블 무버','하늘의 성','대산맥','역회전 뗏목','요새 군도','최후의 요새','진·최종 결전']
 },
 es:{
   score:'PUNTOS', stage:'NIVEL', targetsLeft:'OBJETIVOS', ballsLeft:'BOLAS',
@@ -111,7 +111,7 @@ es:{
   failSub:'Quedaron {left} en pie. Intenta el nivel de nuevo',
   failTitle:'💦 Quedaron {left} en pie…', failSubCta:'Te quedaste sin bolas. La puntuación vuelve al inicio del nivel', failBtn:'Reintentar nivel',
   hintFail:'Sin bolas… Pulsa «Reintentar nivel» para intentarlo otra vez (la puntuación vuelve al inicio del nivel)',
-  stageNames:['Primeras pilas','Balsas gemelas','Tres balsas','Gemelas gigantes','Fortaleza escalonada','Fortaleza triple','Picos gemelos','Balsa giratoria','Castillos gemelos','Batalla final']
+  stageNames:['Primeras pilas','Balsas gemelas','Tres balsas','Gemelas gigantes','Fortaleza escalonada','Fortaleza triple','Picos gemelos','Balsa giratoria','Castillos gemelos','Batalla final','Cuatro balsas','Balsa deslizante','Fortaleza en capas','Cañón gemelo','Balsa oscilante','Torres de cinco pisos','Gran armada','Plataforma turbo','Castillo escalera','Ciudad castillo','Torres giratorias','Cañón doble','Pirámides a montones','Doble movimiento','Castillo celestial','Gran cordillera','Plataforma inversa','Islas fortaleza','La última fortaleza','Batalla final verdadera']
 },
 pt:{
   score:'PONTOS', stage:'FASE', targetsLeft:'ALVOS RESTANTES', ballsLeft:'BOLAS RESTANTES',
@@ -138,7 +138,7 @@ pt:{
   failSub:'Faltaram {left}. Tente a fase de novo',
   failTitle:'💦 Faltaram {left}…', failSubCta:'As bolas acabaram. A pontuação volta ao início da fase', failBtn:'Tentar de novo',
   hintFail:'As bolas acabaram… Toque em "Tentar de novo" para mais uma chance! (a pontuação volta ao início da fase)',
-  stageNames:['Empilhando: o básico','Jangadas gêmeas','Três jangadas','Gêmeas gigantes','Fortaleza em degraus','Fortaleza tripla','Picos gêmeos','Jangada giratória','Castelos gêmeos','Batalha final']
+  stageNames:['Empilhando: o básico','Jangadas gêmeas','Três jangadas','Gêmeas gigantes','Fortaleza em degraus','Fortaleza tripla','Picos gêmeos','Jangada giratória','Castelos gêmeos','Batalha final','Quatro jangadas','Jangada deslizante','Fortaleza em camadas','Cânion gêmeo','Jangada oscilante','Torres de cinco andares','Grande armada','Plataforma turbo','Castelo escada','Cidade castelo','Torres giratórias','Cânion duplo','Pirâmides em série','Movimento duplo','Castelo do céu','Grande cordilheira','Plataforma reversa','Ilhas fortaleza','A última fortaleza','Batalha final verdadeira']
 },
 zh:{
   score:'分数', stage:'关卡', targetsLeft:'剩余目标', ballsLeft:'剩余球',
@@ -165,7 +165,7 @@ zh:{
   failSub:'还剩 {left} 个没打落。重新挑战这一关吧',
   failTitle:'💦 还剩 {left} 个…', failSubCta:'球用完了。分数将恢复到本关开始时', failBtn:'重新开始关卡',
   hintFail:'球用完了…点「重新开始关卡」再挑战一次！（分数恢复到本关开始时）',
-  stageNames:['堆积入门','双子木筏','三座平台','巨型双塔','阶梯要塞','三重堡垒','双峰','旋转木筏','双子城堡','最终决战']
+  stageNames:['堆积入门','双子木筏','三座平台','巨型双塔','阶梯要塞','三重堡垒','双峰','旋转木筏','双子城堡','最终决战','四座平台','滑行木筏','层层要塞','双子峡谷','摇摆木筏','五层高塔','大舰队','高速转盘','阶梯城堡','城墙都市','旋转高塔','双重峡谷','金字塔冲锋','双动平台','天空之城','大连山脉','逆转木筏','要塞群岛','最后的要塞','真·最终决战']
 }
 };
 var LANG = (window.HiLang && HiLang.init({
@@ -300,6 +300,23 @@ world.addContactMaterial(new CANNON.ContactMaterial(matGround,matBall,{friction:
 world.addContactMaterial(new CANNON.ContactMaterial(matGround,matTarget,{friction:0.55,restitution:0.15}));
 world.addContactMaterial(new CANNON.ContactMaterial(matBall,matTarget,{friction:0.1,restitution:0.3}));
 world.addContactMaterial(new CANNON.ContactMaterial(matTarget,matTarget,{friction:0.45,restitution:0.15}));
+// ---------- Block materials: wood / stone / iron ----------
+// Crates come in three materials with different weight and grip, used to
+// tune difficulty from stage 13 on: wood is the classic light block,
+// stone is heavy and grippy (stable bases, hard to budge), iron is the
+// heaviest and slippery (slides off rafts, but a direct hit barely moves
+// it). Cannon friction lives on material *pairs*, so every pair involving
+// a block material gets an explicit contact material.
+const matWood=new CANNON.Material('wood'); const matStone=new CANNON.Material('stone'); const matIron=new CANNON.Material('iron');
+[[matWood,0.55,0.15],[matStone,0.68,0.08],[matIron,0.38,0.22]].forEach(function(g){
+  world.addContactMaterial(new CANNON.ContactMaterial(matGround,g[0],{friction:g[1],restitution:g[2]}));
+});
+[[matWood,0.3],[matStone,0.22],[matIron,0.38]].forEach(function(g){
+  world.addContactMaterial(new CANNON.ContactMaterial(matBall,g[0],{friction:0.1,restitution:g[1]}));
+});
+[[matWood,matWood,0.45],[matWood,matStone,0.52],[matWood,matIron,0.3],[matStone,matStone,0.66],[matStone,matIron,0.42],[matIron,matIron,0.2],[matTarget,matWood,0.45],[matTarget,matStone,0.55],[matTarget,matIron,0.3]].forEach(function(g){
+  world.addContactMaterial(new CANNON.ContactMaterial(g[0],g[1],{friction:g[2],restitution:0.15}));
+});
 
 // ---------- Static scenery ----------
 function addStaticBox(w,h,d,x,y,z,color,opts){ opts=opts||{}; const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshStandardMaterial({color:color,roughness:opts.rough||0.85,map:opts.map||null})); m.position.set(x,y,z); m.receiveShadow=true; m.castShadow=!!opts.cast; scene.add(m); const b=new CANNON.Body({mass:0,material:matGround,shape:new CANNON.Box(new CANNON.Vec3(w/2,h/2,d/2))}); b.position.set(x,y,z); world.addBody(b); return {mesh:m,body:b}; }
@@ -477,12 +494,13 @@ let platformParts=[], stagePlatforms=[];
 // Each stage lives at its own spot on the sea (a gentle loop, ~48–64 units
 // apart), so stage transitions can travel across open water. STAGES build
 // in local coordinates; makePlatform shifts everything by curSpot.
-const STAGE_SPOTS=[{x:0,z:0},{x:56,z:-10},{x:98,z:38},{x:58,z:84},{x:2,z:72},{x:-40,z:26},{x:-88,z:64},{x:-96,z:2},{x:-52,z:-44},{x:8,z:-52}];
+const STAGE_SPOTS=[{x:0,z:0},{x:56,z:-10},{x:98,z:38},{x:58,z:84},{x:2,z:72},{x:-40,z:26},{x:-88,z:64},{x:-96,z:2},{x:-52,z:-44},{x:8,z:-52},{x:60,z:-54},{x:104,z:-32},{x:112,z:20},{x:96,z:74},{x:44,z:100},{x:-14,z:94},{x:-66,z:80},{x:-104,z:38},{x:-110,z:-22},{x:-88,z:-66},{x:-40,z:-90},{x:18,z:-98},{x:72,z:-86},{x:108,z:-66},{x:34,z:-34},{x:70,z:6},{x:38,z:42},{x:-28,z:56},{x:-62,z:-6},{x:-14,z:-38}];
 let curSpot=STAGE_SPOTS[0];
 function rowOffsets(d){ const n=Math.max(1,Math.round(d/0.72)); const offs=[]; for(let i=0;i<n;i++) offs.push((i-(n-1)/2)*0.7); return offs; }
 function makePlatform(cx,z,w,d,top,opts){
   opts=opts||{};
   if(opts.rot) return makeRotPlatform(cx,z,w,d,top,opts.rot);
+  if(opts.move) return makeMovingPlatform(cx,z,w,d,top,opts.move);
   cx+=curSpot.x; z+=curSpot.z;
   const parts=[];
   parts.push(addStaticBox(w,0.24,d, cx, top-0.12, z, 0xffffff,{map:woodTex,rough:0.7,cast:true}));
@@ -547,34 +565,113 @@ function makeRotPlatform(cx,z,w,d,top,omega){
   stagePlatforms.push(P);
   return P;
 }
-function clearPlatforms(){ platformParts.forEach(function(p){ scene.remove(p.mesh); if(p.body) world.removeBody(p.body); }); platformParts=[]; stagePlatforms=[]; rotPlat=null; }
+// ---------- Moving platforms (slide / bob) ----------
+// A raft that travels while the player plays: sideways (slideX / slideZ)
+// or up and down (bob), each at its own amplitude and speed. Same recipe
+// as the rotating raft: one KINEMATIC compound body whose position is set
+// absolutely every frame AND whose velocity is set to the motion's
+// derivative, so cannon's friction carries awake stacks; and while every
+// block standing on it is fast asleep, those blocks are translated
+// rigidly by the frame's delta (asleep stacks solver-creep if left to
+// friction alone for a minute). Motion pauses during cinematics and on
+// the title screen. Targets remember which mover they were built on
+// (assignPlat, by footprint at build time), so a stage can mix movers
+// with static rafts — stage 24 runs two movers side by side.
+let movers=[];
+function makeMovingPlatform(cx,z,w,d,top,move){
+  cx+=curSpot.x; z+=curSpot.z;
+  const group=new THREE.Group(); group.position.set(cx,0,z); scene.add(group);
+  const deck=new THREE.Mesh(new THREE.BoxGeometry(w,0.24,d), new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.7,map:woodTex}));
+  deck.position.y=top-0.12; deck.castShadow=true; deck.receiveShadow=true; group.add(deck);
+  const legH=Math.max(0.2, top-0.24);
+  const legMat=new THREE.MeshStandardMaterial({color:0x6b4a2c,roughness:0.85});
+  [[-w/2+0.28,-d/2+0.28],[w/2-0.28,-d/2+0.28],[-w/2+0.28,d/2-0.28],[w/2-0.28,d/2-0.28]].forEach(function(ll){ const leg=new THREE.Mesh(new THREE.BoxGeometry(0.26,legH,0.26), legMat); leg.position.set(ll[0],legH/2,ll[1]); leg.castShadow=true; group.add(leg); });
+  const body=new CANNON.Body({mass:0,material:matGround});
+  body.addShape(new CANNON.Box(new CANNON.Vec3(w/2,0.12,d/2)), new CANNON.Vec3(0,top-0.12,0));
+  body.addShape(new CANNON.Box(new CANNON.Vec3(0.31,legH/2,0.31)), new CANNON.Vec3(0,legH/2,0));
+  body.position.set(cx,0,z);
+  body.type=CANNON.Body.KINEMATIC;
+  world.addBody(body);
+  platformParts.push({mesh:group,body:body});
+  movers.push({kind:move.type,body:body,group:group,baseX:cx,baseY:0,baseZ:z,amp:move.amp,speed:move.speed,phase:move.phase||0,w:w,d:d,top:top,prevX:cx,prevY:0,prevZ:z});
+  const P={cx:cx,z:z,w:w,d:d,top:top,rows:rowOffsets(d)};
+  stagePlatforms.push(P);
+  return P;
+}
+function assignPlat(t,x,z){
+  for(let i=0;i<movers.length;i++){ const m=movers[i]; if(Math.abs(x-m.baseX)<=m.w/2 && Math.abs(z-m.baseZ)<=m.d/2){ t.plat=m; return; } }
+}
+function updateMovers(dt){
+  if(!movers.length) return;
+  const active=(state!=='cine'&&state!=='title');
+  movers.forEach(function(m){
+    if(active){
+      m.phase+=m.speed*dt;
+      const s=Math.sin(m.phase), c=Math.cos(m.phase);
+      let nx=m.baseX, ny=m.baseY, nz=m.baseZ, vx=0, vy=0, vz=0;
+      if(m.kind==='slideX'){ nx+=m.amp*s; vx=m.amp*m.speed*c; }
+      else if(m.kind==='slideZ'){ nz+=m.amp*s; vz=m.amp*m.speed*c; }
+      else if(m.kind==='bob'){ ny+=m.amp*s; vy=m.amp*m.speed*c; }
+      const dx=nx-m.prevX, dy=ny-m.prevY, dz=nz-m.prevZ;
+      if(dx||dy||dz){
+        // rigid carry: this platform's own stacks, while all fast asleep
+        const mine=targets.filter(function(t){ return !t.gone && t.plat===m; });
+        if(mine.length && mine.every(function(t){ return t.body.sleepState===2; })){
+          mine.forEach(function(t){
+            const lx=t.body.position.x-nx, lz=t.body.position.z-nz;
+            if(Math.abs(lx)>m.w/2+0.05 || Math.abs(lz)>m.d/2+0.05){ t.body.wakeUp(); return; }
+            t.body.position.x+=dx; t.body.position.y+=dy; t.body.position.z+=dz;
+            t.body.aabbNeedsUpdate=true;
+          });
+        }
+      }
+      m.body.position.set(nx,ny,nz);
+      m.body.velocity.set(vx,vy,vz);
+      m.body.aabbNeedsUpdate=true;
+      m.prevX=nx; m.prevY=ny; m.prevZ=nz;
+    }
+    m.group.position.copy(m.body.position);
+  });
+}
+function clearPlatforms(){ platformParts.forEach(function(p){ scene.remove(p.mesh); if(p.body) world.removeBody(p.body); }); platformParts=[]; stagePlatforms=[]; rotPlat=null; movers=[]; }
 
 // ---------- Targets ----------
 const BOX=0.62, CAN_R=0.19, CAN_H=0.55, PLANK_L=2.05;
 const crateColors=[0xb7793a,0xa5682f,0xc08347];
 const canColors=[0xd64541,0x2f9e6e,0x3a7bd5,0xe8b93c,0x9b59b6];
 let targets=[]; // {mesh,body,kind,points,gone}
-function targetBody(mass,shape,isCyl,x,y,z){ const b=new CANNON.Body({mass:mass,material:matTarget}); if(isCyl){ const orient=new CANNON.Quaternion(); orient.setFromAxisAngle(new CANNON.Vec3(1,0,0), Math.PI/2); b.addShape(shape,new CANNON.Vec3(0,0,0),orient); } else { b.addShape(shape); } b.position.set(x,y,z); b.allowSleep=true; b.sleepSpeedLimit=0.35; b.sleepTimeLimit=0.5; b.addEventListener('collide', function(e){ const v=Math.abs(e.contact.getImpactVelocityAlongNormal()); if(v>1.4) soundHit(v); }); world.addBody(b); return b; }
-function addCrate(x,z,baseY){
+function targetBody(mass,shape,isCyl,x,y,z,physMat){ const b=new CANNON.Body({mass:mass,material:physMat||matTarget}); if(isCyl){ const orient=new CANNON.Quaternion(); orient.setFromAxisAngle(new CANNON.Vec3(1,0,0), Math.PI/2); b.addShape(shape,new CANNON.Vec3(0,0,0),orient); } else { b.addShape(shape); } b.position.set(x,y,z); b.allowSleep=true; b.sleepSpeedLimit=0.35; b.sleepTimeLimit=0.5; b.addEventListener('collide', function(e){ const v=Math.abs(e.contact.getImpactVelocityAlongNormal()); if(v>1.4) soundHit(v); }); world.addBody(b); return b; }
+// Crate materials: look, weight, grip (phys) and score per material.
+const CRATE_MATS={
+  wood:{mass:1.0,points:10,phys:null,colors:crateColors,edge:0x5f3d17,rough:0.9,metal:0},
+  stone:{mass:1.9,points:15,phys:matStone,colors:[0x8d9299,0x7e858d,0x9aa0a6],edge:0x53575c,rough:0.95,metal:0.05},
+  iron:{mass:2.8,points:20,phys:matIron,colors:[0x4a5058,0x3f454d,0x565d66],edge:0xa7b0ba,rough:0.35,metal:0.75}
+};
+CRATE_MATS.wood.phys=matWood;
+function addCrate(x,z,baseY,matName){
+  const M=CRATE_MATS[matName]||CRATE_MATS.wood;
   const geo=new THREE.BoxGeometry(BOX,BOX,BOX);
-  const mesh=new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color:crateColors[targets.length%crateColors.length],roughness:0.9}));
-  const edge=new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({color:0x5f3d17})); mesh.add(edge);
+  const mesh=new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color:M.colors[targets.length%M.colors.length],roughness:M.rough,metalness:M.metal}));
+  const edge=new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({color:M.edge})); mesh.add(edge);
   mesh.castShadow=true; mesh.receiveShadow=true; mesh.position.set(x,baseY+BOX/2,z); scene.add(mesh);
-  const body=targetBody(1.0,new CANNON.Box(new CANNON.Vec3(BOX/2,BOX/2,BOX/2)),false,x,baseY+BOX/2,z);
-  targets.push({mesh:mesh,body:body,kind:'crate',points:10,gone:false});
+  const body=targetBody(M.mass,new CANNON.Box(new CANNON.Vec3(BOX/2,BOX/2,BOX/2)),false,x,baseY+BOX/2,z,M.phys);
+  const t={mesh:mesh,body:body,kind:'crate',points:M.points,gone:false};
+  targets.push(t); assignPlat(t,x,z);
 }
 function addCan(x,z,baseY){
   const mesh=new THREE.Mesh(new THREE.CylinderGeometry(CAN_R,CAN_R,CAN_H,18), new THREE.MeshStandardMaterial({color:canColors[targets.length%canColors.length],roughness:0.3,metalness:0.65}));
   const band=new THREE.Mesh(new THREE.CylinderGeometry(CAN_R+0.004, CAN_R+0.004, 0.09,18), new THREE.MeshStandardMaterial({color:0xf2f2f2,roughness:0.35,metalness:0.4})); mesh.add(band);
   mesh.castShadow=true; mesh.position.set(x,baseY+CAN_H/2,z); scene.add(mesh);
   const body=targetBody(0.55,new CANNON.Cylinder(CAN_R,CAN_R,CAN_H,10),true,x,baseY+CAN_H/2,z);
-  targets.push({mesh:mesh,body:body,kind:'can',points:15,gone:false});
+  const t={mesh:mesh,body:body,kind:'can',points:15,gone:false};
+  targets.push(t); assignPlat(t,x,z);
 }
 function addPlank(x,z,baseY){
   const mesh=new THREE.Mesh(new THREE.BoxGeometry(PLANK_L,0.12,0.62), new THREE.MeshStandardMaterial({color:0x8a5a2e,roughness:0.85}));
   mesh.castShadow=true; mesh.receiveShadow=true; mesh.position.set(x,baseY+0.06,z); scene.add(mesh);
   const body=targetBody(1.1,new CANNON.Box(new CANNON.Vec3(PLANK_L/2,0.06,0.31)),false,x,baseY+0.06,z);
-  targets.push({mesh:mesh,body:body,kind:'plank',points:20,gone:false});
+  const t={mesh:mesh,body:body,kind:'plank',points:20,gone:false};
+  targets.push(t); assignPlat(t,x,z);
 }
 // ---------- Bomb blocks ----------
 // Black block with a red band and a fuse. A hard impact (the ball, a fast
@@ -593,7 +690,7 @@ function addBomb(x,z,baseY){
   mesh.castShadow=true; mesh.receiveShadow=true; mesh.position.set(x,baseY+BOX/2,z); scene.add(mesh);
   const body=targetBody(1.2,new CANNON.Box(new CANNON.Vec3(BOX/2,BOX/2,BOX/2)),false,x,baseY+BOX/2,z);
   const t={mesh:mesh,body:body,kind:'bomb',points:30,gone:false,detonate:false};
-  targets.push(t);
+  targets.push(t); assignPlat(t,x,z);
   body.addEventListener('collide', function(e){ const v=Math.abs(e.contact.getImpactVelocityAlongNormal()); if(v>2.3 && !t.gone) t.detonate=true; });
 }
 function soundBoom(){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); const dur=0.5; const len=Math.floor(audioCtx.sampleRate*dur); const buffer=audioCtx.createBuffer(1,len,audioCtx.sampleRate); const d=buffer.getChannelData(0); for(let i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.8); } const src=audioCtx.createBufferSource(); src.buffer=buffer; const f=audioCtx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=420; const g=audioCtx.createGain(); g.gain.setValueAtTime(0.5,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur); src.connect(f); f.connect(g); g.connect(audioCtx.destination); src.start(); beep(58,0.4,'sine',0.3); }catch(e){} }
@@ -653,14 +750,23 @@ function freezeGroup(frozen){
 }
 // ---------- Stage building on platforms ----------
 // Stacks reuse the proven patterns (pyramids, crate walls, twin towers with a
-// plank, cans centered over crates) — now spread over 1–3 rafts of different
+// plank, cans centered over crates) — spread over 1–5 rafts of different
 // widths, depths and deck heights as the stages progress.
-// Target counts: 15 / 27 / 31 / 48 / 51 / 60 / 69 / 73 / 70 / 88.
-// Stages 4–10 carry bomb blocks. Stage 8's raft rotates slowly (see
-// makeRotPlatform); every stage gives its rafts a different stance.
-function pCrates(P,row,y,n,xoff){ const z=P.z+P.rows[row]; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, y); }
+// Target counts: 15 / 27 / 31 / 48 / 51 / 60 / 69 / 73 / 70 / 88 /
+// 88 / 65 / 103 / 102 / 63 / 94 / 100 / 74 / 100 / 120 /
+// 68 / 110 / 99 / 78 / 107 / 143 / 84 / 92 / 134 / 145.
+// Every third stage (3, 6, 9, … 30) brings a big change: more rafts, a
+// sliding raft (12), a bobbing raft (15), a fast turntable (18), spinning
+// towers (21), two movers at once (24), a reverse turntable (27), and a
+// bobbing centre fortress for the finale (30). Stone crates appear from
+// stage 13, iron from stage 20. Stages 4+ carry bomb blocks.
+function pCrates(P,row,y,n,xoff,mat){ const z=P.z+P.rows[row]; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, y, mat); }
 function pPyr(P,row,rowsN,xoff){ const z=P.z+P.rows[row]; for(let r=0;r<rowsN;r++){ const n=rowsN-r; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, P.top+r*BOX); } }
-function pTower(P,row,x,h){ const z=P.z+P.rows[row]; for(let i=0;i<h;i++) addCrate(P.cx+x, z, P.top+i*BOX); }
+function pTower(P,row,x,h,mat){ const z=P.z+P.rows[row]; for(let i=0;i<h;i++) addCrate(P.cx+x, z, P.top+i*BOX, mat); }
+// Composite patterns used by the later stages (counts in comments):
+function pWall(P,row){ const T=P.top; pCrates(P,row,T,5,0,'stone'); pCrates(P,row,T+BOX,5); pCanRow(P,row,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,row,0,T+2*BOX); } // 15: stone-based 5-wide wall + cans + bomb
+function pFort(P,row){ pPyr(P,row,4,0); pBomb(P,row,0,P.top+4*BOX); } // 11: 4-pyramid crowned with a bomb
+function pTwin(P,row,h,mat){ const T=P.top; pTower(P,row,-0.32,h,mat); pTower(P,row,0.32,h,mat); pPlank(P,row,0,T+h*BOX); pCanRow(P,row,T+h*BOX+0.12,[-0.55,0,0.55]); } // 2h+4: twin towers + plank + cans
 function pCan(P,row,x,y){ addCan(P.cx+x, P.z+P.rows[row], y); }
 function pPlank(P,row,x,y){ addPlank(P.cx+x, P.z+P.rows[row], y); }
 function pCanRow(P,row,y,xs){ xs.forEach(function(x){ pCan(P,row,x,y); }); }
@@ -722,6 +828,141 @@ const STAGES=[
    pTower(C,1,-0.32,4); pTower(C,1,0.32,4); pPlank(C,1,0,C.top+4*BOX); pCanRow(C,1,C.top+4*BOX+0.12,[-0.55,0,0.55]);
    pPyr(C,2,4,0); pBomb(C,2,0,C.top+4*BOX);
    pCrates(C,3,C.top,4); } },
+ { balls:12, build:function(){ // 11: Quad Rafts — four small rafts, one pattern each repeated (88)
+   [-3.45,-1.15,1.15,3.45].forEach(function(x,i){ const P=makePlatform(x,-5.8,2.2,2.3,[1.0,1.5,1.5,1.0][i],{legs:[4,2,2,4][i]}); const T=P.top;
+     pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pCanRow(P,0,T+2*BOX,[-0.64,0.64]); pBomb(P,0,0,T+2*BOX);
+     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
+     pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
+ { balls:11, build:function(){ // 12: Sliding Raft — the whole fortress slides sideways (65)
+   const P=makePlatform(0,-5.8,5.6,3.4,1.3,{move:{type:'slideX',amp:1.1,speed:0.45}}); const T=P.top;
+   pWall(P,0);
+   pFort(P,1); pTower(P,1,-1.92,3); pTower(P,1,1.92,3);
+   pTwin(P,2,4);
+   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]);
+   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); } },
+ { balls:14, build:function(){ // 13: Layered Fortress — stone bases arrive (103)
+   const L=makePlatform(-3.1,-5.5,2.8,2.3,1.2,{legs:2}), C=makePlatform(0,-6.1,3.4,3.0,1.9,{legs:6}), R=makePlatform(3.1,-5.5,2.8,2.3,1.2,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
+     pFort(P,1);
+     pCrates(P,2,T,4); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); });
+   pWall(C,0); pFort(C,1); pTwin(C,2,3);
+   pCrates(C,3,C.top,5); pCanRow(C,3,C.top+BOX,[-1.28,-0.64,0.64,1.28]); } },
+ { balls:13, build:function(){ // 14: Twin Canyon — two tall rafts (102)
+   const L=makePlatform(-2.3,-5.8,2.8,3.4,2.3,{legs:1}), R=makePlatform(2.3,-5.8,2.8,3.4,2.3,{legs:1});
+   [L,R].forEach(function(P){ const T=P.top;
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.96,-0.32,0.32,0.96]);
+     pFort(P,1); pTwin(P,2,4);
+     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX);
+     pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); }); } },
+ { balls:11, build:function(){ // 15: Bobbing Raft — the fortress rides the swell (63)
+   const P=makePlatform(0,-5.8,5.6,3.4,1.4,{move:{type:'bob',amp:0.35,speed:0.55}}); const T=P.top;
+   pWall(P,0);
+   pFort(P,1); pTower(P,1,-1.92,3); pTower(P,1,1.92,3);
+   pTwin(P,2,3);
+   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]);
+   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); } },
+ { balls:13, build:function(){ // 16: Five-Story Towers — stone twin towers (94)
+   const L=makePlatform(-2.05,-5.8,3.0,3.0,1.0,{legs:2}), R=makePlatform(2.05,-5.8,3.0,3.0,1.0,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pTwin(P,0,5,'stone'); pTwin(P,1,4);
+     pCrates(P,2,T,4); pCrates(P,2,T+BOX,4); pCanRow(P,2,T+2*BOX,[-0.64,0,0.64]);
+     pTwin(P,3,3); }); } },
+ { balls:13, build:function(){ // 17: Grand Armada — four rafts in a line (100)
+   [-3.45,-1.15,1.15,3.45].forEach(function(x,i){ const P=makePlatform(x,-5.8,2.2,2.3,[0.9,1.4,1.4,0.9][i],{legs:[2,4,4,2][i]}); const T=P.top;
+     pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pCrates(P,0,T+2*BOX,3); pCanRow(P,0,T+3*BOX,[-0.64,0.64]); pBomb(P,0,0,T+3*BOX);
+     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
+     pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
+ { balls:12, build:function(){ // 18: Turbo Turntable — the turntable, twice as fast (74)
+   const P=makePlatform(0,-5.8,6.0,3.4,1.5,{rot:0.16}); const T=P.top;
+   pWall(P,0);
+   pFort(P,1); pTower(P,1,-2.24,3); pTower(P,1,2.24,3);
+   pTwin(P,2,4); pCrates(P,2,T,2,-2.24); pCrates(P,2,T,2,2.24);
+   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,3,0,T+2*BOX);
+   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); pTower(P,4,-2.24,2); pTower(P,4,2.24,2); } },
+ { balls:13, build:function(){ // 19: Staircase Castle — three rafts climbing (100)
+   const L=makePlatform(-3,-5.5,2.8,2.3,0.8,{legs:2}), C=makePlatform(0,-6.1,3.0,3.0,1.5,{legs:6}), R=makePlatform(3,-5.5,2.8,2.3,2.2,{legs:1});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
+     pFort(P,1);
+     pCrates(P,2,T,4); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); });
+   pCrates(C,0,C.top,4,0,'stone'); pCrates(C,0,C.top+BOX,4); pCanRow(C,0,C.top+2*BOX,[-0.96,-0.32,0.32,0.96]);
+   pFort(C,1); pTwin(C,2,4); pPyr(C,3,3,0); pCan(C,3,0,C.top+3*BOX); } },
+ { balls:15, build:function(){ // 20: Castle City — two citadels, iron arrives (120)
+   const L=makePlatform(-2.05,-5.8,3.4,3.4,1.6,{legs:6}), R=makePlatform(2.05,-5.8,3.4,3.4,1.6,{legs:6});
+   [L,R].forEach(function(P){ const T=P.top;
+     pWall(P,0); pFort(P,1); pTwin(P,2,4);
+     pCrates(P,3,T,5,0,'iron'); pCrates(P,3,T+BOX,5); pBomb(P,3,0,T+2*BOX);
+     pPyr(P,4,4,0); pCan(P,4,0,T+4*BOX); }); } },
+ { balls:12, build:function(){ // 21: Spinning Towers — a taller, reverse turntable (68)
+   const P=makePlatform(0,-5.8,5.6,3.4,1.7,{rot:-0.11}); const T=P.top;
+   pTwin(P,0,4); pCrates(P,0,T,2,-2.24); pCrates(P,0,T,2,2.24);
+   pFort(P,1);
+   pTwin(P,2,5);
+   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]);
+   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); pTower(P,4,-1.92,3); pTower(P,4,1.92,3); } },
+ { balls:14, build:function(){ // 22: Double Canyon — one high raft, one low (110)
+   const L=makePlatform(-2.15,-5.8,3.0,3.4,2.4,{legs:1}), R=makePlatform(2.15,-5.8,3.0,3.4,1.0,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top;
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.96,-0.32,0.32,0.96]);
+     pFort(P,1); pTwin(P,2,4);
+     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX);
+     pPyr(P,4,4,0); pCan(P,4,0,T+4*BOX); }); } },
+ { balls:13, build:function(){ // 23: Pyramid Rush — pyramids on every row (99)
+   [[-3,1.2],[0,1.6],[3,1.2]].forEach(function(s,i){ const P=makePlatform(s[0],-5.8,2.8,2.3,s[1],{legs:i===1?6:2});
+     pFort(P,0); pFort(P,1); pPyr(P,2,4,0); pCan(P,2,0,P.top+4*BOX); }); } },
+ { balls:12, build:function(){ // 24: Double Movers — a slider and a bobber side by side (78)
+   const L=makePlatform(-2.2,-5.8,3.0,3.0,1.3,{move:{type:'slideX',amp:0.9,speed:0.5}}), R=makePlatform(2.2,-5.8,3.0,3.0,1.3,{move:{type:'bob',amp:0.3,speed:0.6}});
+   [L,R].forEach(function(P){ const T=P.top;
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
+     pFort(P,1); pTwin(P,2,3);
+     pCrates(P,3,T,4); pCanRow(P,3,T+BOX,[-0.64,0,0.64]); }); } },
+ { balls:14, build:function(){ // 25: Sky Castle — a high keep between two rafts (107)
+   const C=makePlatform(0,-6.1,3.4,3.0,2.3,{legs:1});
+   pWall(C,0); pFort(C,1); pTwin(C,2,5);
+   pCrates(C,3,C.top,5,0,'iron'); pCrates(C,3,C.top+BOX,5); pBomb(C,3,0,C.top+2*BOX);
+   const L=makePlatform(-3.05,-5.5,2.8,2.3,1.0,{legs:2}), R=makePlatform(3.05,-5.5,2.8,2.3,1.0,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top;
+     pCrates(P,0,T,4); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0.64]); pBomb(P,0,0,T+2*BOX);
+     pFort(P,1);
+     pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
+ { balls:16, build:function(){ // 26: Great Range — three big fortresses (143)
+   const L=makePlatform(-3.1,-5.5,3.0,3.0,1.4,{legs:2}), C=makePlatform(0,-6.1,3.0,3.4,2.0,{legs:6}), R=makePlatform(3.1,-5.5,3.0,3.0,1.4,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top;
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.96,-0.32,0.32,0.96]);
+     pFort(P,1); pTwin(P,2,4);
+     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX); });
+   pCrates(C,0,C.top,4,0,'stone'); pCrates(C,0,C.top+BOX,4); pCanRow(C,0,C.top+2*BOX,[-0.96,-0.32,0.32,0.96]);
+   pFort(C,1); pTwin(C,2,4);
+   pCrates(C,3,C.top,4); pCrates(C,3,C.top+BOX,4); pBomb(C,3,0,C.top+2*BOX);
+   pPyr(C,4,4,0); pCan(C,4,0,C.top+4*BOX); } },
+ { balls:13, build:function(){ // 27: Reverse Turntable — the biggest deck, spinning backwards (84)
+   const P=makePlatform(0,-5.8,6.4,3.4,1.5,{rot:-0.14}); const T=P.top;
+   pWall(P,0);
+   pFort(P,1); pTower(P,1,-2.24,3,'stone'); pTower(P,1,2.24,3,'stone');
+   pTwin(P,2,5); pCrates(P,2,T,2,-2.24); pCrates(P,2,T+BOX,2,-2.24); pCrates(P,2,T,2,2.24); pCrates(P,2,T+BOX,2,2.24);
+   pCrates(P,3,T,5,0,'iron'); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,3,0,T+2*BOX);
+   pPyr(P,4,4,0); pCan(P,4,0,T+4*BOX); pTower(P,4,-2.24,2); pTower(P,4,2.24,2); } },
+ { balls:13, build:function(){ // 28: Fortress Isles — four rafts across the sea (92)
+   [[-3.8,1.2],[-1.4,1.7],[1.4,1.7],[3.8,1.2]].forEach(function(s,i){ const P=makePlatform(s[0],-5.8,2.3,2.3,s[1],{legs:i%2?4:2}); const T=P.top;
+     pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); if(i===1||i===2) pCrates(P,0,T+2*BOX,3);
+     pCanRow(P,0,T+(i===1||i===2?3:2)*BOX,[-0.64,0.64]); if(i===0||i===3) pBomb(P,0,0,T+2*BOX);
+     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
+     pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
+ { balls:16, build:function(){ // 29: The Last Fortress — two citadels at full size (134)
+   const L=makePlatform(-2.05,-5.8,3.4,3.4,1.8,{legs:6}), R=makePlatform(2.05,-5.8,3.4,3.4,1.8,{legs:6});
+   [L,R].forEach(function(P){ const T=P.top;
+     pWall(P,0); pFort(P,1); pTwin(P,2,5,'stone');
+     pCrates(P,3,T,5,0,'iron'); pCrates(P,3,T+BOX,5); pBomb(P,3,0,T+2*BOX);
+     pPyr(P,4,5,0); pBomb(P,4,0,T+5*BOX); }); } },
+ { balls:17, build:function(){ // 30: True Final Showdown — twin forts and a bobbing centre keep (145)
+   const L=makePlatform(-3.1,-5.5,2.8,3.0,1.3,{legs:2}), R=makePlatform(3.1,-5.5,2.8,3.0,1.3,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top;
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
+     pFort(P,1);
+     pCrates(P,2,T,4); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); pBomb(P,2,0,T+BOX+0.12);
+     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX); });
+   const C=makePlatform(0,-6.2,3.4,3.4,2.0,{move:{type:'bob',amp:0.3,speed:0.5}});
+   pWall(C,0); pFort(C,1); pTwin(C,2,5,'stone');
+   pCrates(C,3,C.top,5,0,'iron'); pCrates(C,3,C.top+BOX,5); pBomb(C,3,0,C.top+2*BOX);
+   pPyr(C,4,5,0); pBomb(C,4,0,C.top+5*BOX); } },
 ];
 
 // ---------- Floating scenery (islands, boats, driftwood) ----------
@@ -859,16 +1100,33 @@ function placeLauncher(){
 // and the camera travel at the same speed instead of the camera easing
 // behind the ball.
 const prevLauncherPos=launcherPos();
-const elasticMat=new THREE.LineBasicMaterial({color:0xffb020,linewidth:2});
-let elastic=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]), elasticMat); elastic.visible=false; scene.add(elastic);
+// Thick rubber bands for the slingshot (the old THREE.Line stayed hair-thin
+// at any linewidth — linewidth is ignored almost everywhere). Each band is a
+// plump cylinder stretched between a fork post and the ball, re-aimed every
+// time the trajectory preview updates, so the pull reads clearly.
+const bandMat=new THREE.MeshStandardMaterial({color:0x8e2320,roughness:0.5});
+const bandGeo=new THREE.CylinderGeometry(0.06,0.06,1,12);
+const bandL=new THREE.Mesh(bandGeo,bandMat); bandL.castShadow=true; bandL.visible=false; scene.add(bandL);
+const bandR=new THREE.Mesh(bandGeo,bandMat); bandR.castShadow=true; bandR.visible=false; scene.add(bandR);
+const bandUp=new THREE.Vector3(0,1,0);
+const bandDir=new THREE.Vector3();
+function setBand(mesh,a,b){
+  bandDir.subVectors(b,a);
+  const len=bandDir.length();
+  if(len<0.01){ mesh.visible=false; return; }
+  mesh.position.copy(a).addScaledVector(bandDir,0.5);
+  mesh.scale.set(1,len,1);
+  mesh.quaternion.setFromUnitVectors(bandUp, bandDir.normalize());
+  mesh.visible=true;
+}
 const trajDots=[];
 for(let i=0;i<22;i++){ const d=new THREE.Mesh(new THREE.SphereGeometry(0.07,8,8), new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.85})); d.visible=false; scene.add(d); trajDots.push(d); }
-function hideTraj(){ trajDots.forEach(function(d){ d.visible=false; }); elastic.visible=false; }
+function hideTraj(){ trajDots.forEach(function(d){ d.visible=false; }); bandL.visible=false; bandR.visible=false; }
 function showTraj(vel){
   const g=-9.82; const pos=launcherPos();
   for(let i=0;i<trajDots.length;i++){ const t=0.12*(i+1); const p=new THREE.Vector3(pos.x+vel.x*t, Math.max(0.07,pos.y+vel.y*t+0.5*g*t*t), pos.z+vel.z*t); const ddx=p.x-stageCenter.x, ddz=p.z-stageCenter.z; trajDots[i].position.copy(p); trajDots[i].visible=(ddx*ddx+ddz*ddz)<420 && p.y>=0.05; trajDots[i].material.opacity=0.9 - i*0.03; }
-  elastic.visible=true;
-  elastic.geometry.setFromPoints([anchorL, ballMesh.position.clone(), anchorR]);
+  setBand(bandL, anchorL, ballMesh.position);
+  setBand(bandR, ballMesh.position, anchorR);
 }
 
 // ---------- Debris bursts ----------
@@ -1044,7 +1302,7 @@ function sinkStep(dur){
   let fromY=0;
   return { dur:dur,
     begin:function(){ freezeGroup(true); fromY=groupY; },
-    update:function(k){ setGroupY(fromY+(-sinkDepth-fromY)*easeInOut(k)); camLookNow.set(stageCenter.x,1.1,stageCenter.z); camera.lookAt(camLookNow); }
+    update:function(k,dt){ setGroupY(fromY+(-sinkDepth-fromY)*easeInOut(k)); emitSurfaceRipples(dt||0.016); camLookNow.set(stageCenter.x,1.1,stageCenter.z); camera.lookAt(camLookNow); }
   };
 }
 function rebuildStep(idx){
@@ -1066,8 +1324,9 @@ function riseStep(dur){
       els.hintText.innerHTML=t('hintIntro');
       const v=riseViewPos(); camera.position.copy(v); camLookNow.copy(riseLook()); camera.lookAt(camLookNow);
     },
-    update:function(k){
+    update:function(k,dt){
       setGroupY(-sinkDepth*(1-easeInOut(k)));
+      emitSurfaceRipples(dt||0.016);
       // each raft breaks the surface once: rings, a small column, a splash
       stagePlatforms.forEach(function(P,i){ if(!splashed[i] && P.top+groupY>0.02){ splashed[i]=true; spawnSplashEffect(P.cx,P.z,1.25); } });
       // slow push-in while watching the rise
@@ -1120,6 +1379,33 @@ function spawnSplash(x,z,scale){
   const m2=new THREE.Mesh(new THREE.RingGeometry(0.1,0.2,20), new THREE.MeshBasicMaterial({color:0xbfe6ff,transparent:true,opacity:0.75,side:THREE.DoubleSide}));
   m2.rotation.x=-Math.PI/2; m2.position.set(x,0.05,z); m2.scale.setScalar(0.5*scale); scene.add(m2);
   splashRings.push({mesh:m2,life:0.85,maxLife:0.85,base:0.5*scale,grow:3.6*scale});
+}
+// One soft ripple ring: a thin torus-flat band that expands slowly and
+// fades — used in trains around a raft while it breaks the surface during
+// the rise / sink cinematics (see emitSurfaceRipples).
+function spawnRippleRing(x,z,scale){
+  const m=new THREE.Mesh(new THREE.RingGeometry(0.4,0.52,30), new THREE.MeshBasicMaterial({color:0xeafaff,transparent:true,opacity:0.5,side:THREE.DoubleSide,depthWrite:false}));
+  m.rotation.x=-Math.PI/2; m.position.set(x,0.03,z); m.scale.setScalar(scale); scene.add(m);
+  splashRings.push({mesh:m,life:1.5,maxLife:1.5,base:scale,grow:scale*3.4,fade:0.5});
+}
+// While a stage rises or sinks, every raft whose deck is crossing the
+// waterline sheds ripple rings from its edges and corners, a few times a
+// second, for as long as the crossing lasts — the surface stays visibly
+// disturbed the whole way up (and down), not just at one splash moment.
+let rippleAcc=0;
+function emitSurfaceRipples(dt){
+  rippleAcc+=dt;
+  if(rippleAcc<0.13) return;
+  rippleAcc=0;
+  stagePlatforms.forEach(function(P){
+    const wy=P.top+groupY;
+    if(wy>-1.6 && wy<0.9){
+      const hw=P.w/2, hd=P.d/2;
+      [[0,-hd],[0,hd],[-hw,0],[hw,0],[-hw,-hd],[hw,-hd],[-hw,hd],[hw,hd]].forEach(function(o){
+        spawnRippleRing(P.cx+o[0], P.z+o[1], 0.55+Math.random()*0.35);
+      });
+    }
+  });
 }
 // Full splash: expanding rings + a rising water column + flying droplets + splash sound.
 // strength ~0.7 for a can, ~1.0 for a crate, ~1.2 for a plank, ~1.6 for the heavy ball.
@@ -1360,7 +1646,7 @@ function animate(){
   // explosion flashes: a fast-expanding fireball that fades out
   for(let i=explosions.length-1;i>=0;i--){ const x=explosions[i]; x.life-=dt; const k=1-Math.max(0,x.life)/x.maxLife; x.mesh.scale.setScalar(1+k*(x.core?3:6.5)); x.mesh.material.opacity=(x.core?1:0.9)*(1-k); if(x.life<=0){ scene.remove(x.mesh); explosions.splice(i,1); } }
   // splash rings + drifting sea & clouds
-  for(let i=splashRings.length-1;i>=0;i--){ const s=splashRings[i]; s.life-=dt; const k=1-Math.max(0,s.life)/s.maxLife; s.mesh.scale.setScalar(s.base+k*s.grow); s.mesh.material.opacity=0.9*(1-k); if(s.life<=0){ scene.remove(s.mesh); splashRings.splice(i,1); } }
+  for(let i=splashRings.length-1;i>=0;i--){ const s=splashRings[i]; s.life-=dt; const k=1-Math.max(0,s.life)/s.maxLife; s.mesh.scale.setScalar(s.base+k*s.grow); s.mesh.material.opacity=(s.fade||0.9)*(1-k); if(s.life<=0){ scene.remove(s.mesh); splashRings.splice(i,1); } }
   // water columns: shoot up fast, then collapse back into the sea
   for(let i=waterColumns.length-1;i>=0;i--){ const c=waterColumns[i]; c.life-=dt; const t=1-Math.max(0,c.life)/c.maxLife; const grow=t<0.28? t/0.28 : Math.max(0,1-(t-0.28)/0.72); if(c.isCap){ c.mesh.position.y=0.06+c.height*grow; c.mesh.scale.setScalar(Math.max(0.05,(1-t*0.5))); c.mesh.scale.y=0.55*Math.max(0.05,grow); } else { c.mesh.scale.y=Math.max(0.02,c.height*grow); c.mesh.position.y=c.mesh.scale.y/2; c.mesh.scale.x=c.mesh.scale.z=Math.max(0.25,1-t*0.55); } c.mesh.material.opacity=(c.isCap?0.85:0.78)*(1-t*0.85); if(c.life<=0){ scene.remove(c.mesh); waterColumns.splice(i,1); } }
   // splash droplets: ballistic spray that falls back to the water
@@ -1415,6 +1701,7 @@ function animate(){
     rotPlat.group.position.copy(rotPlat.body.position);
     rotPlat.group.quaternion.copy(rotPlat.body.quaternion);
   }
+  updateMovers(dt);
   layoutAnglePad();
 
   // smooth orbit: ease the turn velocity toward the held direction (0 when
