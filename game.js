@@ -460,7 +460,7 @@ const INTRO_HOLD=1.0, INTRO_PULL=1.25;
 const INTRO_POS=new THREE.Vector3(1.6,2.1,-2.9), INTRO_LOOK=new THREE.Vector3(0,1.85,-5.8);
 function camBasePos(){ if(camMode===0){ const L=launcherPos(), O=outwardDir(); return new THREE.Vector3(L.x+O.x*5.2, 4.2, L.z+O.z*5.2); } if(camMode===1) return new THREE.Vector3(7.4,3.2,-1); return new THREE.Vector3(0,9.5,3.4); }
 
-const els={score:document.getElementById('score'),stageLabel:document.getElementById('stageLabel'),targetsLeft:document.getElementById('targetsLeft'),ballsLeft:document.getElementById('ballsLeft'),ballsStat:document.getElementById('ballsStat'),bgGauge:document.getElementById('ballGauge'),bgFill:document.getElementById('bgFill'),banner:document.getElementById('banner'),bannerBig:document.getElementById('bannerBig'),bannerSub:document.getElementById('bannerSub'),centerCta:document.getElementById('centerCta'),ctaTitle:document.getElementById('ctaTitle'),ctaSub:document.getElementById('ctaSub'),ctaBtn:document.getElementById('ctaBtn'),anglePad:document.getElementById('anglePad'),hintText:document.getElementById('hintText'),popups:document.getElementById('popups')};
+const els={score:document.getElementById('score'),stageLabel:document.getElementById('stageLabel'),targetsLeft:document.getElementById('targetsLeft'),ballsLeft:document.getElementById('ballsLeft'),ballsStat:document.getElementById('ballsStat'),bgGauge:document.getElementById('ballGauge'),bgFill:document.getElementById('bgFill'),banner:document.getElementById('banner'),bannerBig:document.getElementById('bannerBig'),bannerSub:document.getElementById('bannerSub'),centerCta:document.getElementById('centerCta'),ctaTitle:document.getElementById('ctaTitle'),ctaSub:document.getElementById('ctaSub'),ctaBtn:document.getElementById('ctaBtn'),anglePad:document.getElementById('anglePad'),hintText:document.getElementById('hintText'),hintBar:document.querySelector('.hint'),popups:document.getElementById('popups')};
 function targetsRemaining(){ return targets.filter(function(t){ return !t.gone; }).length; }
 function updateHUD(){ els.score.textContent=totalScore; els.stageLabel.textContent=(stageIndex+1)+' / '+STAGES.length; els.targetsLeft.textContent=targetsRemaining(); els.ballsLeft.textContent=ballsLeft; els.ballsStat.classList.toggle('danger', ballsLeft<=1 && state!=='clear'); }
 let lastPower=0;
@@ -849,6 +849,9 @@ function animate(){
     els.bgGauge.style.transform='translate('+gx+'px,'+gy+'px)';
   } else { els.bgGauge.classList.remove('show'); els.bgGauge.classList.remove('dragging'); }
   els.anglePad.classList.toggle('off', state!=='aiming'&&state!=='intro');
+  // the hint bar only appears during the stage-start intro; once the player
+  // can aim (and for the whole throw) it stays hidden, every stage alike
+  els.hintBar.classList.toggle('show', state==='intro');
   renderer.render(scene,camera);
 }
 startStage(0,true);
