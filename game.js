@@ -250,19 +250,23 @@ app.appendChild(renderer.domElement);
 
 scene.add(new THREE.HemisphereLight(0xeaf6ff,0x3d6a8a,1.15));
 scene.add(new THREE.AmbientLight(0xffffff,0.25));
-const dir=new THREE.DirectionalLight(0xfff6e0,1.35); dir.position.set(6,13,6); dir.castShadow=true; dir.shadow.mapSize.set(2048,2048); dir.shadow.camera.left=-13; dir.shadow.camera.right=13; dir.shadow.camera.top=18; dir.shadow.camera.bottom=-18; scene.add(dir);
+const dir=new THREE.DirectionalLight(0xfff6e0,1.35); dir.position.set(6,13,6); dir.castShadow=true; dir.shadow.mapSize.set(2048,2048); dir.shadow.camera.left=-13; dir.shadow.camera.right=13; dir.shadow.camera.top=18; dir.shadow.camera.bottom=-18; scene.add(dir); scene.add(dir.target);
 const p1=new THREE.PointLight(0xffe9b0,0.5,22); p1.position.set(-4,5,-8); scene.add(p1);
 const p2=new THREE.PointLight(0xbfe6ff,0.5,22); p2.position.set(4,4,-11); scene.add(p2);
-// sun + drifting clouds in the big sky
-(function(){ const sun=new THREE.Mesh(new THREE.SphereGeometry(1.5,20,20), new THREE.MeshBasicMaterial({color:0xfff3b0,fog:false})); sun.position.set(16,15,-42); scene.add(sun); const glow=new THREE.Mesh(new THREE.SphereGeometry(2.6,20,20), new THREE.MeshBasicMaterial({color:0xfff9d6,transparent:true,opacity:0.35,fog:false})); glow.position.copy(sun.position); scene.add(glow); })();
+// sun + drifting clouds in the big sky. They live in skyGroup, which is
+// re-centred on the active stage's spot (stages sit at different places on
+// the sea), so every stage gets the same sky dressing.
+const skyGroup=new THREE.Group(); scene.add(skyGroup);
+(function(){ const sun=new THREE.Mesh(new THREE.SphereGeometry(1.5,20,20), new THREE.MeshBasicMaterial({color:0xfff3b0,fog:false})); sun.position.set(16,15,-42); skyGroup.add(sun); const glow=new THREE.Mesh(new THREE.SphereGeometry(2.6,20,20), new THREE.MeshBasicMaterial({color:0xfff9d6,transparent:true,opacity:0.35,fog:false})); glow.position.copy(sun.position); skyGroup.add(glow); })();
 const clouds=[];
-function addCloud(x,y,z,s){ const g=new THREE.Group(); const m=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.92,fog:false}); [[0,0,0,1.5],[1.3,0.15,0.2,1.05],[-1.25,0.1,-0.1,1.0],[0.5,0.45,-0.2,0.85],[-0.55,0.4,0.15,0.8]].forEach(function(p){ const b=new THREE.Mesh(new THREE.SphereGeometry(p[3],14,12), m); b.position.set(p[0],p[1],p[2]); b.scale.y=0.55; g.add(b); }); g.position.set(x,y,z); g.scale.setScalar(s); scene.add(g); clouds.push(g); }
+function addCloud(x,y,z,s){ const g=new THREE.Group(); const m=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.92,fog:false}); [[0,0,0,1.5],[1.3,0.15,0.2,1.05],[-1.25,0.1,-0.1,1.0],[0.5,0.45,-0.2,0.85],[-0.55,0.4,0.15,0.8]].forEach(function(p){ const b=new THREE.Mesh(new THREE.SphereGeometry(p[3],14,12), m); b.position.set(p[0],p[1],p[2]); b.scale.y=0.55; g.add(b); }); g.position.set(x,y,z); g.scale.setScalar(s); skyGroup.add(g); clouds.push(g); }
 addCloud(-11,8.5,-26,1.5); addCloud(7,10,-32,2.0); addCloud(15,7.5,-18,1.1); addCloud(-16,11,-14,1.2); addCloud(2,9.5,-40,2.4); addCloud(-6,7,-20,0.9);
 // real sky dome (geometry): the water's reflection pass renders the scene from
 // a mirrored camera, and a screen-space background texture would be sampled
 // there at the wrong place — the left/right water ended up mirroring the dark
 // top strip of the gradient as a flat blue slab. A dome gives the reflection
 // the same sky the eye sees, in the correct direction.
+let skyDome=null;
 (function(){
   const mat=new THREE.ShaderMaterial({
     side:THREE.BackSide, depthWrite:false,
@@ -283,6 +287,7 @@ addCloud(-11,8.5,-26,1.5); addCloud(7,10,-32,2.0); addCloud(15,7.5,-18,1.1); add
   const dome=new THREE.Mesh(new THREE.SphereGeometry(88,24,16), mat);
   dome.renderOrder=-10;
   scene.add(dome);
+  skyDome=dome; // follows the camera each frame (see animate), so the dome surrounds every stage spot
 })();
 
 // ---------- Physics ----------
@@ -301,9 +306,10 @@ function addStaticBox(w,h,d,x,y,z,color,opts){ opts=opts||{}; const m=new THREE.
 
 // sea surface (targets that fall in vanish with a splash of points)
 let waterTex=null, waterUniforms=null;
+let seaBaseMesh=null, seaFloorBody=null; // re-centred on the active stage spot in buildStage
 (function(){ const c=document.createElement('canvas'); c.width=256; c.height=256; const x=c.getContext('2d'); const g=x.createLinearGradient(0,0,256,256); g.addColorStop(0,'#1b7fc4'); g.addColorStop(1,'#2f9bd8'); x.fillStyle=g; x.fillRect(0,0,256,256); for(let i=0;i<46;i++){ x.strokeStyle='rgba(255,255,255,'+(0.10+Math.random()*0.16)+')'; x.lineWidth=1.5+Math.random()*1.5; x.beginPath(); const wy=Math.random()*256, wx=Math.random()*256, len=14+Math.random()*30; x.moveTo(wx,wy); x.quadraticCurveTo(wx+len/2, wy+3+Math.random()*3, wx+len, wy); x.stroke(); } for(let i=0;i<260;i++){ x.fillStyle='rgba(190,235,255,'+(0.05+Math.random()*0.13)+')'; x.fillRect(Math.random()*256,Math.random()*256,2.5,2.5);} waterTex=new THREE.CanvasTexture(c); waterTex.wrapS=waterTex.wrapT=THREE.RepeatWrapping; waterTex.repeat.set(12,12);
   const seaBase=new THREE.Mesh(new THREE.BoxGeometry(170,0.2,170), new THREE.MeshPhongMaterial({map:waterTex,color:0xa8d2f0,shininess:80,specular:0x9fd4ff}));
-  seaBase.position.set(0,-0.14,-2); seaBase.receiveShadow=true; scene.add(seaBase);
+  seaBase.position.set(0,-0.14,-2); seaBase.receiveShadow=true; scene.add(seaBase); seaBaseMesh=seaBase;
   // --- mirror reflection on the water surface ---
   // The scene is rendered once per frame from a camera mirrored across the
   // water plane (y=0) into a render target; that image is projected back onto
@@ -451,15 +457,21 @@ let waterTex=null, waterUniforms=null;
     renderer.setRenderTarget(currentRT);
     sea.visible=true;
   };
-  const b=new CANNON.Body({mass:0,material:matGround,shape:new CANNON.Box(new CANNON.Vec3(45,0.1,45))}); b.position.set(0,-0.1,-2); world.addBody(b);
+  const b=new CANNON.Body({mass:0,material:matGround,shape:new CANNON.Box(new CANNON.Vec3(45,0.1,45))}); b.position.set(0,-0.1,-2); world.addBody(b); seaFloorBody=b;
 })();
 
 // ---------- Platforms (floating rafts the targets stand on) ----------
 // Each stage builds 1–3 rafts of different width / depth / deck height.
 const woodTex=(function(){ const c=document.createElement('canvas'); c.width=512; c.height=256; const x=c.getContext('2d'); x.fillStyle='#c99a5e'; x.fillRect(0,0,512,256); for(let i=0;i<8;i++){ x.fillStyle=i%2?'#bb8c50':'#d4a668'; x.fillRect(0,i*32,512,32); x.strokeStyle='rgba(90,50,10,.3)'; x.strokeRect(0,i*32,512,32);} for(let i=0;i<90;i++){ x.fillStyle='rgba(120,70,20,.09)'; x.fillRect(Math.random()*512,Math.random()*256,36,2);} return new THREE.CanvasTexture(c); })();
 let platformParts=[], stagePlatforms=[];
+// Each stage lives at its own spot on the sea (a gentle loop, ~48–64 units
+// apart), so stage transitions can travel across open water. STAGES build
+// in local coordinates; makePlatform shifts everything by curSpot.
+const STAGE_SPOTS=[{x:0,z:0},{x:56,z:-10},{x:98,z:38},{x:58,z:84},{x:2,z:72},{x:-40,z:26}];
+let curSpot=STAGE_SPOTS[0];
 function rowOffsets(d){ const n=Math.max(1,Math.round(d/0.72)); const offs=[]; for(let i=0;i<n;i++) offs.push((i-(n-1)/2)*0.7); return offs; }
 function makePlatform(cx,z,w,d,top){
+  cx+=curSpot.x; z+=curSpot.z;
   const parts=[];
   parts.push(addStaticBox(w,0.24,d, cx, top-0.12, z, 0xffffff,{map:woodTex,rough:0.7,cast:true}));
   // stubby legs under the deck
@@ -558,6 +570,22 @@ function explodeBomb(t){
   updateHUD();
 }
 function clearTargets(){ targets.forEach(function(t){ t.gone=true; scene.remove(t.mesh); world.removeBody(t.body); }); targets=[]; }
+// ---------- Rise / sink group ----------
+// During the seamless stage transitions the whole stage (rafts + stacks)
+// rises out of the sea or sinks back into it as one rigid group. While the
+// group moves, every target body is frozen STATIC with zero velocity, so a
+// stack can never wobble or self-collapse mid-ride; physics goes back to
+// normal only once the rise completes.
+let groupY=0, sinkDepth=7;
+function setGroupY(y){
+  const dy=y-groupY; groupY=y;
+  if(!dy) return;
+  platformParts.forEach(function(p){ p.mesh.position.y+=dy; p.body.position.y+=dy; p.body.aabbNeedsUpdate=true; });
+  targets.forEach(function(t){ if(t.gone) return; t.body.position.y+=dy; t.body.velocity.set(0,0,0); t.body.angularVelocity.set(0,0,0); t.body.aabbNeedsUpdate=true; });
+}
+function freezeGroup(frozen){
+  targets.forEach(function(t){ if(t.gone) return; t.body.velocity.set(0,0,0); t.body.angularVelocity.set(0,0,0); if(frozen){ t.body.type=CANNON.Body.STATIC; } else { t.body.type=CANNON.Body.DYNAMIC; t.body.wakeUp(); } t.body.aabbNeedsUpdate=true; });
+}
 // ---------- Stage building on platforms ----------
 // Stacks reuse the proven patterns (pyramids, crate walls, twin towers with a
 // plank, cans centered over crates) — now spread over 1–3 rafts of different
@@ -603,6 +631,84 @@ const STAGES=[
    pTower(C,1,-0.32,3); pTower(C,1,0.32,3); pPlank(C,1,0,C.top+3*BOX); pCanRow(C,1,C.top+3*BOX+0.12,[-0.55,0,0.55]);
    pPyr(C,2,3,0); pBomb(C,2,0,C.top+3*BOX); } },
 ];
+
+// ---------- Floating scenery (islands, boats, driftwood) ----------
+// Built once at boot and shared by every stage: low-poly set dressing that
+// floats on the surface (y=0) around the stage spots and along the camera's
+// travel paths, so the water level reads clearly from any camera position.
+// No physics bodies, nothing inside a launcher orbit or under a raft.
+const floaters=[];
+let scenerySeed=987654321;
+function srand(){ scenerySeed=(scenerySeed*16807)%2147483647; return (scenerySeed-1)/2147483646; }
+function stdMat(color,rough){ return new THREE.MeshStandardMaterial({color:color,roughness:rough==null?0.9:rough}); }
+function makePalm(h){
+  const g=new THREE.Group();
+  const trunkMat=stdMat(0x8a6844,0.95);
+  let x=0,y=0,tilt=0;
+  for(let i=0;i<3;i++){ const seg=new THREE.Mesh(new THREE.CylinderGeometry(0.085-i*0.012,0.115-i*0.012,h/3,7), trunkMat); tilt+=0.13; x+=Math.sin(tilt)*(h/6); y+=Math.cos(tilt)*(h/3); seg.position.set(x-h*0.10, y-h/6, 0); seg.rotation.z=-tilt; g.add(seg); }
+  const topX=x-h*0.10+Math.sin(tilt)*0.15, topY=y+0.05;
+  const leafMat=stdMat(0x2f9e4f,0.85);
+  for(let i=0;i<6;i++){ const leaf=new THREE.Mesh(new THREE.ConeGeometry(0.34,1.7,5), leafMat); leaf.scale.set(1,1,0.28); const a=i/6*Math.PI*2+0.4; leaf.position.set(topX+Math.cos(a)*0.55, topY+0.12, Math.sin(a)*0.55); leaf.rotation.set(Math.sin(a)*1.15,0,-Math.cos(a)*1.15); g.add(leaf); }
+  const nut=new THREE.Mesh(new THREE.SphereGeometry(0.13,8,8), stdMat(0x6b4a2c,0.9)); nut.position.set(topX,topY-0.05,0); g.add(nut);
+  return g;
+}
+function makeIsland(r,palms){
+  const g=new THREE.Group();
+  const sand=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.12,0.6,18), stdMat(0xe6cf9a,1)); sand.position.y=-0.12; g.add(sand);
+  const mound=new THREE.Mesh(new THREE.SphereGeometry(r*0.66,14,10), stdMat(0x58b368,0.95)); mound.scale.y=0.36; mound.position.y=0.10; g.add(mound);
+  for(let i=0;i<palms;i++){ const p=makePalm(1.7+srand()*0.9); p.position.set((srand()-0.5)*r*0.7, 0.28, (srand()-0.5)*r*0.7); p.rotation.y=srand()*Math.PI*2; g.add(p); }
+  return g;
+}
+function makeBoat(){
+  const g=new THREE.Group();
+  const hullMat=stdMat(0xb5563c,0.8);
+  const hull=new THREE.Mesh(new THREE.BoxGeometry(2.3,0.52,0.95), hullMat); hull.position.y=0.10; g.add(hull);
+  const bow=new THREE.Mesh(new THREE.ConeGeometry(0.48,0.9,4), hullMat); bow.rotation.z=-Math.PI/2; bow.rotation.y=Math.PI/4; bow.scale.y=1; bow.position.set(1.55,0.10,0); g.add(bow);
+  const rim=new THREE.Mesh(new THREE.BoxGeometry(2.34,0.10,0.99), stdMat(0x7a3b28,0.85)); rim.position.y=0.38; g.add(rim);
+  const mast=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.055,2.3,7), stdMat(0x6b4a2c,0.9)); mast.position.set(0.1,1.45,0); g.add(mast);
+  const shape=new THREE.Shape(); shape.moveTo(0,0); shape.lineTo(0,1.85); shape.lineTo(1.15,0.18); shape.lineTo(0,0);
+  const sail=new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({color:0xfff6e0,roughness:0.7,side:THREE.DoubleSide})); sail.position.set(0.16,0.55,0); g.add(sail);
+  return g;
+}
+function makeDriftwood(len){
+  const g=new THREE.Group();
+  const mat=stdMat(0x8a6a48,1);
+  const log=new THREE.Mesh(new THREE.CylinderGeometry(0.10,0.14,len,8), mat); log.rotation.z=Math.PI/2; log.position.y=0.02; g.add(log);
+  const branch=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.06,0.55,6), mat); branch.position.set(len*0.22,0.16,0.05); branch.rotation.z=0.7; g.add(branch);
+  return g;
+}
+function addFloater(obj,x,z,amp,tilt,spin){
+  obj.position.set(x,0,z);
+  obj.rotation.y=srand()*Math.PI*2;
+  scene.add(obj);
+  floaters.push({g:obj,baseY:0,ph:srand()*Math.PI*2,amp:amp,tilt:tilt,spin:spin||0,baseRotY:obj.rotation.y});
+}
+function spotClear(x,z,minD){
+  for(let i=0;i<STAGE_SPOTS.length;i++){ const dx=x-STAGE_SPOTS[i].x, dz=z-STAGE_SPOTS[i].z; if(dx*dx+dz*dz<minD*minD) return false; }
+  return true;
+}
+function placeAroundSpot(spot,rMin,rMax,minD){
+  for(let tries=0;tries<14;tries++){
+    const a=srand()*Math.PI*2, r=rMin+srand()*(rMax-rMin);
+    const x=spot.x+Math.cos(a)*r, z=spot.z+Math.sin(a)*r;
+    if(spotClear(x,z,minD)) return {x:x,z:z};
+  }
+  return null;
+}
+function buildScenery(){
+  // 4 islands with palms, spread over the stage loop
+  [0,2,3,5].forEach(function(si){ const spot=STAGE_SPOTS[si]; const p=placeAroundSpot(spot,30,42,17); if(p) addFloater(makeIsland(2.6+srand()*1.3, srand()<0.5?1:2), p.x, p.z, 0.05, 0.004, 0); });
+  // 2 small boats near stages, 1 more midway along a travel path
+  [1,4].forEach(function(si){ const p=placeAroundSpot(STAGE_SPOTS[si],21,30,17); if(p) addFloater(makeBoat(), p.x, p.z, 0.11, 0.05, 0.02); });
+  (function(){ const a=STAGE_SPOTS[2], b=STAGE_SPOTS[3]; const mx=(a.x+b.x)/2+10, mz=(a.z+b.z)/2-8; if(spotClear(mx,mz,17)) addFloater(makeBoat(), mx, mz, 0.11, 0.05, 0.02); })();
+  // 7 pieces of driftwood dotted around the spots and along the paths
+  let placed=0, guard=0;
+  while(placed<7 && guard++<60){
+    const si=Math.floor(srand()*STAGE_SPOTS.length);
+    const p=placeAroundSpot(STAGE_SPOTS[si],18,34,16.5);
+    if(p){ addFloater(makeDriftwood(1.5+srand()*1.2), p.x, p.z, 0.10, 0.06, 0.05); placed++; }
+  }
+}
 
 // ---------- Ball ----------
 // The ball's rest position is launcherPos() — it moves with the orbiting launcher.
@@ -663,7 +769,7 @@ function spawnBurst(pos,color){
 }
 
 // ---------- Game state ----------
-let state='aiming'; // aiming, intro, flying, settling, clear, failed
+let state='aiming'; // title, cine (transition), aiming, flying, settling, clear, failed
 let stageIndex=0, totalScore=0, scoreAtStageStart=0, ballsLeft=3, destroyedThisStage=0, totalTargets=0, launchTime=0, settleTime=0;
 let dragStart=null, dragCurrent=null;
 // ---------- Camera return glide ----------
@@ -680,12 +786,12 @@ let dragStart=null, dragCurrent=null;
 let camReturn=null;
 let camLookNow=lookTarget(); // the look target the camera is actually using right now
 const CAM_RETURN_DUR=1.0;
-function startCamReturn(){ camReturn={t:0, fromPos:camera.position.clone(), fromLook:camLookNow.clone()}; }
+function startCamReturn(dur){ camReturn={t:0, dur:dur||CAM_RETURN_DUR, fromPos:camera.position.clone(), fromLook:camLookNow.clone()}; }
 const ANGLE_MAX=Math.PI/2; // launcher orbits ±90° around the platforms — all the way to the target's side
-// stage intro: hold a fixed close-up of the stack ~1s, then pull back to the play camera
-let introT=0, introDone=false;
-const INTRO_HOLD=1.0, INTRO_PULL=1.25;
-const INTRO_POS=new THREE.Vector3(1.6,2.1,-2.9), INTRO_LOOK=new THREE.Vector3(0,1.85,-5.8);
+// Rise-view camera: during a stage's rise the camera watches from a little
+// low and in front of the spot; afterwards it glides back to camBasePos.
+function riseViewPos(){ const pf=portraitPull(); return new THREE.Vector3(stageCenter.x+3.4, 2.3+1.1*pf, stageCenter.z+13.8*(1+0.3*pf)); }
+function riseLook(){ return new THREE.Vector3(stageCenter.x, 1.9, stageCenter.z); }
 // Portrait framing (aspect < 1): a tall phone screen crops the sides of the
 // landscape framing, which pushed the launcher, ball, power gauge and the
 // ◀▶ buttons off the bottom edge. In portrait the play camera pulls back
@@ -732,30 +838,121 @@ function scorePopup(worldPos,points,kind){
   els.popups.appendChild(el); setTimeout(function(){ el.remove(); },950);
 }
 
-function startStage(idx,titleOnly){
+// Build a stage at its sea spot. With sunk=true the whole group starts
+// fully underwater, frozen, ready to rise. This only builds — camera work
+// and state changes live in the cinematic steps below (and the title boot).
+function buildStage(idx,sunk){
   stageIndex=idx;
   scoreAtStageStart=totalScore;
   clearTargets(); clearPlatforms(); bursts.forEach(function(b){ scene.remove(b.mesh); }); bursts=[]; explosions.forEach(function(x){ scene.remove(x.mesh); }); explosions=[]; clearSplashFx();
+  curSpot=STAGE_SPOTS[idx];
   STAGES[stageIndex].build();
   // orbit center = centroid of this stage's platforms; the radius keeps the
-  // launcher's front spot at z=7, exactly where it used to sit
-  if(stagePlatforms.length){ let sx=0,sz=0; stagePlatforms.forEach(function(P){ sx+=P.cx; sz+=P.z; }); stageCenter.set(sx/stagePlatforms.length,0,sz/stagePlatforms.length); ORBIT_R=7.0-stageCenter.z; }
+  // launcher the same distance in front of the centroid at every spot
+  if(stagePlatforms.length){ let sx=0,sz=0; stagePlatforms.forEach(function(P){ sx+=P.cx; sz+=P.z; }); stageCenter.set(sx/stagePlatforms.length,0,sz/stagePlatforms.length); ORBIT_R=7.0-(stageCenter.z-curSpot.z); }
+  // sun, shadows, sea dressing and the sea floor follow the active spot
+  dir.position.set(stageCenter.x+6,13,stageCenter.z+6); dir.target.position.copy(stageCenter); dir.target.updateMatrixWorld();
+  p1.position.set(stageCenter.x-4,5,stageCenter.z-2.2); p2.position.set(stageCenter.x+4,4,stageCenter.z-5.2);
+  skyGroup.position.set(curSpot.x,0,curSpot.z);
+  if(seaBaseMesh) seaBaseMesh.position.set(stageCenter.x,-0.14,stageCenter.z);
+  if(seaFloorBody){ seaFloorBody.position.set(stageCenter.x,-0.1,stageCenter.z); seaFloorBody.aabbNeedsUpdate=true; }
   totalTargets=targets.length; destroyedThisStage=0;
-  ballsLeft=STAGES[stageIndex].balls; ballIndex=stageIndex; angleOffset=0;
-  createBall(); placeLauncher(); camReturn=null; state=titleOnly?'title':'intro'; introT=0; introDone=false;
-  let maxTop=1, halfSpan=1.2;
-  stagePlatforms.forEach(function(P){ maxTop=Math.max(maxTop,P.top); halfSpan=Math.max(halfSpan, Math.abs(P.cx)+P.w/2); });
-  INTRO_POS.set(Math.max(1.6, Math.min(3.2, halfSpan*0.85)), 1.55+maxTop*0.55, -2.7+halfSpan*0.32);
-  INTRO_LOOK.set(0, 1.05+maxTop*0.5, -5.8);
-  camera.position.copy(INTRO_POS); camera.lookAt(INTRO_LOOK);
+  ballsLeft=STAGES[stageIndex].balls; ballIndex=stageIndex; angleOffset=0; rotVel=0;
+  let maxTop=1; stagePlatforms.forEach(function(P){ maxTop=Math.max(maxTop,P.top); });
+  sinkDepth=maxTop+4.2; // deep enough that the tallest stack is fully below the surface
+  groupY=0;
+  createBall(); placeLauncher(); camReturn=null;
+  if(sunk){ freezeGroup(true); setGroupY(-sinkDepth); hideBallRig(); }
   hideCta();
   setPowerUI(0,0);
   updateHUD();
-  if(!titleOnly){
-    showBanner({kind:'stage',stageIndex:stageIndex,targets:totalTargets,balls:ballsLeft}, 2600);
-    els.hintText.innerHTML=t('hintIntro');
-  }
 }
+function hideBallRig(){ if(ballMesh) ballMesh.visible=false; launcherPosts.forEach(function(p){ p.visible=false; }); hideTraj(); }
+function showBallRig(){ launcherPosts.forEach(function(p){ p.visible=true; }); }
+
+// ---------- Seamless stage-transition cinematics ----------
+// A transition is a queue of steps (sink → rebuild → travel → rise →
+// glide). While it runs, state='cine': input is locked, the hint bar stays
+// up (like the old intro), and the steps drive the camera directly.
+let cine=null;
+function startCine(steps){
+  cine={steps:steps,i:-1,step:null,t:0};
+  state='cine'; camReturn=null; hideCta(); hideBallRig();
+  els.hintText.innerHTML=t('hintIntro');
+  nextCineStep();
+}
+function nextCineStep(){
+  if(!cine) return;
+  cine.i++; cine.t=0;
+  if(cine.i>=cine.steps.length){ finishCine(); return; }
+  cine.step=cine.steps[cine.i];
+  if(cine.step.begin) cine.step.begin();
+  if(cine.step.dur<=0){ if(cine.step.end) cine.step.end(); nextCineStep(); }
+}
+function cineUpdate(dt){
+  if(!cine||!cine.step) return;
+  cine.t+=dt;
+  const k=Math.min(1, cine.t/cine.step.dur);
+  if(cine.step.update) cine.step.update(k,dt);
+  if(k>=1){ if(cine.step.end) cine.step.end(); nextCineStep(); }
+}
+function finishCine(){
+  cine=null;
+  showBallRig();
+  createBall(); placeLauncher();
+  state='aiming';
+  els.hintText.innerHTML=t('hintAim',{n:stageIndex+1,name:stageName(stageIndex),balls:ballsLeft,targets:totalTargets});
+  setPowerUI(0, angleOffset*57.3);
+  updateHUD();
+}
+function easeInOut(k){ return k*k*(3-2*k); }
+function sinkStep(dur){
+  let fromY=0;
+  return { dur:dur,
+    begin:function(){ freezeGroup(true); fromY=groupY; },
+    update:function(k){ setGroupY(fromY+(-sinkDepth-fromY)*easeInOut(k)); camLookNow.set(stageCenter.x,1.1,stageCenter.z); camera.lookAt(camLookNow); }
+  };
+}
+function rebuildStep(idx){
+  return { dur:0, begin:function(){ buildStage(idx,true); } };
+}
+function travelStep(){
+  let fromPos=null, fromLook=null, toPos=null, toLook=null;
+  return { dur:2.8,
+    begin:function(){ fromPos=camera.position.clone(); fromLook=camLookNow.clone(); toPos=riseViewPos(); toLook=riseLook(); const d=fromPos.distanceTo(toPos); this.dur=Math.max(0.9, Math.min(3.4, d/17)); },
+    update:function(k){ const e=easeInOut(k); camera.position.lerpVectors(fromPos,toPos,e); camera.position.y+=Math.sin(e*Math.PI)*2.6; camLookNow.lerpVectors(fromLook,toLook,e); camera.lookAt(camLookNow); }
+  };
+}
+function riseStep(dur){
+  let splashed=null;
+  return { dur:dur,
+    begin:function(){
+      splashed=stagePlatforms.map(function(){ return false; });
+      showBanner({kind:'stage',stageIndex:stageIndex,targets:totalTargets,balls:ballsLeft}, 2600);
+      els.hintText.innerHTML=t('hintIntro');
+      const v=riseViewPos(); camera.position.copy(v); camLookNow.copy(riseLook()); camera.lookAt(camLookNow);
+    },
+    update:function(k){
+      setGroupY(-sinkDepth*(1-easeInOut(k)));
+      // each raft breaks the surface once: rings, a small column, a splash
+      stagePlatforms.forEach(function(P,i){ if(!splashed[i] && P.top+groupY>0.02){ splashed[i]=true; spawnSplashEffect(P.cx,P.z,1.25); } });
+      // slow push-in while watching the rise
+      const v=riseViewPos(); const dolly=1.13-0.13*easeInOut(k);
+      camera.position.set(stageCenter.x+(v.x-stageCenter.x)*dolly, v.y, stageCenter.z+(v.z-stageCenter.z)*dolly);
+      camLookNow.copy(riseLook()); camera.lookAt(camLookNow);
+    },
+    end:function(){ setGroupY(0); freezeGroup(false); }
+  };
+}
+function glideStep(){
+  return { dur:1.35,
+    begin:function(){ startCamReturn(1.3); },
+    update:function(){}
+  };
+}
+// CTA / menu flows, all seamless:
+function gotoStageSeamless(idx){ startCine([sinkStep(2.0), rebuildStep(idx), travelStep(), riseStep(2.8), glideStep()]); }
+function retryStageSeamless(){ totalScore=scoreAtStageStart; startCine([sinkStep(1.6), rebuildStep(stageIndex), travelStep(), riseStep(2.2), glideStep()]); }
 
 // ---------- Confetti (all targets down!) ----------
 const confettiEl=document.getElementById('confetti');
@@ -927,7 +1124,7 @@ function evaluateThrow(){
     updateHUD();
   }
 }
-function retryStage(){ totalScore=scoreAtStageStart; startStage(stageIndex); }
+
 
 // ---------- Input ----------
 const el=renderer.domElement;
@@ -982,19 +1179,21 @@ bindAngleBtn('angleRight',1);
 function cycleCamera(){ camReturn=null; camMode=(camMode+1)%3; setCamBase(); }
 document.getElementById('cameraBtn').onclick=cycleCamera;
 document.getElementById('resetBallBtn').onclick=function(){ if(state==='aiming'){ const L=launcherPos(); ballMesh.position.copy(L); ballBody.position.set(L.x,L.y,L.z); hideTraj(); setPowerUI(0, angleOffset*57.3); } else if(state==='flying'){ state='settling'; settleTime=99; } };
-document.getElementById('retryBtn').onclick=function(){ if(state==='aiming'||state==='failed'||state==='clear') retryStage(); };
-els.ctaBtn.onclick=function(){ const m=els.ctaBtn.dataset.mode; if(m==='next') startStage(stageIndex+1); else if(m==='retry') retryStage(); else if(m==='restart'){ totalScore=0; startStage(0); } };
+document.getElementById('retryBtn').onclick=function(){ if(state==='aiming'||state==='failed'||state==='clear') retryStageSeamless(); };
+els.ctaBtn.onclick=function(){ const m=els.ctaBtn.dataset.mode; if(m==='next') gotoStageSeamless(stageIndex+1); else if(m==='retry') retryStageSeamless(); else if(m==='restart'){ totalScore=0; gotoStageSeamless(0); } };
 
 // ---------- Title screen & hamburger menu ----------
-// The game boots into the 'title' state: stage 1 is built behind the title
-// overlay and the camera slowly orbits it. 「ゲームスタート」starts stage 1
-// for real (intro close-up + banner).
+// The game boots into the 'title' state: stage 1 is built (surfaced)
+// behind the title overlay and the camera slowly orbits it. 「ゲームスタート」
+// dips it under and starts stage 1 for real with the rise cinematic.
 const titleScreenEl=document.getElementById('titleScreen');
 document.getElementById('startBtn').onclick=function(){
   document.body.classList.remove('title-on');
   titleScreenEl.classList.add('hidden');
   soundPop();
-  startStage(0);
+  // stage 1 (already floating behind the title) dips quickly under, then
+  // the game proper starts with its full rise
+  startCine([sinkStep(1.2), travelStep(), riseStep(2.8), glideStep()]);
 };
 // The three former top buttons (ボールを戻す／ステージをやり直す／カメラ切替)
 // keep their ids and handlers above; they now live in the ☰ dropdown.
@@ -1015,8 +1214,13 @@ function animate(){
   if(ballMesh&&ballBody){ ballMesh.position.copy(ballBody.position); ballMesh.quaternion.copy(ballBody.quaternion); }
   // ball hits the sea -> big splash and it vanishes (only after launch; at rest before a throw it floats on its stand)
   if(ballBody&&ballMesh&&!ballGone&&(state==='flying'||state==='settling')&&ballBody.position.y<0.48&&ballBody.velocity.y<-0.3) destroyBall();
-  // targets: sync + fallen-off-raft check (down at water level -> splash, vanish + score)
-  targets.forEach(function(t){ if(t.gone) return; t.mesh.position.copy(t.body.position); t.mesh.quaternion.copy(t.body.quaternion); const sinkY=t.kind==='plank'?0.22 : t.kind==='can'?0.32 : 0.42; if(t.body.position.y < sinkY) destroyTarget(t); });
+  // targets: sync + fallen-off-raft check (down at water level -> splash, vanish + score).
+  // The water-level check is skipped during cinematics: a rising/sinking
+  // stage is *supposed* to be under water, frozen, on its way up or down.
+  targets.forEach(function(t){ if(t.gone) return; t.mesh.position.copy(t.body.position); t.mesh.quaternion.copy(t.body.quaternion); const sinkY=t.kind==='plank'?0.22 : t.kind==='can'?0.32 : 0.42; if(state!=='cine' && t.body.position.y < sinkY) destroyTarget(t); });
+  // seamless-transition steps run before the render (and after the physics
+  // sync above), so a rising stage's meshes and bodies move together
+  cineUpdate(dt);
   // bursts
   for(let i=bursts.length-1;i>=0;i--){ const b=bursts[i]; b.life-=dt; b.vel.y-=9.8*dt; b.mesh.position.addScaledVector(b.vel,dt); b.mesh.material.opacity=Math.max(0,b.life/0.6); b.mesh.rotation.x+=dt*6; if(b.life<=0){ scene.remove(b.mesh); bursts.splice(i,1); } }
   // explosion flashes: a fast-expanding fireball that fades out
@@ -1030,6 +1234,10 @@ function animate(){
   if(waterUniforms){ waterUniforms.time.value=clock.elapsedTime; }
   if(waterTex){ waterTex.offset.x+=dt*0.008; waterTex.offset.y+=dt*0.014; }
   clouds.forEach(function(c,i){ c.position.x+=dt*(0.14+(i%3)*0.05); if(c.position.x>26) c.position.x=-26; });
+  // floating scenery bobs on the surface (boats and driftwood also rock a
+  // little), which keeps the water level readable from any camera
+  floaters.forEach(function(f){ const tt=clock.elapsedTime; f.g.position.y=f.baseY+Math.sin(tt*0.85+f.ph)*f.amp; f.g.rotation.z=Math.sin(tt*0.65+f.ph)*f.tilt; f.g.rotation.x=Math.cos(tt*0.55+f.ph*1.3)*f.tilt*0.7; if(f.spin) f.g.rotation.y=f.baseRotY+Math.sin(tt*0.22+f.ph)*f.spin; });
+  if(skyDome) skyDome.position.copy(camera.position);
 
   // smooth orbit: ease the turn velocity toward the held direction (0 when
   // nothing is held) and integrate the angle; placeLauncher moves the ball
@@ -1038,7 +1246,7 @@ function animate(){
   let wantDir=keyDir;
   heldDirs.forEach(function(d){ wantDir+=d; });
   wantDir=Math.max(-1,Math.min(1,wantDir));
-  const canRotate=(state==='aiming'||state==='intro');
+  const canRotate=(state==='aiming');
   rotVel += ((canRotate?wantDir*ROT_SPEED:0)-rotVel)*Math.min(1,dt*9);
   if(canRotate && Math.abs(rotVel)>0.0005){
     const prevAngle=angleOffset;
@@ -1060,21 +1268,10 @@ function animate(){
     camera.position.set(stageCenter.x+Math.sin(tt)*10.5, 4.3, stageCenter.z+Math.cos(tt)*10.5);
     camLookNow.set(stageCenter.x, 1.5, stageCenter.z);
     camera.lookAt(camLookNow);
-  } else if(state==='intro'){
-    // hold the close-up fixed for ~1s, then ease back to the play camera; input unlocks at 'aiming'
-    introT+=dt;
-    if(introT<=INTRO_HOLD){
-      camera.position.copy(INTRO_POS); camera.lookAt(INTRO_LOOK); camLookNow.copy(INTRO_LOOK);
-    } else {
-      const k=Math.min(1,(introT-INTRO_HOLD)/INTRO_PULL); const e=k*k*(3-2*k);
-      camera.position.lerpVectors(INTRO_POS, camBasePos(), e);
-      camLookNow.lerpVectors(INTRO_LOOK, lookTarget(), e);
-      camera.lookAt(camLookNow);
-      if(k>=1){
-        state='aiming'; introDone=true;
-        els.hintText.innerHTML=t('hintAim',{n:stageIndex+1,name:stageName(stageIndex),balls:ballsLeft,targets:totalTargets});
-      }
-    }
+  } else if(state==='cine' && !camReturn){
+    // seamless transition in progress: the cine steps (sink / travel /
+    // rise) have already positioned the camera this frame — nothing else
+    // may touch it. (The final glide step runs through camReturn below.)
   } else if(camReturn){
     // return glide after a throw: ease position AND look target from where
     // the chase left them to the play camera over ~1s. Nothing else in this
@@ -1082,7 +1279,7 @@ function animate(){
     // fight it; at the end the position and the tracked look target are set
     // to the exact final values, leaving the aiming view perfectly settled
     camReturn.t+=dt;
-    const k=Math.min(1, camReturn.t/CAM_RETURN_DUR); const e=k*k*(3-2*k);
+    const k=Math.min(1, camReturn.t/(camReturn.dur||CAM_RETURN_DUR)); const e=k*k*(3-2*k);
     const basePos=camBasePos(), baseLook=lookTarget();
     camera.position.lerpVectors(camReturn.fromPos, basePos, e);
     camLookNow.lerpVectors(camReturn.fromLook, baseLook, e);
@@ -1132,13 +1329,15 @@ function animate(){
     const gy=Math.max(64, Math.min(innerHeight-118, sy-56));
     els.bgGauge.style.transform='translate('+gx+'px,'+gy+'px)';
   } else { els.bgGauge.classList.remove('show'); els.bgGauge.classList.remove('dragging'); }
-  els.anglePad.classList.toggle('off', state!=='aiming'&&state!=='intro');
-  // the hint bar only appears during the stage-start intro; once the player
-  // can aim (and for the whole throw) it stays hidden, every stage alike
-  els.hintBar.classList.toggle('show', state==='intro');
+  els.anglePad.classList.toggle('off', state!=='aiming');
+  // the hint bar only appears during the stage-transition cinematics; once
+  // the player can aim (and for the whole throw) it stays hidden
+  els.hintBar.classList.toggle('show', state==='cine');
   renderer.render(scene,camera);
 }
-startStage(0,true);
+buildScenery();
+buildStage(0,false);
+state='title';
 applyLang(LANG);
 // Portal screenshot support (game-screenshot-spec.md v2.x): only when the
 // game runs inside the portal's iframe, offer captures through the official
