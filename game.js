@@ -30,7 +30,7 @@ en:{
   failSub:'{left} left standing. Try the stage again',
   failTitle:'💦 {left} left standing…', failSubCta:'Out of balls. Your score resets to the start of this stage', failBtn:'Retry stage',
   hintFail:'Out of balls… Tap "Retry stage" to try again! (score resets to the stage start)',
-  stageNames:['Stacking Basics','Twin Rafts','Three Rafts','Big Twins','Stepped Fortress','Final Showdown']
+  stageNames:['Stacking Basics','Twin Rafts','Three Rafts','Big Twins','Stepped Fortress','Triple Fortress','Twin Peaks','Turntable Raft','Twin Castles','Final Showdown']
 },
 ja:{
   score:'スコア', stage:'ステージ', targetsLeft:'残りターゲット', ballsLeft:'残りボール',
@@ -57,7 +57,7 @@ ja:{
   failSub:'あと {left} 個残った。ステージをやり直そう',
   failTitle:'💦 あと {left} 個残った…', failSubCta:'ボールが無くなりました。スコアはステージ開始時に戻ります', failBtn:'ステージをやり直す',
   hintFail:'ボールが無くなった…「ステージをやり直す」でもう一度挑戦！（スコアはステージ開始時に戻ります）',
-  stageNames:['積み上げ入門','ツインラフト','3つの台','ビッグツイン','段差の要塞','最終決戦']
+  stageNames:['積み上げ入門','ツインラフト','3つの台','ビッグツイン','段差の要塞','3つの要塞','ツインピークス','回転ラフト','双子の城','最終決戦']
 },
 ko:{
   score:'점수', stage:'스테이지', targetsLeft:'남은 타겟', ballsLeft:'남은 볼',
@@ -84,7 +84,7 @@ ko:{
   failSub:'아직 {left}개 남았다. 스테이지를 다시 해보자',
   failTitle:'💦 아직 {left}개 남았다…', failSubCta:'볼이 다 떨어졌습니다. 점수는 스테이지 시작 시점으로 돌아갑니다', failBtn:'스테이지 다시 하기',
   hintFail:'볼이 다 떨어졌다… "스테이지 다시 하기"로 다시 도전! (점수는 스테이지 시작 시점으로 돌아갑니다)',
-  stageNames:['쌓기 입문','트윈 래프트','뗏목 3개','빅 트윈','단차 요새','최종 결전']
+  stageNames:['쌓기 입문','트윈 래프트','뗏목 3개','빅 트윈','단차 요새','트리플 요새','트윈 피크스','회전 뗏목','쌍둥이 성','최종 결전']
 },
 es:{
   score:'PUNTOS', stage:'NIVEL', targetsLeft:'OBJETIVOS', ballsLeft:'BOLAS',
@@ -111,7 +111,7 @@ es:{
   failSub:'Quedaron {left} en pie. Intenta el nivel de nuevo',
   failTitle:'💦 Quedaron {left} en pie…', failSubCta:'Te quedaste sin bolas. La puntuación vuelve al inicio del nivel', failBtn:'Reintentar nivel',
   hintFail:'Sin bolas… Pulsa «Reintentar nivel» para intentarlo otra vez (la puntuación vuelve al inicio del nivel)',
-  stageNames:['Primeras pilas','Balsas gemelas','Tres balsas','Gemelas gigantes','Fortaleza escalonada','Batalla final']
+  stageNames:['Primeras pilas','Balsas gemelas','Tres balsas','Gemelas gigantes','Fortaleza escalonada','Fortaleza triple','Picos gemelos','Balsa giratoria','Castillos gemelos','Batalla final']
 },
 pt:{
   score:'PONTOS', stage:'FASE', targetsLeft:'ALVOS RESTANTES', ballsLeft:'BOLAS RESTANTES',
@@ -138,7 +138,7 @@ pt:{
   failSub:'Faltaram {left}. Tente a fase de novo',
   failTitle:'💦 Faltaram {left}…', failSubCta:'As bolas acabaram. A pontuação volta ao início da fase', failBtn:'Tentar de novo',
   hintFail:'As bolas acabaram… Toque em "Tentar de novo" para mais uma chance! (a pontuação volta ao início da fase)',
-  stageNames:['Empilhando: o básico','Jangadas gêmeas','Três jangadas','Gêmeas gigantes','Fortaleza em degraus','Batalha final']
+  stageNames:['Empilhando: o básico','Jangadas gêmeas','Três jangadas','Gêmeas gigantes','Fortaleza em degraus','Fortaleza tripla','Picos gêmeos','Jangada giratória','Castelos gêmeos','Batalha final']
 },
 zh:{
   score:'分数', stage:'关卡', targetsLeft:'剩余目标', ballsLeft:'剩余球',
@@ -165,7 +165,7 @@ zh:{
   failSub:'还剩 {left} 个没打落。重新挑战这一关吧',
   failTitle:'💦 还剩 {left} 个…', failSubCta:'球用完了。分数将恢复到本关开始时', failBtn:'重新开始关卡',
   hintFail:'球用完了…点「重新开始关卡」再挑战一次！（分数恢复到本关开始时）',
-  stageNames:['堆积入门','双子木筏','三座平台','巨型双塔','阶梯要塞','最终决战']
+  stageNames:['堆积入门','双子木筏','三座平台','巨型双塔','阶梯要塞','三重堡垒','双峰','旋转木筏','双子城堡','最终决战']
 }
 };
 var LANG = (window.HiLang && HiLang.init({
@@ -477,22 +477,77 @@ let platformParts=[], stagePlatforms=[];
 // Each stage lives at its own spot on the sea (a gentle loop, ~48–64 units
 // apart), so stage transitions can travel across open water. STAGES build
 // in local coordinates; makePlatform shifts everything by curSpot.
-const STAGE_SPOTS=[{x:0,z:0},{x:56,z:-10},{x:98,z:38},{x:58,z:84},{x:2,z:72},{x:-40,z:26}];
+const STAGE_SPOTS=[{x:0,z:0},{x:56,z:-10},{x:98,z:38},{x:58,z:84},{x:2,z:72},{x:-40,z:26},{x:-88,z:64},{x:-96,z:2},{x:-52,z:-44},{x:8,z:-52}];
 let curSpot=STAGE_SPOTS[0];
 function rowOffsets(d){ const n=Math.max(1,Math.round(d/0.72)); const offs=[]; for(let i=0;i<n;i++) offs.push((i-(n-1)/2)*0.7); return offs; }
-function makePlatform(cx,z,w,d,top){
+function makePlatform(cx,z,w,d,top,opts){
+  opts=opts||{};
+  if(opts.rot) return makeRotPlatform(cx,z,w,d,top,opts.rot);
   cx+=curSpot.x; z+=curSpot.z;
   const parts=[];
   parts.push(addStaticBox(w,0.24,d, cx, top-0.12, z, 0xffffff,{map:woodTex,rough:0.7,cast:true}));
-  // stubby legs under the deck
+  // legs under the deck — each stage gets its own stance: the classic four
+  // corner legs, two legs, a single central pillar, or six legs on the
+  // widest decks. Purely structural dressing: the deck stays one rigid
+  // static box, so the stacks above never notice the difference.
   const legH=Math.max(0.2, top-0.24);
-  [[-w/2+0.28,-d/2+0.28],[w/2-0.28,-d/2+0.28],[-w/2+0.28,d/2-0.28],[w/2-0.28,d/2-0.28]].forEach(function(ll){ parts.push(addStaticBox(0.26,legH,0.26, cx+ll[0], legH/2, z+ll[1], 0x6b4a2c,{cast:true})); });
+  const legs=opts.legs||4;
+  if(legs===1){
+    parts.push(addStaticBox(0.56,legH,0.56, cx, legH/2, z, 0x6b4a2c,{cast:true}));
+  } else if(legs===2){
+    [-w/2+0.3, w/2-0.3].forEach(function(lx){ parts.push(addStaticBox(0.3,legH,0.3, cx+lx, legH/2, z, 0x6b4a2c,{cast:true})); });
+  } else {
+    [[-w/2+0.28,-d/2+0.28],[w/2-0.28,-d/2+0.28],[-w/2+0.28,d/2-0.28],[w/2-0.28,d/2-0.28]].forEach(function(ll){ parts.push(addStaticBox(0.26,legH,0.26, cx+ll[0], legH/2, z+ll[1], 0x6b4a2c,{cast:true})); });
+    if(legs===6){ [-d/2+0.28, d/2-0.28].forEach(function(lz){ parts.push(addStaticBox(0.26,legH,0.26, cx, legH/2, z+lz, 0x6b4a2c,{cast:true})); }); }
+  }
   parts.forEach(function(p){ platformParts.push(p); });
   const P={cx:cx,z:z,w:w,d:d,top:top,rows:rowOffsets(d)};
   stagePlatforms.push(P);
   return P;
 }
-function clearPlatforms(){ platformParts.forEach(function(p){ scene.remove(p.mesh); if(p.body) world.removeBody(p.body); }); platformParts=[]; stagePlatforms=[]; }
+// ---------- Rotating platform ----------
+// One stage's raft turns slowly for the whole attempt: a single KINEMATIC
+// compound body (deck + central pillar). The main loop drives the turn by
+// setting the body's quaternion from an accumulated angle AND its
+// angularVelocity together — cannon's friction only carries awake stacks
+// around when both are set (either one alone fails: the quaternion alone
+// leaves the blocks behind, the angularVelocity alone lets the solver
+// fling the outer towers off).
+// Awake stacks are also this engine's weak spot over time: left awake,
+// resting stacks solver-creep and topple within a minute (every other
+// stage avoids it because its stacks fall asleep and freeze). So while
+// EVERY block is fast asleep, the stack rides the deck rigidly — the
+// main loop rotates the sleeping bodies around the deck centre by the
+// same angle, the same trick the rise cinematic uses to move the whole
+// stage as one group. As soon as a throw wakes anything, plain friction
+// carry takes over until the stage settles and sleeps again. Verified
+// headlessly over two full minutes of turning: nothing falls, and the
+// stack's rotation tracks the deck's. Rotation pauses during the
+// rise/sink cinematics. The mesh is a group synced from the body.
+let rotPlat=null;
+const ROT_AXIS=new CANNON.Vec3(0,1,0);
+function makeRotPlatform(cx,z,w,d,top,omega){
+  cx+=curSpot.x; z+=curSpot.z;
+  const group=new THREE.Group(); group.position.set(cx,0,z); scene.add(group);
+  const deck=new THREE.Mesh(new THREE.BoxGeometry(w,0.24,d), new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.7,map:woodTex}));
+  deck.position.y=top-0.12; deck.castShadow=true; deck.receiveShadow=true; group.add(deck);
+  const legH=Math.max(0.2, top-0.24);
+  const pillar=new THREE.Mesh(new THREE.BoxGeometry(0.62,legH,0.62), new THREE.MeshStandardMaterial({color:0x6b4a2c,roughness:0.85}));
+  pillar.position.y=legH/2; pillar.castShadow=true; group.add(pillar);
+  const body=new CANNON.Body({mass:0,material:matGround});
+  body.addShape(new CANNON.Box(new CANNON.Vec3(w/2,0.12,d/2)), new CANNON.Vec3(0,top-0.12,0));
+  body.addShape(new CANNON.Box(new CANNON.Vec3(0.31,legH/2,0.31)), new CANNON.Vec3(0,legH/2,0));
+  body.position.set(cx,0,z);
+  body.type=CANNON.Body.KINEMATIC;
+  body.angularVelocity.set(0,0,0);
+  world.addBody(body);
+  platformParts.push({mesh:group,body:body});
+  rotPlat={body:body,group:group,omega:omega,ang:0,cx:cx,cz:z,w:w,d:d};
+  const P={cx:cx,z:z,w:w,d:d,top:top,rows:rowOffsets(d)};
+  stagePlatforms.push(P);
+  return P;
+}
+function clearPlatforms(){ platformParts.forEach(function(p){ scene.remove(p.mesh); if(p.body) world.removeBody(p.body); }); platformParts=[]; stagePlatforms=[]; rotPlat=null; }
 
 // ---------- Targets ----------
 const BOX=0.62, CAN_R=0.19, CAN_H=0.55, PLANK_L=2.05;
@@ -600,7 +655,9 @@ function freezeGroup(frozen){
 // Stacks reuse the proven patterns (pyramids, crate walls, twin towers with a
 // plank, cans centered over crates) — now spread over 1–3 rafts of different
 // widths, depths and deck heights as the stages progress.
-// Target counts: 15 / 27 / 31 / 48 / 51 / 60. Stages 4–6 carry bomb blocks.
+// Target counts: 15 / 27 / 31 / 48 / 51 / 60 / 69 / 73 / 70 / 88.
+// Stages 4–10 carry bomb blocks. Stage 8's raft rotates slowly (see
+// makeRotPlatform); every stage gives its rafts a different stance.
 function pCrates(P,row,y,n,xoff){ const z=P.z+P.rows[row]; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, y); }
 function pPyr(P,row,rowsN,xoff){ const z=P.z+P.rows[row]; for(let r=0;r<rowsN;r++){ const n=rowsN-r; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, P.top+r*BOX); } }
 function pTower(P,row,x,h){ const z=P.z+P.rows[row]; for(let i=0;i<h;i++) addCrate(P.cx+x, z, P.top+i*BOX); }
@@ -613,20 +670,20 @@ const STAGES=[
  { balls:4, build:function(){ const P=makePlatform(0,-5.8,2.4,1.6,1.0); const T=P.top;
    pPyr(P,0,3,0); pCan(P,0,0,T+3*BOX); pCan(P,0,0,T+3*BOX+CAN_H);
    pCrates(P,1,T,3); pCrates(P,1,T+BOX,2); pCanRow(P,1,T+2*BOX,[-0.32,0.32]); } },
- { balls:5, build:function(){ const L=makePlatform(-1.85,-5.8,2.3,1.6,1.0), R=makePlatform(1.85,-5.8,2.3,1.6,1.5);
+ { balls:5, build:function(){ const L=makePlatform(-1.85,-5.8,2.3,1.6,1.0), R=makePlatform(1.85,-5.8,2.3,1.6,1.5,{legs:2});
    pPyr(L,0,3,0); pCan(L,0,0,L.top+3*BOX);
    pCrates(L,1,L.top,2); pCanRow(L,1,L.top+BOX,[-0.32,0.32]);
    pCrates(R,0,R.top,3); pCrates(R,0,R.top+BOX,3); pPlank(R,0,0,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-0.6,0,0.6]);
    pCrates(R,1,R.top,3); pCrates(R,1,R.top+BOX,2); pCan(R,1,0,R.top+2*BOX); } },
- { balls:6, build:function(){ const L=makePlatform(-2.7,-5.5,1.7,1.6,0.9), C=makePlatform(0,-6.1,2.4,1.6,1.9), R=makePlatform(2.7,-5.5,1.7,1.6,0.9);
+ { balls:6, build:function(){ const L=makePlatform(-2.7,-5.5,1.7,1.6,0.9,{legs:1}), C=makePlatform(0,-6.1,2.4,1.6,1.9), R=makePlatform(2.7,-5.5,1.7,1.6,0.9,{legs:1});
    [L,R].forEach(function(P){ pTower(P,0,0,2); pCan(P,0,0,P.top+2*BOX); pCrates(P,1,P.top,2); pCanRow(P,1,P.top+BOX,[-0.32,0.32]); });
    pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
    pPyr(C,1,3,0); pCan(C,1,0,C.top+3*BOX); } },
- { balls:7, build:function(){ const L=makePlatform(-1.78,-5.8,3.0,2.3,1.2), R=makePlatform(1.78,-5.8,3.0,2.3,1.2);
+ { balls:7, build:function(){ const L=makePlatform(-1.78,-5.8,3.0,2.3,1.2,{legs:2}), R=makePlatform(1.78,-5.8,3.0,2.3,1.2,{legs:2});
    [L,R].forEach(function(P){ pCrates(P,0,P.top,4); pCrates(P,0,P.top+BOX,4); pCanRow(P,0,P.top+2*BOX,[-0.96,0.96]); pBomb(P,0,0,P.top+2*BOX);
      pPyr(P,1,3,0); pBomb(P,1,0,P.top+3*BOX);
      pCrates(P,2,P.top,3); pCanRow(P,2,P.top+BOX,[-0.64,0,0.64]); }); } },
- { balls:8, build:function(){ const L=makePlatform(-2.75,-5.5,1.9,1.6,0.8), C=makePlatform(0,-6.1,2.6,2.3,2.3), R=makePlatform(2.75,-5.5,1.9,1.6,1.4);
+ { balls:8, build:function(){ const L=makePlatform(-2.75,-5.5,1.9,1.6,0.8,{legs:1}), C=makePlatform(0,-6.1,2.6,2.3,2.3), R=makePlatform(2.75,-5.5,1.9,1.6,1.4,{legs:2});
    pCrates(L,0,L.top,2); pCrates(L,0,L.top+BOX,2); pCrates(L,0,L.top+2*BOX,2); pCanRow(L,0,L.top+3*BOX,[-0.32,0.32]);
    pCrates(L,1,L.top,2); pCrates(L,1,L.top+BOX,2); pBomb(L,1,0,L.top+2*BOX);
    pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
@@ -634,12 +691,37 @@ const STAGES=[
    pCrates(C,2,C.top,3); pCrates(C,2,C.top+BOX,3); pCanRow(C,2,C.top+2*BOX,[-0.64,0.64]); pBomb(C,2,0,C.top+2*BOX);
    pCrates(R,0,R.top,2); pCrates(R,0,R.top+BOX,2); pPlank(R,0,0,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-0.5,0.5]);
    pPyr(R,1,2,0); pBomb(R,1,0,R.top+2*BOX); pCan(R,1,0,R.top+2*BOX+BOX); } },
- { balls:9, build:function(){ const L=makePlatform(-2.8,-5.5,2.2,1.6,1.2), C=makePlatform(0,-6.1,3.0,2.3,1.8), R=makePlatform(2.8,-5.5,2.2,1.6,1.2);
+ { balls:9, build:function(){ const L=makePlatform(-2.8,-5.5,2.2,1.6,1.2,{legs:2}), C=makePlatform(0,-6.1,3.0,2.3,1.8,{legs:6}), R=makePlatform(2.8,-5.5,2.2,1.6,1.2,{legs:2});
    [L,R].forEach(function(P){ pCrates(P,0,P.top,3); pCrates(P,0,P.top+BOX,3); pPlank(P,0,0,P.top+2*BOX); pCanRow(P,0,P.top+2*BOX+0.12,[-0.6,0.6]); pBomb(P,0,0,P.top+2*BOX+0.12);
      pPyr(P,1,2,0); pCan(P,1,0,P.top+2*BOX); pCan(P,1,0,P.top+2*BOX+CAN_H); });
    pCrates(C,0,C.top,4); pCrates(C,0,C.top+BOX,4); pPlank(C,0,0,C.top+2*BOX); pCanRow(C,0,C.top+2*BOX+0.12,[-0.75,-0.25,0.25,0.75]);
    pTower(C,1,-0.32,3); pTower(C,1,0.32,3); pPlank(C,1,0,C.top+3*BOX); pCanRow(C,1,C.top+3*BOX+0.12,[-0.55,0,0.55]);
    pPyr(C,2,3,0); pBomb(C,2,0,C.top+3*BOX); } },
+ { balls:11, build:function(){ const L=makePlatform(-2.85,-5.5,2.6,2.3,1.4,{legs:2}), C=makePlatform(0,-6.1,2.6,2.3,2.0,{legs:1}), R=makePlatform(2.85,-5.5,2.6,2.3,1.4,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pPlank(P,0,0,T+2*BOX); pCanRow(P,0,T+2*BOX+0.12,[-0.68,0.68]); pBomb(P,0,0,T+2*BOX+0.12);
+     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
+     pCrates(P,2,T,3); pCanRow(P,2,T+BOX,[-0.64,0,0.64]); });
+   pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
+   pPyr(C,1,3,0); pBomb(C,1,0,C.top+3*BOX);
+   pCrates(C,2,C.top,3); pCanRow(C,2,C.top+BOX,[-0.64,0,0.64]); } },
+ { balls:11, build:function(){ const P=makePlatform(0,-5.8,5.6,3.4,1.5,{rot:0.08}); const T=P.top;
+   pCrates(P,0,T,5); pCrates(P,0,T+BOX,5); pPlank(P,0,0,T+2*BOX); pCanRow(P,0,T+2*BOX+0.12,[-0.92,0.92]); pBomb(P,0,0,T+2*BOX+0.12);
+   pPyr(P,1,4,0); pBomb(P,1,0,T+4*BOX); pTower(P,1,-1.92,3); pTower(P,1,1.92,3);
+   pTower(P,2,-0.32,4); pTower(P,2,0.32,4); pPlank(P,2,0,T+4*BOX); pCanRow(P,2,T+4*BOX+0.12,[-0.55,0,0.55]); pCrates(P,2,T,2,-1.92); pCrates(P,2,T,2,1.92);
+   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,3,0,T+2*BOX);
+   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); pTower(P,4,-1.92,2); pTower(P,4,1.92,2); } },
+ { balls:11, build:function(){ const L=makePlatform(-2.2,-5.8,3.4,2.3,1.1), R=makePlatform(2.2,-5.8,3.4,2.3,2.1,{legs:1});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,5); pCrates(P,0,T+BOX,5); pCanRow(P,0,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,0,0,T+2*BOX);
+     pPyr(P,1,4,0); pBomb(P,1,0,T+4*BOX);
+     pCrates(P,2,T,5); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); pBomb(P,2,0,T+BOX+0.12); }); } },
+ { balls:13, build:function(){ const L=makePlatform(-3.1,-5.5,2.8,2.3,1.3,{legs:2}), C=makePlatform(0,-6.2,3.4,3.0,2.0,{legs:6}), R=makePlatform(3.1,-5.5,2.8,2.3,1.3,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pPlank(P,0,0,T+2*BOX); pCanRow(P,0,T+2*BOX+0.12,[-0.68,0.68]); pBomb(P,0,0,T+2*BOX+0.12);
+     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
+     pCrates(P,2,T,3); pCanRow(P,2,T+BOX,[-0.64,0,0.64]); });
+   pCrates(C,0,C.top,5); pCrates(C,0,C.top+BOX,5); pCanRow(C,0,C.top+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(C,0,0,C.top+2*BOX);
+   pTower(C,1,-0.32,4); pTower(C,1,0.32,4); pPlank(C,1,0,C.top+4*BOX); pCanRow(C,1,C.top+4*BOX+0.12,[-0.55,0,0.55]);
+   pPyr(C,2,4,0); pBomb(C,2,0,C.top+4*BOX);
+   pCrates(C,3,C.top,4); } },
 ];
 
 // ---------- Floating scenery (islands, boats, driftwood) ----------
@@ -666,7 +748,7 @@ function makeIsland(r,palms){
   const g=new THREE.Group();
   const sand=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.12,0.6,18), stdMat(0xe6cf9a,1)); sand.position.y=-0.12; g.add(sand);
   const mound=new THREE.Mesh(new THREE.SphereGeometry(r*0.66,14,10), stdMat(0x58b368,0.95)); mound.scale.y=0.36; mound.position.y=0.10; g.add(mound);
-  for(let i=0;i<palms;i++){ const p=makePalm(1.7+srand()*0.9); p.position.set((srand()-0.5)*r*0.7, 0.28, (srand()-0.5)*r*0.7); p.rotation.y=srand()*Math.PI*2; g.add(p); }
+  for(let i=0;i<palms;i++){ const p=makePalm(2.6+srand()*1.1); p.position.set((srand()-0.5)*r*0.7, 0.28, (srand()-0.5)*r*0.7); p.rotation.y=srand()*Math.PI*2; g.add(p); }
   return g;
 }
 function makeBoat(){
@@ -683,8 +765,8 @@ function makeBoat(){
 function makeDriftwood(len){
   const g=new THREE.Group();
   const mat=stdMat(0x8a6a48,1);
-  const log=new THREE.Mesh(new THREE.CylinderGeometry(0.10,0.14,len,8), mat); log.rotation.z=Math.PI/2; log.position.y=0.02; g.add(log);
-  const branch=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.06,0.55,6), mat); branch.position.set(len*0.22,0.16,0.05); branch.rotation.z=0.7; g.add(branch);
+  const log=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.22,len,8), mat); log.rotation.z=Math.PI/2; log.position.y=0.02; g.add(log);
+  const branch=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.09,0.8,6), mat); branch.position.set(len*0.22,0.22,0.05); branch.rotation.z=0.7; g.add(branch);
   return g;
 }
 function addFloater(obj,x,z,amp,tilt,spin){
@@ -697,26 +779,43 @@ function spotClear(x,z,minD){
   for(let i=0;i<STAGE_SPOTS.length;i++){ const dx=x-STAGE_SPOTS[i].x, dz=z-STAGE_SPOTS[i].z; if(dx*dx+dz*dz<minD*minD) return false; }
   return true;
 }
-function placeAroundSpot(spot,rMin,rMax,minD){
-  for(let tries=0;tries<14;tries++){
+// Nothing may sit in the view corridor behind a stage: the play camera
+// looks from the launcher straight past the stacks, and the launcher
+// orbits the whole +z half-circle, so any scenery in the half-plane
+// behind a stage centre (within scenery distance) ends up photobombing
+// the stacks from some angle. Keep that whole half-plane clear; scenery
+// lives in front of and beside the stages, and along the travel paths.
+function behindBlocked(x,z){
+  for(let i=0;i<STAGE_SPOTS.length;i++){
+    const dx=x-STAGE_SPOTS[i].x, dz=z-(STAGE_SPOTS[i].z-5.8);
+    if(dz<2 && (dx*dx+dz*dz)<44*44) return true;
+  }
+  return false;
+}
+function placeAroundSpot(spot,rMin,rMax,minD,triesMax){
+  for(let tries=0;tries<(triesMax||24);tries++){
     const a=srand()*Math.PI*2, r=rMin+srand()*(rMax-rMin);
     const x=spot.x+Math.cos(a)*r, z=spot.z+Math.sin(a)*r;
-    if(spotClear(x,z,minD)) return {x:x,z:z};
+    if(Math.abs(x)>116 || Math.abs(z+2)>116) continue; // stay on the sea
+    if(spotClear(x,z,minD) && !behindBlocked(x,z)) return {x:x,z:z};
   }
   return null;
 }
 function buildScenery(){
-  // 4 islands with palms, spread over the stage loop
-  [0,2,3,5].forEach(function(si){ const spot=STAGE_SPOTS[si]; const p=placeAroundSpot(spot,30,42,17); if(p) addFloater(makeIsland(2.6+srand()*1.3, srand()<0.5?1:2), p.x, p.z, 0.05, 0.004, 0); });
-  // 2 small boats near stages, 1 more midway along a travel path
-  [1,4].forEach(function(si){ const p=placeAroundSpot(STAGE_SPOTS[si],21,30,17); if(p) addFloater(makeBoat(), p.x, p.z, 0.11, 0.05, 0.02); });
-  (function(){ const a=STAGE_SPOTS[2], b=STAGE_SPOTS[3]; const mx=(a.x+b.x)/2+10, mz=(a.z+b.z)/2-8; if(spotClear(mx,mz,17)) addFloater(makeBoat(), mx, mz, 0.11, 0.05, 0.02); })();
-  // 7 pieces of driftwood dotted around the spots and along the paths
+  // 4 big islands with palms, spread over the stage loop. They are placed
+  // well clear of every spot (26+ units from any stage centre, and never
+  // in the view corridor behind a stage), so even at this larger size
+  // they can't overlap a raft, a stack or a flight path.
+  [0,3,6,9].forEach(function(si){ const spot=STAGE_SPOTS[si]; const p=placeAroundSpot(spot,36,48,26,40); if(p) addFloater(makeIsland(4.3+srand()*1.7, srand()<0.6?2:3), p.x, p.z, 0.05, 0.004, 0); });
+  // 3 boats near stages, 1 more midway along a travel path
+  [1,4,7].forEach(function(si){ const p=placeAroundSpot(STAGE_SPOTS[si],26,36,21); if(p){ const b=makeBoat(); b.scale.setScalar(1.5); addFloater(b, p.x, p.z, 0.11, 0.05, 0.02); } });
+  (function(){ const a=STAGE_SPOTS[2], b=STAGE_SPOTS[3]; const mx=(a.x+b.x)/2+10, mz=(a.z+b.z)/2-8; if(spotClear(mx,mz,21) && !behindBlocked(mx,mz)){ const bt=makeBoat(); bt.scale.setScalar(1.5); addFloater(bt, mx, mz, 0.11, 0.05, 0.02); } })();
+  // 10 pieces of driftwood dotted around the spots and along the paths
   let placed=0, guard=0;
-  while(placed<7 && guard++<60){
+  while(placed<10 && guard++<90){
     const si=Math.floor(srand()*STAGE_SPOTS.length);
-    const p=placeAroundSpot(STAGE_SPOTS[si],18,34,16.5);
-    if(p){ addFloater(makeDriftwood(1.5+srand()*1.2), p.x, p.z, 0.10, 0.06, 0.05); placed++; }
+    const p=placeAroundSpot(STAGE_SPOTS[si],22,38,19);
+    if(p){ addFloater(makeDriftwood(2.4+srand()*1.6), p.x, p.z, 0.10, 0.06, 0.05); placed++; }
   }
 }
 
@@ -814,6 +913,31 @@ function camBasePos(){ const pf=portraitPull(); if(camMode===0){ const L=launche
 const els={score:document.getElementById('score'),stageLabel:document.getElementById('stageLabel'),targetsLeft:document.getElementById('targetsLeft'),ballsLeft:document.getElementById('ballsLeft'),ballsStat:document.getElementById('ballsStat'),bgGauge:document.getElementById('ballGauge'),bgFill:document.getElementById('bgFill'),banner:document.getElementById('banner'),bannerBig:document.getElementById('bannerBig'),bannerSub:document.getElementById('bannerSub'),centerCta:document.getElementById('centerCta'),ctaTitle:document.getElementById('ctaTitle'),ctaSub:document.getElementById('ctaSub'),ctaBtn:document.getElementById('ctaBtn'),anglePad:document.getElementById('anglePad'),hintText:document.getElementById('hintText'),hintBar:document.querySelector('.hint'),popups:document.getElementById('popups')};
 function targetsRemaining(){ return targets.filter(function(t){ return !t.gone; }).length; }
 function updateHUD(){ els.score.textContent=totalScore; els.stageLabel.textContent=(stageIndex+1)+' / '+STAGES.length; els.targetsLeft.textContent=targetsRemaining(); els.ballsLeft.textContent=ballsLeft; els.ballsStat.classList.toggle('danger', ballsLeft<=1 && state!=='clear'); }
+// ---------- ◀▶ pad layout ----------
+// The pad is laid out against the *visible* viewport (visualViewport),
+// not the layout viewport: inside the portal's fullscreen iframe on
+// iPhone the two disagree — browser chrome overlays the page and a pad
+// sized with 100dvh/inset:0 ended up half under the browser bar, its
+// buttons cut off and untappable. visualViewport reports the area the
+// player can actually see and tap, in page coordinates, so pinning the
+// pad to it keeps both buttons fully on screen in the portal iframe
+// (normal and fullscreen), in a standalone mobile browser, and in both
+// orientations. Recomputed on every resize/scroll of the visual viewport
+// and cheap-checked every frame (fullscreen transitions fire no event
+// on some browsers until they settle).
+const padBox={x:-1,y:-1,w:-1,h:-1};
+function layoutAnglePad(){
+  const vv=window.visualViewport;
+  const x=vv?vv.offsetLeft:0, y=vv?vv.offsetTop:0, w=vv?vv.width:innerWidth, h=vv?vv.height:innerHeight;
+  if(x===padBox.x&&y===padBox.y&&w===padBox.w&&h===padBox.h) return;
+  padBox.x=x; padBox.y=y; padBox.w=w; padBox.h=h;
+  const pad=els.anglePad;
+  pad.style.left=x+'px'; pad.style.top=y+'px'; pad.style.width=w+'px'; pad.style.height=h+'px';
+  // neutralize the right/bottom left over from the CSS `inset:0`, so the
+  // visual-viewport rect above is never over-constrained back toward the
+  // layout viewport's far edges
+  pad.style.right='auto'; pad.style.bottom='auto';
+}
 let lastPower=0;
 function setPowerUI(power){ lastPower=power; const pct=Math.round(Math.max(0,Math.min(1,power))*100); els.bgFill.style.height=pct+'%'; }
 // Banner / CTA texts are always built from the dictionary at render time,
@@ -1248,6 +1372,50 @@ function animate(){
   // little), which keeps the water level readable from any camera
   floaters.forEach(function(f){ const tt=clock.elapsedTime; f.g.position.y=f.baseY+Math.sin(tt*0.85+f.ph)*f.amp; f.g.rotation.z=Math.sin(tt*0.65+f.ph)*f.tilt; f.g.rotation.x=Math.cos(tt*0.55+f.ph*1.3)*f.tilt*0.7; if(f.spin) f.g.rotation.y=f.baseRotY+Math.sin(tt*0.22+f.ph)*f.spin; });
   if(skyDome) skyDome.position.copy(camera.position);
+  // rotating platform: the kinematic deck turns while the player plays
+  // (paused during cinematics and on the title screen); its mesh follows
+  // the body. Angle and angularVelocity are set together, and while the
+  // whole stack is asleep it is rotated rigidly with the deck — see the
+  // makeRotPlatform note for why both carries are needed.
+  if(rotPlat){
+    const spin=(state!=='cine'&&state!=='title')?rotPlat.omega:0;
+    if(spin){
+      const dAng=spin*dt;
+      rotPlat.ang=(rotPlat.ang+dAng)%(Math.PI*2);
+      rotPlat.body.quaternion.setFromAxisAngle(ROT_AXIS, rotPlat.ang);
+      rotPlat.body.aabbNeedsUpdate=true;
+      const allAsleep=targets.length>0 && targets.every(function(t){ return t.gone || t.body.sleepState===2; });
+      if(allAsleep){
+        // safety first: a block that ended up past the deck's edge while
+        // awake (its support rotated away mid-throw) must not be carried
+        // rigidly while floating — wake it and let it fall honestly
+        const cosA=Math.cos(rotPlat.ang), sinA=Math.sin(rotPlat.ang);
+        let unsafe=false;
+        targets.forEach(function(t){
+          if(t.gone) return;
+          const ox=t.body.position.x-rotPlat.cx, oz=t.body.position.z-rotPlat.cz;
+          const lx=ox*cosA-oz*sinA, lz=ox*sinA+oz*cosA;
+          if(Math.abs(lx)>rotPlat.w/2+0.05 || Math.abs(lz)>rotPlat.d/2+0.05){ t.body.wakeUp(); unsafe=true; }
+        });
+        if(!unsafe){
+          const cos=Math.cos(dAng), sin=Math.sin(dAng);
+          const qd=new CANNON.Quaternion(); qd.setFromAxisAngle(ROT_AXIS, dAng);
+          targets.forEach(function(t){
+            if(t.gone) return;
+            const ox=t.body.position.x-rotPlat.cx, oz=t.body.position.z-rotPlat.cz;
+            t.body.position.x=rotPlat.cx+ox*cos+oz*sin;
+            t.body.position.z=rotPlat.cz-ox*sin+oz*cos;
+            t.body.quaternion=qd.mult(t.body.quaternion);
+            t.body.aabbNeedsUpdate=true;
+          });
+        }
+      }
+    }
+    rotPlat.body.angularVelocity.set(0,spin,0);
+    rotPlat.group.position.copy(rotPlat.body.position);
+    rotPlat.group.quaternion.copy(rotPlat.body.quaternion);
+  }
+  layoutAnglePad();
 
   // smooth orbit: ease the turn velocity toward the held direction (0 when
   // nothing is held) and integrate the angle; placeLauncher moves the ball
@@ -1364,8 +1532,9 @@ function applyViewport(){
   camera.fov=58 + (camera.aspect<1 ? 12*(1-camera.aspect) : 0);
   camera.updateProjectionMatrix();
   renderer.setSize(w,h);
+  layoutAnglePad();
 }
 window.addEventListener('resize',applyViewport);
 window.addEventListener('orientationchange',function(){ setTimeout(applyViewport,80); });
-if(window.visualViewport){ window.visualViewport.addEventListener('resize',applyViewport); }
+if(window.visualViewport){ window.visualViewport.addEventListener('resize',applyViewport); window.visualViewport.addEventListener('scroll',layoutAnglePad); }
 applyViewport();

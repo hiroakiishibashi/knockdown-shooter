@@ -51,10 +51,10 @@
   .menuItem{appearance:none;border:none;background:transparent;color:#fff;text-align:left;padding:11px 13px;font-size:13.5px;font-weight:700;border-radius:9px;cursor:pointer;font-family:inherit;white-space:nowrap}
   .menuItem:hover{background:rgba(255,255,255,.13)}
   .menuItem:active{background:var(--accent);color:#1a1200}
-  #titleScreen{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 42%,rgba(6,26,48,.08) 0%,rgba(6,26,48,.55) 80%);transition:opacity .45s ease,visibility .45s}
+  #titleScreen{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 42%,rgba(6,26,48,.08) 0%,rgba(6,26,48,.55) 80%);transition:opacity .45s ease,visibility .45s;container-type:inline-size}
   #titleScreen.hidden{opacity:0;visibility:hidden;pointer-events:none}
-  .titleInner{padding:20px;max-width:min(92vw,580px)}
-  .titleLogo{font-size:clamp(38px,9vw,74px);font-weight:900;line-height:1.14;letter-spacing:.02em;color:#fff;text-shadow:0 4px 26px rgba(0,20,40,.65),0 2px 6px rgba(6,26,48,.7)}
+  .titleInner{padding:16px;width:min(94%,580px)}
+  .titleLogo{font-size:clamp(24px,8.8vw,74px);font-size:clamp(24px,8.8cqw,74px);font-weight:900;line-height:1.14;letter-spacing:.02em;color:#fff;text-shadow:0 4px 26px rgba(0,20,40,.65),0 2px 6px rgba(6,26,48,.7)}
   .titleLogo .t3{color:var(--accent)}
   .titleHow{margin-top:20px;font-size:clamp(13px,3vw,15.5px);font-weight:700;color:#fff;line-height:1.75;text-shadow:0 2px 12px rgba(3,20,40,.95),0 1px 4px rgba(3,20,40,.95),0 0 4px rgba(3,20,40,.85)}
   #startBtn{margin-top:28px;font-size:clamp(17px,4vw,20px);padding:15px 42px;box-shadow:0 10px 30px rgba(255,176,32,.4);animation:ctaPulse 1.6s ease-in-out infinite}
@@ -89,7 +89,7 @@
   @media (prefers-reduced-motion: reduce){#ctaBtn{animation:none}}
   #anglePad{position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;pointer-events:none;z-index:8;transition:opacity .2s;overflow:hidden}
   #anglePad.off{opacity:.35}
-  .angleBtn{position:absolute;bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));width:60px;height:60px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center;transform:none}
+  .angleBtn{position:absolute;bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));width:60px;height:60px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center;transform:none}
   .angleBtn:active{background:var(--accent);color:#1a1200;transform:none}
   #angleLeft{left:max(12px,calc(env(safe-area-inset-left) + 4px))}
   #angleRight{right:max(12px,calc(env(safe-area-inset-right) + 4px))}
@@ -102,7 +102,8 @@
   @media (prefers-reduced-motion: reduce){#confetti{display:none}}
   @keyframes popfly{0%{opacity:0;margin-top:6px}15%{opacity:1}100%{opacity:0;margin-top:-46px}}
   @media(max-width:640px){.stat b{font-size:18px}.stat span{font-size:11px}.hud{padding:6px;padding-top:max(6px,env(safe-area-inset-top))}.hint{font-size:11px;padding:5px 8px}.midbar{flex-direction:column;align-items:stretch}.controls .btn{flex:1}.topui{gap:4px}.stats{gap:4px}.midbar{gap:4px}}
-  @media(max-width:480px){.stat b{font-size:17px}.stat span{font-size:10.5px;letter-spacing:.01em}.angleBtn{width:56px;height:56px;font-size:21px}}
+  @media(max-width:480px){.stat b{font-size:17px}.stat span{font-size:10px;letter-spacing:0;white-space:normal;line-height:1.18}.stat{padding:2px 1px}.stats{gap:3px}.angleBtn{width:56px;height:56px;font-size:21px}}
+  @media(max-width:380px){.stat b{font-size:16px}}
   @media(min-width:900px){.keyhint{display:block}}
 </style>
 </head>
@@ -116,7 +117,7 @@
     <div class="topbar">
       <div class="stats">
         <div class="stat highlight"><b id="score">0</b><span id="lblScore">スコア</span></div>
-        <div class="stat"><b id="stageLabel">1 / 6</b><span id="lblStage">ステージ</span></div>
+        <div class="stat"><b id="stageLabel">1 / 10</b><span id="lblStage">ステージ</span></div>
         <div class="stat"><b id="targetsLeft">0</b><span id="lblTargets">残りターゲット</span></div>
         <div class="stat" id="ballsStat"><b id="ballsLeft">3</b><span id="lblBalls">残りボール</span></div>
       </div>
