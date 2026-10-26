@@ -415,9 +415,19 @@ let seaBaseMesh=null, seaFloorBody=null; // re-centred on the active stage spot 
     reflectView.add(reflectWorldPos);
     reflectRotMat.extractRotation(camera.matrixWorld);
     reflectLookAt.set(0,0,-1).applyMatrix4(reflectRotMat).add(reflectCamPos);
-    reflectTarget.subVectors(reflectLookAt, reflectWorldPos);
-    reflectTarget.reflect(reflectNormal).negate();
-    reflectTarget.add(reflectWorldPos);
+    // aim the virtual camera along the mirrored view direction itself:
+    // mirrored camera position (reflectView) + the forward vector mirrored
+    // across the water plane. The classic Reflector target instead derives
+    // from the sea mesh's own origin, which effectively aims the virtual
+    // camera back at that origin — fine while every stage sat next to it,
+    // but with the stages spread across the sea (STAGE_SPOTS) the virtual
+    // frustum faced away from any off-origin stage, the reflection target
+    // held only sky, every projective sample fell out of range and the
+    // water faded to flat haze. This form is exact at any stage spot and
+    // anywhere between them, since it depends only on the live camera.
+    reflectTarget.subVectors(reflectLookAt, reflectCamPos);
+    reflectTarget.reflect(reflectNormal);
+    reflectTarget.add(reflectView);
     virtualCamera.position.copy(reflectView);
     virtualCamera.up.set(0,1,0).applyMatrix4(reflectRotMat).reflect(reflectNormal);
     virtualCamera.lookAt(reflectTarget);
