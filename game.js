@@ -752,9 +752,15 @@ function freezeGroup(frozen){
 // Stacks reuse the proven patterns (pyramids, crate walls, twin towers with a
 // plank, cans centered over crates) — spread over 1–5 rafts of different
 // widths, depths and deck heights as the stages progress.
-// Target counts: 15 / 27 / 31 / 48 / 51 / 60 / 69 / 73 / 70 / 88 /
-// 88 / 65 / 103 / 102 / 63 / 94 / 100 / 74 / 100 / 120 /
-// 68 / 110 / 99 / 78 / 107 / 143 / 84 / 92 / 134 / 145.
+// DEPTH RULE (rev25): how many crate rows deep a raft's stacks may run,
+// counted from the ball's side, is capped per stage band — deep stacks
+// shield their back rows and get tedious to break, so depth itself is the
+// difficulty dial: stages 1–10 build ONE row deep (deck depth 1.0), stages
+// 11–20 TWO rows (depth 1.7), stages 21–30 THREE rows (depth 2.4). Within
+// a band the counts still climb via wider rafts, more rafts and taller
+// stacks. Target counts: 15 / 27 / 31 / 48 / 51 / 59 / 68 / 38 / 54 / 66 /
+// 88 / 50 / 92 / 91 / 48 / 82 / 100 / 50 / 88 / 106 /
+// 57 / 102 / 99 / 80 / 111 / 137 / 70 / 92 / 140 / 140.
 // Every third stage (3, 6, 9, … 30) brings a big change: more rafts, a
 // sliding raft (12), a bobbing raft (15), a fast turntable (18), spinning
 // towers (21), two movers at once (24), a reverse turntable (27), and a
@@ -763,206 +769,178 @@ function freezeGroup(frozen){
 function pCrates(P,row,y,n,xoff,mat){ const z=P.z+P.rows[row]; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, y, mat); }
 function pPyr(P,row,rowsN,xoff){ const z=P.z+P.rows[row]; for(let r=0;r<rowsN;r++){ const n=rowsN-r; for(let i=0;i<n;i++) addCrate(P.cx+(xoff||0)+(i-(n-1)/2)*0.64, z, P.top+r*BOX); } }
 function pTower(P,row,x,h,mat){ const z=P.z+P.rows[row]; for(let i=0;i<h;i++) addCrate(P.cx+x, z, P.top+i*BOX, mat); }
-// Composite patterns used by the later stages (counts in comments):
-function pWall(P,row){ const T=P.top; pCrates(P,row,T,5,0,'stone'); pCrates(P,row,T+BOX,5); pCanRow(P,row,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,row,0,T+2*BOX); } // 15: stone-based 5-wide wall + cans + bomb
-function pFort(P,row){ pPyr(P,row,4,0); pBomb(P,row,0,P.top+4*BOX); } // 11: 4-pyramid crowned with a bomb
-function pTwin(P,row,h,mat){ const T=P.top; pTower(P,row,-0.32,h,mat); pTower(P,row,0.32,h,mat); pPlank(P,row,0,T+h*BOX); pCanRow(P,row,T+h*BOX+0.12,[-0.55,0,0.55]); } // 2h+4: twin towers + plank + cans
+// Composite patterns (counts in comments). Each takes an x offset so
+// several patterns can share one row side by side — with the depth cap
+// above, a row's capacity comes from width and height, not from rows
+// hidden behind rows.
+function pWall(P,row,xo,baseMat){ const T=P.top; pCrates(P,row,T,5,xo,baseMat||'stone'); pCrates(P,row,T+BOX,5,xo); pCanRow(P,row,T+2*BOX,[xo-1.28,xo-0.64,xo+0.64,xo+1.28]); pBomb(P,row,xo,T+2*BOX); } // 15: 5-wide wall + cans + bomb (base row material varies)
+function pFort(P,row,xo){ pPyr(P,row,4,xo); pBomb(P,row,xo,P.top+4*BOX); } // 11: 4-pyramid crowned with a bomb
+function pTwin(P,row,xo,h,mat){ const T=P.top; pTower(P,row,xo-0.32,h,mat); pTower(P,row,xo+0.32,h,mat); pPlank(P,row,xo,T+h*BOX); pCanRow(P,row,T+h*BOX+0.12,[xo-0.55,xo,xo+0.55]); } // 2h+4: twin towers + plank + cans
 function pCan(P,row,x,y){ addCan(P.cx+x, P.z+P.rows[row], y); }
 function pPlank(P,row,x,y){ addPlank(P.cx+x, P.z+P.rows[row], y); }
 function pCanRow(P,row,y,xs){ xs.forEach(function(x){ pCan(P,row,x,y); }); }
 function pBomb(P,row,x,y){ addBomb(P.cx+x, P.z+P.rows[row], y); }
 
 const STAGES=[
- { balls:4, build:function(){ const P=makePlatform(0,-5.8,2.4,1.6,1.0); const T=P.top;
-   pPyr(P,0,3,0); pCan(P,0,0,T+3*BOX); pCan(P,0,0,T+3*BOX+CAN_H);
-   pCrates(P,1,T,3); pCrates(P,1,T+BOX,2); pCanRow(P,1,T+2*BOX,[-0.32,0.32]); } },
- { balls:5, build:function(){ const L=makePlatform(-1.85,-5.8,2.3,1.6,1.0), R=makePlatform(1.85,-5.8,2.3,1.6,1.5,{legs:2});
-   pPyr(L,0,3,0); pCan(L,0,0,L.top+3*BOX);
-   pCrates(L,1,L.top,2); pCanRow(L,1,L.top+BOX,[-0.32,0.32]);
-   pCrates(R,0,R.top,3); pCrates(R,0,R.top+BOX,3); pPlank(R,0,0,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-0.6,0,0.6]);
-   pCrates(R,1,R.top,3); pCrates(R,1,R.top+BOX,2); pCan(R,1,0,R.top+2*BOX); } },
- { balls:6, build:function(){ const L=makePlatform(-2.7,-5.5,1.7,1.6,0.9,{legs:1}), C=makePlatform(0,-6.1,2.4,1.6,1.9), R=makePlatform(2.7,-5.5,1.7,1.6,0.9,{legs:1});
-   [L,R].forEach(function(P){ pTower(P,0,0,2); pCan(P,0,0,P.top+2*BOX); pCrates(P,1,P.top,2); pCanRow(P,1,P.top+BOX,[-0.32,0.32]); });
-   pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
-   pPyr(C,1,3,0); pCan(C,1,0,C.top+3*BOX); } },
- { balls:7, build:function(){ const L=makePlatform(-1.78,-5.8,3.0,2.3,1.2,{legs:2}), R=makePlatform(1.78,-5.8,3.0,2.3,1.2,{legs:2});
-   [L,R].forEach(function(P){ pCrates(P,0,P.top,4); pCrates(P,0,P.top+BOX,4); pCanRow(P,0,P.top+2*BOX,[-0.96,0.96]); pBomb(P,0,0,P.top+2*BOX);
-     pPyr(P,1,3,0); pBomb(P,1,0,P.top+3*BOX);
-     pCrates(P,2,P.top,3); pCanRow(P,2,P.top+BOX,[-0.64,0,0.64]); }); } },
- { balls:8, build:function(){ const L=makePlatform(-2.75,-5.5,1.9,1.6,0.8,{legs:1}), C=makePlatform(0,-6.1,2.6,2.3,2.3), R=makePlatform(2.75,-5.5,1.9,1.6,1.4,{legs:2});
-   pCrates(L,0,L.top,2); pCrates(L,0,L.top+BOX,2); pCrates(L,0,L.top+2*BOX,2); pCanRow(L,0,L.top+3*BOX,[-0.32,0.32]);
-   pCrates(L,1,L.top,2); pCrates(L,1,L.top+BOX,2); pBomb(L,1,0,L.top+2*BOX);
-   pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
-   pPyr(C,1,3,0); pCan(C,1,0,C.top+3*BOX);
-   pCrates(C,2,C.top,3); pCrates(C,2,C.top+BOX,3); pCanRow(C,2,C.top+2*BOX,[-0.64,0.64]); pBomb(C,2,0,C.top+2*BOX);
-   pCrates(R,0,R.top,2); pCrates(R,0,R.top+BOX,2); pPlank(R,0,0,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-0.5,0.5]);
-   pPyr(R,1,2,0); pBomb(R,1,0,R.top+2*BOX); pCan(R,1,0,R.top+2*BOX+BOX); } },
- { balls:9, build:function(){ const L=makePlatform(-2.8,-5.5,2.2,1.6,1.2,{legs:2}), C=makePlatform(0,-6.1,3.0,2.3,1.8,{legs:6}), R=makePlatform(2.8,-5.5,2.2,1.6,1.2,{legs:2});
-   [L,R].forEach(function(P){ pCrates(P,0,P.top,3); pCrates(P,0,P.top+BOX,3); pPlank(P,0,0,P.top+2*BOX); pCanRow(P,0,P.top+2*BOX+0.12,[-0.6,0.6]); pBomb(P,0,0,P.top+2*BOX+0.12);
-     pPyr(P,1,2,0); pCan(P,1,0,P.top+2*BOX); pCan(P,1,0,P.top+2*BOX+CAN_H); });
-   pCrates(C,0,C.top,4); pCrates(C,0,C.top+BOX,4); pPlank(C,0,0,C.top+2*BOX); pCanRow(C,0,C.top+2*BOX+0.12,[-0.75,-0.25,0.25,0.75]);
-   pTower(C,1,-0.32,3); pTower(C,1,0.32,3); pPlank(C,1,0,C.top+3*BOX); pCanRow(C,1,C.top+3*BOX+0.12,[-0.55,0,0.55]);
-   pPyr(C,2,3,0); pBomb(C,2,0,C.top+3*BOX); } },
- { balls:11, build:function(){ const L=makePlatform(-2.85,-5.5,2.6,2.3,1.4,{legs:2}), C=makePlatform(0,-6.1,2.6,2.3,2.0,{legs:1}), R=makePlatform(2.85,-5.5,2.6,2.3,1.4,{legs:2});
-   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pPlank(P,0,0,T+2*BOX); pCanRow(P,0,T+2*BOX+0.12,[-0.68,0.68]); pBomb(P,0,0,T+2*BOX+0.12);
-     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
-     pCrates(P,2,T,3); pCanRow(P,2,T+BOX,[-0.64,0,0.64]); });
-   pTower(C,0,-0.32,3); pTower(C,0,0.32,3); pPlank(C,0,0,C.top+3*BOX); pCanRow(C,0,C.top+3*BOX+0.12,[-0.55,0,0.55]);
-   pPyr(C,1,3,0); pBomb(C,1,0,C.top+3*BOX);
-   pCrates(C,2,C.top,3); pCanRow(C,2,C.top+BOX,[-0.64,0,0.64]); } },
- { balls:11, build:function(){ const P=makePlatform(0,-5.8,5.6,3.4,1.5,{rot:0.08}); const T=P.top;
-   pCrates(P,0,T,5); pCrates(P,0,T+BOX,5); pPlank(P,0,0,T+2*BOX); pCanRow(P,0,T+2*BOX+0.12,[-0.92,0.92]); pBomb(P,0,0,T+2*BOX+0.12);
-   pPyr(P,1,4,0); pBomb(P,1,0,T+4*BOX); pTower(P,1,-1.92,3); pTower(P,1,1.92,3);
-   pTower(P,2,-0.32,4); pTower(P,2,0.32,4); pPlank(P,2,0,T+4*BOX); pCanRow(P,2,T+4*BOX+0.12,[-0.55,0,0.55]); pCrates(P,2,T,2,-1.92); pCrates(P,2,T,2,1.92);
-   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,3,0,T+2*BOX);
-   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); pTower(P,4,-1.92,2); pTower(P,4,1.92,2); } },
- { balls:11, build:function(){ const L=makePlatform(-2.2,-5.8,3.4,2.3,1.1), R=makePlatform(2.2,-5.8,3.4,2.3,2.1,{legs:1});
-   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,5); pCrates(P,0,T+BOX,5); pCanRow(P,0,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,0,0,T+2*BOX);
-     pPyr(P,1,4,0); pBomb(P,1,0,T+4*BOX);
-     pCrates(P,2,T,5); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); pBomb(P,2,0,T+BOX+0.12); }); } },
- { balls:13, build:function(){ const L=makePlatform(-3.1,-5.5,2.8,2.3,1.3,{legs:2}), C=makePlatform(0,-6.2,3.4,3.0,2.0,{legs:6}), R=makePlatform(3.1,-5.5,2.8,2.3,1.3,{legs:2});
-   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pPlank(P,0,0,T+2*BOX); pCanRow(P,0,T+2*BOX+0.12,[-0.68,0.68]); pBomb(P,0,0,T+2*BOX+0.12);
-     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
-     pCrates(P,2,T,3); pCanRow(P,2,T+BOX,[-0.64,0,0.64]); });
-   pCrates(C,0,C.top,5); pCrates(C,0,C.top+BOX,5); pCanRow(C,0,C.top+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(C,0,0,C.top+2*BOX);
-   pTower(C,1,-0.32,4); pTower(C,1,0.32,4); pPlank(C,1,0,C.top+4*BOX); pCanRow(C,1,C.top+4*BOX+0.12,[-0.55,0,0.55]);
-   pPyr(C,2,4,0); pBomb(C,2,0,C.top+4*BOX);
-   pCrates(C,3,C.top,4); } },
- { balls:12, build:function(){ // 11: Quad Rafts — four small rafts, one pattern each repeated (88)
-   [-3.45,-1.15,1.15,3.45].forEach(function(x,i){ const P=makePlatform(x,-5.8,2.2,2.3,[1.0,1.5,1.5,1.0][i],{legs:[4,2,2,4][i]}); const T=P.top;
-     pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pCanRow(P,0,T+2*BOX,[-0.64,0.64]); pBomb(P,0,0,T+2*BOX);
-     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
-     pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
- { balls:11, build:function(){ // 12: Sliding Raft — the whole fortress slides sideways (65)
-   const P=makePlatform(0,-5.8,5.6,3.4,1.3,{move:{type:'slideX',amp:1.1,speed:0.45}}); const T=P.top;
-   pWall(P,0);
-   pFort(P,1); pTower(P,1,-1.92,3); pTower(P,1,1.92,3);
-   pTwin(P,2,4);
-   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]);
-   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); } },
- { balls:14, build:function(){ // 13: Layered Fortress — stone bases arrive (103)
-   const L=makePlatform(-3.1,-5.5,2.8,2.3,1.2,{legs:2}), C=makePlatform(0,-6.1,3.4,3.0,1.9,{legs:6}), R=makePlatform(3.1,-5.5,2.8,2.3,1.2,{legs:2});
-   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
-     pFort(P,1);
-     pCrates(P,2,T,4); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); });
-   pWall(C,0); pFort(C,1); pTwin(C,2,3);
-   pCrates(C,3,C.top,5); pCanRow(C,3,C.top+BOX,[-1.28,-0.64,0.64,1.28]); } },
- { balls:13, build:function(){ // 14: Twin Canyon — two tall rafts (102)
-   const L=makePlatform(-2.3,-5.8,2.8,3.4,2.3,{legs:1}), R=makePlatform(2.3,-5.8,2.8,3.4,2.3,{legs:1});
+ { balls:4, build:function(){ const P=makePlatform(0,-5.8,4.6,1.0,1.0); const T=P.top;
+   pPyr(P,0,3,-1.15); pCan(P,0,-1.15,T+3*BOX); pCan(P,0,-1.15,T+3*BOX+CAN_H);
+   pCrates(P,0,T,3,1.15); pCrates(P,0,T+BOX,2,1.15); pCanRow(P,0,T+2*BOX,[0.83,1.47]); } },
+ { balls:5, build:function(){ const L=makePlatform(-2.0,-5.8,3.6,1.0,1.0), R=makePlatform(2.2,-5.8,4.4,1.0,1.5,{legs:2});
+   pPyr(L,0,3,-0.8); pCan(L,0,-0.8,L.top+3*BOX);
+   pCrates(L,0,L.top,2,0.85); pCanRow(L,0,L.top+BOX,[0.53,1.17]);
+   pCrates(R,0,R.top,3,-1.15); pCrates(R,0,R.top+BOX,3,-1.15); pPlank(R,0,-1.15,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-1.7,-1.15,-0.6]);
+   pCrates(R,0,R.top,3,1.25); pCrates(R,0,R.top+BOX,2,1.25); pCan(R,0,1.25,R.top+2*BOX); } },
+ { balls:6, build:function(){ const L=makePlatform(-2.9,-5.5,3.2,1.0,0.9,{legs:1}), C=makePlatform(0,-6.5,4.8,1.0,1.9,{legs:1}), R=makePlatform(2.9,-5.5,3.2,1.0,0.9,{legs:1});
+   [L,R].forEach(function(P){ pTower(P,0,-0.95,2); pCan(P,0,-0.95,P.top+2*BOX); pCrates(P,0,P.top,2,0.75); pCanRow(P,0,P.top+BOX,[0.43,1.07]); });
+   pTwin(C,0,-1.2,3);
+   pPyr(C,0,3,1.25); pCan(C,0,1.25,C.top+3*BOX); } },
+ { balls:7, build:function(){ const L=makePlatform(-3.0,-5.8,2.8,1.0,1.2,{legs:2}), C=makePlatform(0,-5.8,3.4,1.0,1.6,{legs:6}), R=makePlatform(3.0,-5.8,2.8,1.0,1.2,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pBomb(P,0,0.32,T+3*BOX); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pCan(P,0,-0.96,T+3*BOX+CAN_H); });
+   pWall(C,0,0,'wood'); pCan(C,0,-1.28,C.top+2*BOX+CAN_H); } },
+ { balls:8, build:function(){ const L=makePlatform(-3.05,-5.5,3.4,1.0,0.8,{legs:1}), C=makePlatform(0,-6.5,6.2,1.0,2.3,{legs:1}), R=makePlatform(3.05,-5.5,3.4,1.0,1.4,{legs:2});
+   pCrates(L,0,L.top,2,-0.85); pCrates(L,0,L.top+BOX,2,-0.85); pCrates(L,0,L.top+2*BOX,2,-0.85); pCanRow(L,0,L.top+3*BOX,[-1.17,-0.53]);
+   pCrates(L,0,L.top,2,0.85); pCrates(L,0,L.top+BOX,2,0.85); pBomb(L,0,0.85,L.top+2*BOX);
+   pTwin(C,0,-1.95,3); pPyr(C,0,3,0.05); pCan(C,0,0.05,C.top+3*BOX);
+   pCrates(C,0,C.top,3,2.0); pCrates(C,0,C.top+BOX,3,2.0); pCanRow(C,0,C.top+2*BOX,[1.36,2.64]); pBomb(C,0,2.0,C.top+2*BOX);
+   pCrates(R,0,R.top,2,-0.85); pCrates(R,0,R.top+BOX,2,-0.85); pPlank(R,0,-0.85,R.top+2*BOX); pCanRow(R,0,R.top+2*BOX+0.12,[-1.4,-0.3]);
+   pPyr(R,0,2,0.85); pBomb(R,0,0.85,R.top+2*BOX); pCan(R,0,0.85,R.top+2*BOX+BOX); } },
+ { balls:9, build:function(){ const L=makePlatform(-2.9,-5.5,2.6,1.0,1.2,{legs:2}), C=makePlatform(0,-6.5,6.8,1.0,1.8,{legs:1}), R=makePlatform(2.9,-5.5,2.6,1.0,1.2,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pCrates(P,0,T+2*BOX,3); pCanRow(P,0,T+3*BOX,[-0.64,0.64]); pBomb(P,0,0,T+3*BOX); pCan(P,0,0.64,T+3*BOX+CAN_H); pCan(P,0,-0.64,T+3*BOX+CAN_H); });
+   pCrates(C,0,C.top,4,-2.05); pCrates(C,0,C.top+BOX,4,-2.05); pPlank(C,0,-2.05,C.top+2*BOX); pCanRow(C,0,C.top+2*BOX+0.12,[-2.9,-2.3,-1.7,-1.1]); pCan(C,0,-2.3,C.top+2*BOX+0.12+CAN_H);
+   pTwin(C,0,0.3,3);
+   pPyr(C,0,3,2.3); pBomb(C,0,2.3,C.top+3*BOX); } },
+ { balls:11, build:function(){ const L=makePlatform(-3.0,-5.5,3.4,1.0,1.4,{legs:2}), C=makePlatform(0,-6.5,3.4,1.0,2.0,{legs:1}), R=makePlatform(3.0,-5.5,3.4,1.0,1.4,{legs:2});
+   [L,R].forEach(function(P){ pTwin(P,0,0,5); pTower(P,0,-1.38,4); pTower(P,0,1.38,4); });
+   pTwin(C,0,0,6); pTower(C,0,-1.38,4); pTower(C,0,1.38,4); } },
+ { balls:11, build:function(){ const P=makePlatform(0,-5.8,6.8,1.0,1.5,{rot:0.08}); const T=P.top;
+   pPyr(P,0,5,-1.75); pBomb(P,0,-1.75,T+5*BOX); pCan(P,0,-1.75,T+5*BOX+BOX);
+   pTower(P,0,0.6,5);
+   pTwin(P,0,1.95,5); pCan(P,0,1.4,T+5*BOX+0.12+CAN_H); pCan(P,0,2.5,T+5*BOX+0.12+CAN_H); } },
+ { balls:11, build:function(){ const L=makePlatform(-3.1,-5.5,2.8,1.0,1.1,{legs:2}), C=makePlatform(0,-6.5,3.4,1.0,1.7,{legs:6}), R=makePlatform(3.1,-5.5,2.8,1.0,1.1,{legs:2});
+   [L,R].forEach(function(P){ pTwin(P,0,0,5); pCan(P,0,-0.55,P.top+5*BOX+0.12+CAN_H); pCan(P,0,0.55,P.top+5*BOX+0.12+CAN_H); });
+   pCrates(C,0,C.top,5); pCrates(C,0,C.top+BOX,5); pCrates(C,0,C.top+2*BOX,5); pCanRow(C,0,C.top+3*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(C,0,0,C.top+3*BOX); pCan(C,0,-1.28,C.top+3*BOX+CAN_H); pCan(C,0,1.28,C.top+3*BOX+CAN_H); } },
+ { balls:13, build:function(){ const L=makePlatform(-3.05,-5.5,3.4,1.0,1.3,{legs:2}), C=makePlatform(0,-6.5,3.4,1.0,1.9,{legs:6}), R=makePlatform(3.05,-5.5,3.4,1.0,1.3,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,5); pCrates(P,0,T+BOX,5); pCrates(P,0,T+2*BOX,5); pCanRow(P,0,T+3*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-1.28,T+3*BOX+CAN_H); pCan(P,0,1.28,T+3*BOX+CAN_H); });
+   pCrates(C,0,C.top,5); pCrates(C,0,C.top+BOX,5); pCrates(C,0,C.top+2*BOX,5); pCanRow(C,0,C.top+3*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(C,0,0,C.top+3*BOX); pCan(C,0,0,C.top+3*BOX+BOX); pCan(C,0,-0.64,C.top+3*BOX+CAN_H); } },
+ { balls:12, build:function(){ // 11: Quad Rafts — four small rafts, twin towers on both rows (88)
+   [-3.45,-1.15,1.15,3.45].forEach(function(x,i){ const P=makePlatform(x,-5.8,2.2,1.7,[1.0,1.5,1.5,1.0][i],{legs:[4,2,2,4][i]});
+     pTwin(P,0,0,4);
+     pTwin(P,1,0,3); }); } },
+ { balls:11, build:function(){ // 12: Sliding Raft — the whole fortress slides sideways (50)
+   const P=makePlatform(0,-5.8,6.4,1.7,1.3,{move:{type:'slideX',amp:1.1,speed:0.45}}); const T=P.top;
+   pWall(P,0,-1.6); pTwin(P,0,1.7,4); pCan(P,0,1.15,T+4*BOX+0.12+CAN_H); pCan(P,0,2.25,T+4*BOX+0.12+CAN_H);
+   pWall(P,1,0); pTower(P,1,-2.5,3); pTower(P,1,2.5,3); } },
+ { balls:14, build:function(){ // 13: Layered Fortress — stone bases arrive (92)
+   const L=makePlatform(-3.1,-5.5,3.0,1.7,1.2,{legs:2}), C=makePlatform(0,-6.5,3.4,1.7,1.9,{legs:6}), R=makePlatform(3.1,-5.5,3.0,1.7,1.2,{legs:2});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-0.96,T+3*BOX+CAN_H); pCan(P,0,0.96,T+3*BOX+CAN_H);
+     pFort(P,1,0); });
+   pWall(C,0,0); pCan(C,0,-1.28,C.top+2*BOX+CAN_H);
+   pTwin(C,1,0,5); pTower(C,1,-1.38,3); pTower(C,1,1.38,3); } },
+ { balls:13, build:function(){ // 14: Twin Canyon — two tall rafts and a centre keep (91)
+   const L=makePlatform(-3.1,-5.5,2.8,1.7,2.3,{legs:1}), C=makePlatform(0,-6.5,3.4,1.7,1.6,{legs:6}), R=makePlatform(3.1,-5.5,2.8,1.7,2.3,{legs:1});
    [L,R].forEach(function(P){ const T=P.top;
-     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.96,-0.32,0.32,0.96]);
-     pFort(P,1); pTwin(P,2,4);
-     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX);
-     pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); }); } },
- { balls:11, build:function(){ // 15: Bobbing Raft — the fortress rides the swell (63)
-   const P=makePlatform(0,-5.8,5.6,3.4,1.4,{move:{type:'bob',amp:0.35,speed:0.55}}); const T=P.top;
-   pWall(P,0);
-   pFort(P,1); pTower(P,1,-1.92,3); pTower(P,1,1.92,3);
-   pTwin(P,2,3);
-   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]);
-   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); } },
- { balls:13, build:function(){ // 16: Five-Story Towers — stone twin towers (94)
-   const L=makePlatform(-2.05,-5.8,3.0,3.0,1.0,{legs:2}), R=makePlatform(2.05,-5.8,3.0,3.0,1.0,{legs:2});
-   [L,R].forEach(function(P){ const T=P.top; pTwin(P,0,5,'stone'); pTwin(P,1,4);
-     pCrates(P,2,T,4); pCrates(P,2,T+BOX,4); pCanRow(P,2,T+2*BOX,[-0.64,0,0.64]);
-     pTwin(P,3,3); }); } },
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-0.96,T+3*BOX+CAN_H); pCan(P,0,0.96,T+3*BOX+CAN_H);
+     pTwin(P,1,0,4); });
+   pWall(C,0,0);
+   pTwin(C,1,0,4); pTower(C,1,-1.38,3); pTower(C,1,1.38,3); } },
+ { balls:11, build:function(){ // 15: Bobbing Raft — the fortress rides the swell (48)
+   const P=makePlatform(0,-5.8,5.6,1.7,1.4,{move:{type:'bob',amp:0.35,speed:0.55}}); const T=P.top;
+   pFort(P,0,-1.5); pTwin(P,0,1.45,4); pCan(P,0,0.9,T+4*BOX+0.12+CAN_H); pCan(P,0,2.0,T+4*BOX+0.12+CAN_H);
+   pWall(P,1,0); pTower(P,1,-2.24,4); pTower(P,1,2.24,4); } },
+ { balls:13, build:function(){ // 16: Five-Story Towers — stone twin towers (82)
+   const L=makePlatform(-3.05,-5.5,3.0,1.7,1.0,{legs:2}), C=makePlatform(0,-6.5,3.0,1.7,1.5,{legs:6}), R=makePlatform(3.05,-5.5,3.0,1.7,1.0,{legs:2});
+   [L,R].forEach(function(P){ pTwin(P,0,0,5,'stone'); pTwin(P,1,0,5); });
+   pTwin(C,0,0,5); pTwin(C,1,0,4); } },
  { balls:13, build:function(){ // 17: Grand Armada — four rafts in a line (100)
-   [-3.45,-1.15,1.15,3.45].forEach(function(x,i){ const P=makePlatform(x,-5.8,2.2,2.3,[0.9,1.4,1.4,0.9][i],{legs:[2,4,4,2][i]}); const T=P.top;
-     pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pCrates(P,0,T+2*BOX,3); pCanRow(P,0,T+3*BOX,[-0.64,0.64]); pBomb(P,0,0,T+3*BOX);
-     pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
-     pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
- { balls:12, build:function(){ // 18: Turbo Turntable — the turntable, twice as fast (74)
-   const P=makePlatform(0,-5.8,6.0,3.4,1.5,{rot:0.16}); const T=P.top;
-   pWall(P,0);
-   pFort(P,1); pTower(P,1,-2.24,3); pTower(P,1,2.24,3);
-   pTwin(P,2,4); pCrates(P,2,T,2,-2.24); pCrates(P,2,T,2,2.24);
-   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,3,0,T+2*BOX);
-   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); pTower(P,4,-2.24,2); pTower(P,4,2.24,2); } },
- { balls:13, build:function(){ // 19: Staircase Castle — three rafts climbing (100)
-   const L=makePlatform(-3,-5.5,2.8,2.3,0.8,{legs:2}), C=makePlatform(0,-6.1,3.0,3.0,1.5,{legs:6}), R=makePlatform(3,-5.5,2.8,2.3,2.2,{legs:1});
-   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
-     pFort(P,1);
-     pCrates(P,2,T,4); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); });
-   pCrates(C,0,C.top,4,0,'stone'); pCrates(C,0,C.top+BOX,4); pCanRow(C,0,C.top+2*BOX,[-0.96,-0.32,0.32,0.96]);
-   pFort(C,1); pTwin(C,2,4); pPyr(C,3,3,0); pCan(C,3,0,C.top+3*BOX); } },
- { balls:15, build:function(){ // 20: Castle City — two citadels, iron arrives (120)
-   const L=makePlatform(-2.05,-5.8,3.4,3.4,1.6,{legs:6}), R=makePlatform(2.05,-5.8,3.4,3.4,1.6,{legs:6});
+   [-3.45,-1.15,1.15,3.45].forEach(function(x,i){ const P=makePlatform(x,-5.8,2.2,1.7,[0.9,1.4,1.4,0.9][i],{legs:[2,4,4,2][i]}); const T=P.top;
+     pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); pCrates(P,0,T+2*BOX,3); pCanRow(P,0,T+3*BOX,[-0.64,0.64]); pBomb(P,0,0,T+3*BOX); pCan(P,0,0.64,T+3*BOX+CAN_H);
+     pTwin(P,1,0,4); }); } },
+ { balls:12, build:function(){ // 18: Turbo Turntable — the turntable, twice as fast (50)
+   const P=makePlatform(0,-5.8,6.0,1.7,1.5,{rot:0.12}); const T=P.top;
+   pWall(P,0,0); pTower(P,0,-2.24,4); pTower(P,0,2.24,4);
+   pFort(P,1,-1.5); pTwin(P,1,1.45,5); pCan(P,1,0.9,T+5*BOX+0.12+CAN_H); pCan(P,1,2.0,T+5*BOX+0.12+CAN_H); } },
+ { balls:13, build:function(){ // 19: Staircase Castle — three rafts climbing (88)
+   const L=makePlatform(-3,-5.5,2.8,1.7,0.8,{legs:2}), C=makePlatform(0,-6.5,3.0,1.7,1.5,{legs:6}), R=makePlatform(3,-5.5,2.8,1.7,2.2,{legs:1});
+   [L,R].forEach(function(P){ const T=P.top; pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-0.96,T+3*BOX+CAN_H); pCan(P,0,0.96,T+3*BOX+CAN_H);
+     pFort(P,1,0); pCan(P,1,0,T+4*BOX+BOX); });
+   pCrates(C,0,C.top,4,0,'stone'); pCrates(C,0,C.top+BOX,4); pCrates(C,0,C.top+2*BOX,4); pCanRow(C,0,C.top+3*BOX,[-0.96,-0.32,0.32,0.96]);
+   pTwin(C,1,0,5); } },
+ { balls:15, build:function(){ // 20: Castle City — two citadels and a keep, iron arrives (106)
+   const L=makePlatform(-3.05,-5.5,3.4,1.7,1.6,{legs:6}), C=makePlatform(0,-7.1,3.4,1.7,2.2,{legs:1}), R=makePlatform(3.05,-5.5,3.4,1.7,1.6,{legs:6});
    [L,R].forEach(function(P){ const T=P.top;
-     pWall(P,0); pFort(P,1); pTwin(P,2,4);
-     pCrates(P,3,T,5,0,'iron'); pCrates(P,3,T+BOX,5); pBomb(P,3,0,T+2*BOX);
-     pPyr(P,4,4,0); pCan(P,4,0,T+4*BOX); }); } },
- { balls:12, build:function(){ // 21: Spinning Towers — a taller, reverse turntable (68)
-   const P=makePlatform(0,-5.8,5.6,3.4,1.7,{rot:-0.11}); const T=P.top;
-   pTwin(P,0,4); pCrates(P,0,T,2,-2.24); pCrates(P,0,T,2,2.24);
-   pFort(P,1);
-   pTwin(P,2,5);
-   pCrates(P,3,T,5); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]);
-   pPyr(P,4,3,0); pCan(P,4,0,T+3*BOX); pTower(P,4,-1.92,3); pTower(P,4,1.92,3); } },
- { balls:14, build:function(){ // 22: Double Canyon — one high raft, one low (110)
-   const L=makePlatform(-2.15,-5.8,3.0,3.4,2.4,{legs:1}), R=makePlatform(2.15,-5.8,3.0,3.4,1.0,{legs:2});
+     pWall(P,0,0);
+     pTwin(P,1,0,5); pTower(P,1,-1.38,3); pTower(P,1,1.38,3); });
+   pCrates(C,0,C.top,5,0,'iron'); pCrates(C,0,C.top+BOX,5,0,'iron'); pCrates(C,0,C.top+2*BOX,5); pCanRow(C,0,C.top+3*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(C,0,0,C.top+3*BOX);
+   pPyr(C,1,5,0); pBomb(C,1,0,C.top+5*BOX); } },
+ { balls:12, build:function(){ // 21: Spinning Towers — a taller, reverse turntable (57)
+   const P=makePlatform(0,-5.8,5.6,2.4,1.7,{rot:-0.11}); const T=P.top;
+   pTwin(P,0,0,5); pCrates(P,0,T,2,-2.15); pCrates(P,0,T,2,2.15);
+   pFort(P,1,0); pTower(P,1,-1.95,3); pTower(P,1,1.95,3);
+   pCrates(P,2,T,5); pCrates(P,2,T+BOX,5); pCrates(P,2,T+2*BOX,5); pCanRow(P,2,T+3*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,2,0,T+3*BOX); pCan(P,2,-1.28,T+3*BOX+CAN_H); pCan(P,2,1.28,T+3*BOX+CAN_H); } },
+ { balls:14, build:function(){ // 22: Double Canyon — one high raft, one low (102)
+   const L=makePlatform(-2.15,-5.8,3.4,2.4,2.4,{legs:1}), R=makePlatform(2.15,-5.8,3.4,2.4,1.0,{legs:2});
    [L,R].forEach(function(P){ const T=P.top;
-     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.96,-0.32,0.32,0.96]);
-     pFort(P,1); pTwin(P,2,4);
-     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX);
-     pPyr(P,4,4,0); pCan(P,4,0,T+4*BOX); }); } },
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-0.96,T+3*BOX+CAN_H); pCan(P,0,0.96,T+3*BOX+CAN_H);
+     pTwin(P,1,0,5); pTower(P,1,-1.38,3); pTower(P,1,1.38,3);
+     pTwin(P,2,0,5); }); } },
  { balls:13, build:function(){ // 23: Pyramid Rush — pyramids on every row (99)
-   [[-3,1.2],[0,1.6],[3,1.2]].forEach(function(s,i){ const P=makePlatform(s[0],-5.8,2.8,2.3,s[1],{legs:i===1?6:2});
-     pFort(P,0); pFort(P,1); pPyr(P,2,4,0); pCan(P,2,0,P.top+4*BOX); }); } },
- { balls:12, build:function(){ // 24: Double Movers — a slider and a bobber side by side (78)
-   const L=makePlatform(-2.2,-5.8,3.0,3.0,1.3,{move:{type:'slideX',amp:0.9,speed:0.5}}), R=makePlatform(2.2,-5.8,3.0,3.0,1.3,{move:{type:'bob',amp:0.3,speed:0.6}});
+   [[-3,1.2],[0,1.6],[3,1.2]].forEach(function(s,i){ const P=makePlatform(s[0],-5.8,2.8,2.4,s[1],{legs:i===1?6:2});
+     pFort(P,0,0); pFort(P,1,0); pPyr(P,2,4,0); pCan(P,2,0,P.top+4*BOX); }); } },
+ { balls:12, build:function(){ // 24: Double Movers — a slider and a bobber side by side (80)
+   const L=makePlatform(-2.2,-5.8,3.0,2.4,1.3,{move:{type:'slideX',amp:0.9,speed:0.5}}), R=makePlatform(2.2,-5.8,3.0,2.4,1.3,{move:{type:'bob',amp:0.3,speed:0.6}});
    [L,R].forEach(function(P){ const T=P.top;
-     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
-     pFort(P,1); pTwin(P,2,3);
-     pCrates(P,3,T,4); pCanRow(P,3,T+BOX,[-0.64,0,0.64]); }); } },
- { balls:14, build:function(){ // 25: Sky Castle — a high keep between two rafts (107)
-   const C=makePlatform(0,-6.1,3.4,3.0,2.3,{legs:1});
-   pWall(C,0); pFort(C,1); pTwin(C,2,5);
-   pCrates(C,3,C.top,5,0,'iron'); pCrates(C,3,C.top+BOX,5); pBomb(C,3,0,C.top+2*BOX);
-   const L=makePlatform(-3.05,-5.5,2.8,2.3,1.0,{legs:2}), R=makePlatform(3.05,-5.5,2.8,2.3,1.0,{legs:2});
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-0.96,T+3*BOX+CAN_H); pCan(P,0,0.96,T+3*BOX+CAN_H);
+     pFort(P,1,0);
+     pTwin(P,2,0,4); }); } },
+ { balls:14, build:function(){ // 25: Sky Castle — a high keep between two rafts (111)
+   const C=makePlatform(0,-6.5,3.4,2.4,2.3,{legs:1});
+   pWall(C,0,0); pCan(C,0,-1.28,C.top+2*BOX+CAN_H);
+   pFort(C,1,0);
+   pTwin(C,2,0,5); pTower(C,2,-1.38,3); pTower(C,2,1.38,3);
+   const L=makePlatform(-3.05,-5.5,2.8,2.4,1.0,{legs:2}), R=makePlatform(3.05,-5.5,2.8,2.4,1.0,{legs:2});
    [L,R].forEach(function(P){ const T=P.top;
-     pCrates(P,0,T,4); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0.64]); pBomb(P,0,0,T+2*BOX);
-     pFort(P,1);
+     pCrates(P,0,T,4); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.64,0.64]); pBomb(P,0,0,T+3*BOX);
+     pFort(P,1,0);
      pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
- { balls:16, build:function(){ // 26: Great Range — three big fortresses (143)
-   const L=makePlatform(-3.1,-5.5,3.0,3.0,1.4,{legs:2}), C=makePlatform(0,-6.1,3.0,3.4,2.0,{legs:6}), R=makePlatform(3.1,-5.5,3.0,3.0,1.4,{legs:2});
+ { balls:16, build:function(){ // 26: Great Range — three big fortresses (137)
+   const L=makePlatform(-3.1,-5.5,3.0,2.4,1.4,{legs:2}), C=makePlatform(0,-6.5,3.4,2.4,2.0,{legs:6}), R=makePlatform(3.1,-5.5,3.0,2.4,1.4,{legs:2});
    [L,R].forEach(function(P){ const T=P.top;
-     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.96,-0.32,0.32,0.96]);
-     pFort(P,1); pTwin(P,2,4);
-     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX); });
-   pCrates(C,0,C.top,4,0,'stone'); pCrates(C,0,C.top+BOX,4); pCanRow(C,0,C.top+2*BOX,[-0.96,-0.32,0.32,0.96]);
-   pFort(C,1); pTwin(C,2,4);
-   pCrates(C,3,C.top,4); pCrates(C,3,C.top+BOX,4); pBomb(C,3,0,C.top+2*BOX);
-   pPyr(C,4,4,0); pCan(C,4,0,C.top+4*BOX); } },
- { balls:13, build:function(){ // 27: Reverse Turntable — the biggest deck, spinning backwards (84)
-   const P=makePlatform(0,-5.8,6.4,3.4,1.5,{rot:-0.14}); const T=P.top;
-   pWall(P,0);
-   pFort(P,1); pTower(P,1,-2.24,3,'stone'); pTower(P,1,2.24,3,'stone');
-   pTwin(P,2,5); pCrates(P,2,T,2,-2.24); pCrates(P,2,T+BOX,2,-2.24); pCrates(P,2,T,2,2.24); pCrates(P,2,T+BOX,2,2.24);
-   pCrates(P,3,T,5,0,'iron'); pCrates(P,3,T+BOX,5); pCanRow(P,3,T+2*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,3,0,T+2*BOX);
-   pPyr(P,4,4,0); pCan(P,4,0,T+4*BOX); pTower(P,4,-2.24,2); pTower(P,4,2.24,2); } },
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCanRow(P,0,T+3*BOX,[-0.96,0.96]); pBomb(P,0,0,T+3*BOX); pCan(P,0,-0.96,T+3*BOX+CAN_H); pCan(P,0,0.96,T+3*BOX+CAN_H);
+     pFort(P,1,0);
+     pTwin(P,2,0,5); });
+   pCrates(C,0,C.top,4,0,'stone'); pCrates(C,0,C.top+BOX,4); pCrates(C,0,C.top+2*BOX,4); pCanRow(C,0,C.top+3*BOX,[-0.96,0.96]); pBomb(C,0,0,C.top+3*BOX); pCan(C,0,-0.96,C.top+3*BOX+CAN_H); pCan(C,0,0.96,C.top+3*BOX+CAN_H);
+   pTwin(C,1,0,5); pTower(C,1,-1.38,3); pTower(C,1,1.38,3);
+   pPyr(C,2,5,0); pBomb(C,2,0,C.top+5*BOX); } },
+ { balls:13, build:function(){ // 27: Reverse Turntable — the biggest deck, spinning backwards (70)
+   const P=makePlatform(0,-5.8,6.4,2.4,1.5,{rot:-0.11}); const T=P.top;
+   pWall(P,0,0); pTower(P,0,-2.24,4); pTower(P,0,2.24,4); pCan(P,0,-1.28,T+2*BOX+CAN_H); pCan(P,0,1.28,T+2*BOX+CAN_H);
+   pFort(P,1,0); pTower(P,1,-2.24,4,'stone'); pTower(P,1,2.24,4,'stone');
+   pTwin(P,2,0,5); pCrates(P,2,T,3,-2.05); pCrates(P,2,T+BOX,3,-2.05); pCrates(P,2,T,3,2.05); pCrates(P,2,T+BOX,3,2.05); } },
  { balls:13, build:function(){ // 28: Fortress Isles — four rafts across the sea (92)
-   [[-3.8,1.2],[-1.4,1.7],[1.4,1.7],[3.8,1.2]].forEach(function(s,i){ const P=makePlatform(s[0],-5.8,2.3,2.3,s[1],{legs:i%2?4:2}); const T=P.top;
+   [[-3.8,1.2],[-1.4,1.7],[1.4,1.7],[3.8,1.2]].forEach(function(s,i){ const P=makePlatform(s[0],-5.8,2.3,2.4,s[1],{legs:i%2?4:2}); const T=P.top;
      pCrates(P,0,T,3); pCrates(P,0,T+BOX,3); if(i===1||i===2) pCrates(P,0,T+2*BOX,3);
      pCanRow(P,0,T+(i===1||i===2?3:2)*BOX,[-0.64,0.64]); if(i===0||i===3) pBomb(P,0,0,T+2*BOX);
      pPyr(P,1,3,0); pCan(P,1,0,T+3*BOX);
      pCrates(P,2,T,3); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.64,0.64]); }); } },
- { balls:16, build:function(){ // 29: The Last Fortress — two citadels at full size (134)
-   const L=makePlatform(-2.05,-5.8,3.4,3.4,1.8,{legs:6}), R=makePlatform(2.05,-5.8,3.4,3.4,1.8,{legs:6});
+ { balls:16, build:function(){ // 29: The Last Fortress — two citadels and a centre keep (140)
+   const L=makePlatform(-3.05,-5.5,3.4,2.4,1.8,{legs:6}), C=makePlatform(0,-6.5,3.4,2.4,1.6,{legs:1}), R=makePlatform(3.05,-5.5,3.4,2.4,1.8,{legs:6});
    [L,R].forEach(function(P){ const T=P.top;
-     pWall(P,0); pFort(P,1); pTwin(P,2,5,'stone');
-     pCrates(P,3,T,5,0,'iron'); pCrates(P,3,T+BOX,5); pBomb(P,3,0,T+2*BOX);
-     pPyr(P,4,5,0); pBomb(P,4,0,T+5*BOX); }); } },
- { balls:17, build:function(){ // 30: True Final Showdown — twin forts and a bobbing centre keep (145)
-   const L=makePlatform(-3.1,-5.5,2.8,3.0,1.3,{legs:2}), R=makePlatform(3.1,-5.5,2.8,3.0,1.3,{legs:2});
+     pCrates(P,0,T,5,0,'iron'); pCrates(P,0,T+BOX,5); pCrates(P,0,T+2*BOX,5); pCanRow(P,0,T+3*BOX,[-1.28,-0.64,0.64,1.28]); pBomb(P,0,0,T+3*BOX);
+     pTwin(P,1,0,5); pTower(P,1,-1.38,3); pTower(P,1,1.38,3);
+     pFort(P,2,0); });
+   pWall(C,0,0);
+   pFort(C,1,0);
+   pTwin(C,2,0,4); } },
+ { balls:17, build:function(){ // 30: True Final Showdown — twin forts and a bobbing centre keep (140)
+   const L=makePlatform(-3.1,-5.5,2.8,2.4,1.3,{legs:2}), R=makePlatform(3.1,-5.5,2.8,2.4,1.3,{legs:2});
    [L,R].forEach(function(P){ const T=P.top;
-     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCanRow(P,0,T+2*BOX,[-0.64,0,0.64]);
-     pFort(P,1);
-     pCrates(P,2,T,4); pPlank(P,2,0,T+BOX); pCanRow(P,2,T+BOX+0.12,[-0.68,0.68]); pBomb(P,2,0,T+BOX+0.12);
-     pCrates(P,3,T,4); pCrates(P,3,T+BOX,4); pBomb(P,3,0,T+2*BOX); });
-   const C=makePlatform(0,-6.2,3.4,3.4,2.0,{move:{type:'bob',amp:0.3,speed:0.5}});
-   pWall(C,0); pFort(C,1); pTwin(C,2,5,'stone');
-   pCrates(C,3,C.top,5,0,'iron'); pCrates(C,3,C.top+BOX,5); pBomb(C,3,0,C.top+2*BOX);
-   pPyr(C,4,5,0); pBomb(C,4,0,C.top+5*BOX); } },
+     pCrates(P,0,T,4,0,'stone'); pCrates(P,0,T+BOX,4); pCrates(P,0,T+2*BOX,4); pCrates(P,0,T+3*BOX,4); pCanRow(P,0,T+4*BOX,[-0.96,0.96]); pBomb(P,0,0,T+4*BOX); pCan(P,0,-0.96,T+4*BOX+CAN_H); pCan(P,0,0.96,T+4*BOX+CAN_H);
+     pFort(P,1,0);
+     pTwin(P,2,0,4); });
+   const C=makePlatform(0,-6.5,3.4,2.4,2.0,{move:{type:'bob',amp:0.3,speed:0.5}});
+   pWall(C,0,0); pCan(C,0,1.28,C.top+2*BOX+CAN_H);
+   pTwin(C,1,0,5,'stone'); pTower(C,1,-1.38,3); pTower(C,1,1.38,3);
+   pPyr(C,2,5,0); pBomb(C,2,0,C.top+5*BOX); } },
 ];
 
 // ---------- Floating scenery (islands, boats, driftwood) ----------
