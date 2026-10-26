@@ -28,7 +28,8 @@
 <style>
   :root{--panel:rgba(13,32,52,.78);--line:rgba(255,255,255,.22);--text:#f4f1ea;--muted:#bcd2e6;--accent:#ffb020;--accent2:#ff4d2e;--green:#2ee06f}
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;overflow:hidden;background:#7ec3ee;font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans",system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}
+  html,body{margin:0;height:100%;overflow:hidden;background:#7ec3ee;font-family:"Hiragino Maru Gothic ProN","Arial Rounded MT Bold","Hiragino Sans","Yu Gothic UI",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}
+  button{font-family:inherit}
   #app{position:fixed;inset:0}
   canvas{display:block}
   .hud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:flex-start;padding:8px;padding-top:max(8px,env(safe-area-inset-top))}
@@ -36,8 +37,8 @@
   .topbar{display:flex;gap:5px;align-items:stretch;padding-right:50px}
   .stats{display:flex;gap:5px;flex:1}
   .stat{flex:1;min-width:0;padding:2px 4px;text-align:center}
-  .stat b{display:block;font-size:15px;line-height:1.05;color:#123c63;text-shadow:0 0 7px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95),0 0 2px rgba(255,255,255,.9)}
-  .stat span{display:block;font-size:9.5px;color:#1b4f7d;letter-spacing:.05em;white-space:nowrap;text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95)}
+  .stat b{display:block;font-size:20px;font-weight:800;line-height:1.05;color:#123c63;text-shadow:0 0 7px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95),0 0 2px rgba(255,255,255,.9)}
+  .stat span{display:block;font-size:11.5px;font-weight:700;color:#1b4f7d;letter-spacing:.02em;white-space:nowrap;text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95)}
   .stat.highlight b{color:var(--accent)}
   .stat.danger b{color:var(--accent2)}
   .midbar{display:flex;flex-direction:row;align-items:stretch;gap:5px}
@@ -86,12 +87,12 @@
   #ctaBtn{margin-top:15px;font-size:18px;padding:14px 32px;box-shadow:0 8px 26px rgba(255,176,32,.35);animation:ctaPulse 1.6s ease-in-out infinite}
   @keyframes ctaPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
   @media (prefers-reduced-motion: reduce){#ctaBtn{animation:none}}
-  #anglePad{position:absolute;inset:0;pointer-events:none;z-index:8;transition:opacity .2s}
+  #anglePad{position:fixed;inset:0;width:100vw;width:100dvw;height:100vh;height:100dvh;pointer-events:none;z-index:8;transition:opacity .2s;overflow:hidden}
   #anglePad.off{opacity:.35}
-  .angleBtn{position:absolute;bottom:max(18px,calc(env(safe-area-inset-bottom) + 10px));width:60px;height:60px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center}
-  .angleBtn:active{background:var(--accent);color:#1a1200}
-  #angleLeft{left:max(14px,env(safe-area-inset-left))}
-  #angleRight{right:max(14px,env(safe-area-inset-right))}
+  .angleBtn{position:absolute;bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));width:60px;height:60px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:#fff;font-size:23px;line-height:1;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;display:flex;align-items:center;justify-content:center;transform:none}
+  .angleBtn:active{background:var(--accent);color:#1a1200;transform:none}
+  #angleLeft{left:max(12px,calc(env(safe-area-inset-left) + 4px))}
+  #angleRight{right:max(12px,calc(env(safe-area-inset-right) + 4px))}
   #popups{position:absolute;inset:0;pointer-events:none;overflow:hidden}
   .pop{position:absolute;font-weight:900;font-size:17px;color:var(--accent);text-shadow:0 2px 10px rgba(0,0,0,.7);transform:translate(-50%,-50%);animation:popfly .9s ease-out forwards}
   .pop.can{color:#7ef0b0}
@@ -100,8 +101,8 @@
   @keyframes confetti-fall{0%{opacity:1;transform:translate(0,0) rotate(0deg)}85%{opacity:1}100%{opacity:.55;transform:translate(var(--dx,0px),108vh) rotate(var(--rot,720deg))}}
   @media (prefers-reduced-motion: reduce){#confetti{display:none}}
   @keyframes popfly{0%{opacity:0;margin-top:6px}15%{opacity:1}100%{opacity:0;margin-top:-46px}}
-  @media(max-width:640px){.stat b{font-size:13px}.stat span{font-size:9px}.hud{padding:6px;padding-top:max(6px,env(safe-area-inset-top))}.hint{font-size:11px;padding:5px 8px}.midbar{flex-direction:column;align-items:stretch}.controls .btn{flex:1}.topui{gap:4px}.stats{gap:4px}.midbar{gap:4px}}
-  @media(max-width:480px){.stat b{font-size:12px}.stat span{font-size:8px;letter-spacing:.02em}}
+  @media(max-width:640px){.stat b{font-size:18px}.stat span{font-size:11px}.hud{padding:6px;padding-top:max(6px,env(safe-area-inset-top))}.hint{font-size:11px;padding:5px 8px}.midbar{flex-direction:column;align-items:stretch}.controls .btn{flex:1}.topui{gap:4px}.stats{gap:4px}.midbar{gap:4px}}
+  @media(max-width:480px){.stat b{font-size:17px}.stat span{font-size:10.5px;letter-spacing:.01em}.angleBtn{width:56px;height:56px;font-size:21px}}
   @media(min-width:900px){.keyhint{display:block}}
 </style>
 </head>
@@ -124,7 +125,7 @@
     <div class="midbar">
       <div class="hint"><span class="dot"></span><span id="hintText">画面を<strong>下にドラッグ</strong>して引っ張り、離すと発射！ ◀▶ボタンで発射位置がブロックの周りを回るよ。台の上の積み上げを全部落として水に沈めよう</span></div>
       <div class="controls">
-        <span class="keyhint" id="keyhint" style="font-size:10.5px;color:#123c63;align-self:center;white-space:nowrap;text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
+        <span class="keyhint" id="keyhint" style="font-size:11.5px;font-weight:700;color:#123c63;align-self:center;white-space:nowrap;text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 3px rgba(255,255,255,.95)">◀▶ボタン・←→キーで発射位置を回転（ブロックの周り±90°・真横まで）/ スペースでカメラ</span>
       </div>
     </div>
   </div>

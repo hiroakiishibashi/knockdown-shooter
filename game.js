@@ -693,7 +693,7 @@ const INTRO_POS=new THREE.Vector3(1.6,2.1,-2.9), INTRO_LOOK=new THREE.Vector3(0,
 // with margin. camBasePos carries the same correction, so the intro
 // pull-back lands on the corrected position too.
 function portraitPull(){ const a=innerWidth/Math.max(1,innerHeight); return a<1 ? (1-a) : 0; }
-function camBasePos(){ const pf=portraitPull(); if(camMode===0){ const L=launcherPos(), O=outwardDir(); const d=5.2*(1+1.2*pf); return new THREE.Vector3(L.x+O.x*d, 4.2+2.8*pf, L.z+O.z*d); } if(camMode===1) return new THREE.Vector3(7.4*(1+0.55*pf),3.2+1.8*pf,-1); return new THREE.Vector3(0,9.5+3.2*pf,3.4); }
+function camBasePos(){ const pf=portraitPull(); if(camMode===0){ const L=launcherPos(), O=outwardDir(); const d=5.2*(1+0.5*pf); return new THREE.Vector3(L.x+O.x*d, 4.2+1.6*pf, L.z+O.z*d); } if(camMode===1) return new THREE.Vector3(7.4*(1+0.23*pf),3.2+1.0*pf,-1); return new THREE.Vector3(0,9.5+1.8*pf,3.4); }
 
 const els={score:document.getElementById('score'),stageLabel:document.getElementById('stageLabel'),targetsLeft:document.getElementById('targetsLeft'),ballsLeft:document.getElementById('ballsLeft'),ballsStat:document.getElementById('ballsStat'),bgGauge:document.getElementById('ballGauge'),bgFill:document.getElementById('bgFill'),banner:document.getElementById('banner'),bannerBig:document.getElementById('bannerBig'),bannerSub:document.getElementById('bannerSub'),centerCta:document.getElementById('centerCta'),ctaTitle:document.getElementById('ctaTitle'),ctaSub:document.getElementById('ctaSub'),ctaBtn:document.getElementById('ctaBtn'),anglePad:document.getElementById('anglePad'),hintText:document.getElementById('hintText'),hintBar:document.querySelector('.hint'),popups:document.getElementById('popups')};
 function targetsRemaining(){ return targets.filter(function(t){ return !t.gone; }).length; }
@@ -1152,7 +1152,7 @@ animate();
 function applyViewport(){
   const w=innerWidth, h=Math.max(1,innerHeight);
   camera.aspect=w/h;
-  camera.fov=58 + (camera.aspect<1 ? 26*(1-camera.aspect) : 0);
+  camera.fov=58 + (camera.aspect<1 ? 12*(1-camera.aspect) : 0);
   camera.updateProjectionMatrix();
   renderer.setSize(w,h);
 }
